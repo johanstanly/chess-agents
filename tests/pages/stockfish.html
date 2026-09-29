@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Stockfish check</title></head>
+<body>
+<img src="/__hold" hidden alt="">
+<script>
+  // Asks Stockfish for its best move in a position where White can checkmate
+  // at once (Qxf7#). A working engine must find it.
+  const report = (text) => fetch("/__done", { method: "POST", body: text });
+  const lines = [];
+  const w = new Worker("/engine/stockfish-18-lite-single.js");
+  w.onerror = (e) => report("ERROR " + e.message);
+  w.onmessage = (e) => {
+    const line = String(e.data);
+    if (/uciok|readyok|score mate|bestmove/.test(line)) lines.push(line);
+    if (line.startsWith("bestmove")) report(lines.slice(-4).join("\n"));
+  };
+  w.postMessage("uci");
+  w.postMessage("isready");
+  w.postMessage("position fen r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 2 3");
+  w.postMessage("go depth 10");
+</script>
+</body>
+</html>

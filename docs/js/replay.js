@@ -85,6 +85,8 @@ class Replay {
     const ok = this.board.matchesFen(this.expectedFen());
     this.ui.check.textContent = ok ? "✓ Board matches diary" : "✗ Board does NOT match diary";
     this.ui.check.className = ok ? "check ok" : "check bad";
+
+    if (this.onChange) this.onChange();  // e.g. re-evaluate the new position
   }
 }
 

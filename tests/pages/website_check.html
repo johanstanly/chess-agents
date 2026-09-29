@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Website check</title></head>
+<body>
+<img src="/__hold" hidden alt="">
+<iframe id="f" style="width:1200px;height:800px"></iframe>
+<script>
+/* Drives the real replay page inside a frame and reports PASS/FAIL lines. */
+const results = [];
+const check = (ok, text) => results.push(`${ok ? "PASS" : "FAIL"}  ${text}`);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const frame = document.getElementById("f");
+
+function load(url) {
+  return new Promise((resolve) => { frame.onload = resolve; frame.src = url; });
+}
+async function until(fn, ms = 20000) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms) { const v = fn(); if (v) return v; await sleep(100); }
+  return null;
+}
+const doc = () => frame.contentDocument;
+const app = () => frame.contentWindow.app;
+
+/* Waits for Stockfish to reach `depth`, returns the engine line text. */
+async function evaluation(depth = 12) {
+  await sleep(300);
+  return until(() => {
+    const t = doc().getElementById("engine-line").textContent;
+    const m = t.match(/depth (\d+)/);
+    return m && (Number(m[1]) >= depth || /1-0|0-1/.test(t)) ? t : null;
+  }, 30000);
+}
+const pawnsIn = (text) => {
+  const m = text.match(/Stockfish: ([+-]?\d+\.\d)/);
+  return m ? Number(m[1]) : null;
+};
+
+async function run() {
+  // 1. Self-test of all diaries (the Phase 3 check).
+  await load("/index.html?check");
+  const selftest = await until(() => {
+    const t = doc().getElementById("selftest").textContent;
+    return /PASSED|FAILED/.test(t) ? t : null;
+  });
+  check(selftest && selftest.includes("ALL GAMES PASSED"), "replay self-test: every move of every diary matches");
+
+  // 2. Evaluation bar at the start and end of the Kasparov game.
+  await load("/index.html?game=sample-kasparov-topalov-1999");
+  await until(() => app() && app().replay.diary);
+  let line = await evaluation();
+  const startPawns = line && pawnsIn(line);
+  check(startPawns !== null && Math.abs(startPawns) < 1.0, `start position is roughly equal (${line})`);
+
+  app().replay.goTo(app().replay.total);
+  line = await evaluation();
+  const endPawns = line && pawnsIn(line);
+  const whiteWinning = line && (/M\d/.test(line) && !line.includes("-M") ? true : endPawns > 3);
+  check(whiteWinning, `final position: White clearly winning (${line})`);
+  const fillHeight = parseFloat(doc().querySelector(".eval-fill").style.height);
+  check(fillHeight > 80, `eval bar is mostly white at the end (${fillHeight}%)`);
+
+  // 3. Checkmate position in Lasker vs Thomas.
+  await load("/index.html?game=sample-lasker-thomas-1912&move=35");
+  await until(() => app() && app().replay.current === 35);
+  line = await evaluation(0);
+  check(line && line.includes("1-0"), `checkmate position shows 1-0 (${line})`);
+
+  // 4. Analysis mode from move 47 of the Kasparov game.
+  await load("/index.html?game=sample-kasparov-topalov-1999&move=47");
+  await until(() => app() && app().replay.current === 47);
+  const a = app().analysis;
+  // Black to move; a white move must be refused.
+  check(a.tryMove("d4", "d8") === false, "illegal move (wrong side) is refused");
+  check(!a.active, "a refused move does not start analysis mode");
+  check(a.tryMove("c5", "d4") === true, "legal move 24... cxd4 accepted");
+  check(a.active && doc().querySelector(".board").classList.contains("analysis"),
+        "analysis mode is on and the board is tinted");
+  check(!doc().getElementById("analysis-banner").hidden, "analysis banner is shown");
+  check(app().board.matchesFen(a.fen()), "board matches the analysis position");
+  a.tryMove("e1", "e7");
+  check(doc().getElementById("analysis-line").textContent === "24... cxd4 25. Re7+",
+        `your moves are listed (${doc().getElementById("analysis-line").textContent})`);
+  doc().getElementById("back-to-game").click();
+  check(!a.active && app().replay.current === 47, "Back to game returns to half-move 47");
+  check(app().board.matchesFen(app().replay.expectedFen()), "board matches the real game again");
+
+  // 5. Castling and en passant in analysis, from the start position.
+  app().replay.goTo(0);
+  for (const [f, t] of [["e2","e4"],["e7","e5"],["g1","f3"],["b8","c6"],["f1","c4"],["g8","f6"],["e1","g1"]]) a.tryMove(f, t);
+  check(app().board.pieces["f1"] && app().board.pieces["f1"].dataset.code === "wR" && app().board.matchesFen(a.fen()),
+        "castling in analysis moves the rook too");
+  a.exit();
+  for (const [f, t] of [["e2","e4"],["a7","a6"],["e4","e5"],["d7","d5"],["e5","d6"]]) a.tryMove(f, t);
+  check(!app().board.pieces["d5"] && app().board.matchesFen(a.fen()), "en passant in analysis removes the right pawn");
+  // Back button steps out of analysis one move at a time.
+  for (let i = 0; i < 5; i++) doc().getElementById("back").click();
+  check(!a.active && app().replay.current === 0, "Back takes moves back, then returns to the game");
+
+  const failed = results.filter((r) => r.startsWith("FAIL")).length;
+  results.push(failed ? `${failed} CHECK(S) FAILED` : "ALL CHECKS PASSED");
+}
+
+run()
+  .catch((err) => results.push("FAIL  test crashed: " + err.message))
+  .finally(() => fetch("/__done", { method: "POST", body: results.join("\n") }));
+</script>
+</body>
+</html>

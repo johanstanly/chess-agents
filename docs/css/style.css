@@ -37,8 +37,10 @@ h1 { font-size: 20px; font-weight: 650; margin: 0 0 2px; }
 
 /* The board is always square and fits the screen: never wider than the
    window, never taller than the window. */
+.board-wrap { display: flex; gap: 8px; flex: 0 0 auto; }
+
 .board-frame {
-  width: min(calc(100vw - 32px), calc(100vh - 90px), 960px);
+  width: min(calc(100vw - 32px - 36px), calc(100vh - 90px), 960px);
   flex: 0 0 auto;
   aspect-ratio: 1;
   padding: 1.6%;
@@ -57,6 +59,8 @@ h1 { font-size: 20px; font-weight: 650; margin: 0 0 2px; }
   background: url("marble-board.svg") center / 100% 100%;
   box-shadow: 0 0 0 2px rgba(0,0,0,0.5);
   user-select: none;
+  touch-action: none;      /* dragging a piece on a phone must not scroll the page */
+  cursor: pointer;
 }
 
 /* Square names printed inside the edge squares, like chess.com:
@@ -82,6 +86,7 @@ h1 { font-size: 20px; font-weight: 650; margin: 0 0 2px; }
 .piece.moving { z-index: 2; }            /* a sliding piece passes over others */
 .piece.captured { opacity: 0; }          /* captured pieces fade away */
 .board.no-animation .piece { transition: none; }
+.piece.dragging { transition: none; z-index: 3; }
 
 /* ---------- Controls ---------- */
 
@@ -119,3 +124,63 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
 .check.bad { color: #e05d44; }
 .selftest { background: var(--panel-bg); padding: 12px; border-radius: 8px;
             font-size: 13px; white-space: pre-wrap; }
+
+/* ---------- Evaluation bar ---------- */
+
+.eval-bar {
+  position: relative;
+  width: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #403d39;                    /* Black's share */
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
+}
+.eval-fill {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: #f1efe9;                    /* White's share */
+  transition: height 0.4s ease;
+}
+.eval-bar.flipped .eval-fill { bottom: auto; top: 0; }
+.eval-label {
+  position: absolute; left: 0; right: 0; text-align: center;
+  font-size: 11px; font-weight: 700;
+}
+.eval-label.at-white { bottom: 6px; color: #403d39; }
+.eval-label.at-black { top: 6px; color: #f1efe9; }
+.eval-bar.flipped .eval-label.at-white { bottom: auto; top: 6px; }
+.eval-bar.flipped .eval-label.at-black { top: auto; bottom: 6px; }
+
+/* ---------- Analysis mode ---------- */
+
+/* A soft blue wash over the squares (under the pieces) shows you have left
+   the real game. */
+.board::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: rgba(110, 150, 215, 0.28);
+  opacity: 0; transition: opacity 0.25s ease;
+}
+.board.analysis::before { opacity: 1; }
+.board.analysis { box-shadow: 0 0 0 3px #6e96d7; }
+
+.marks { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.marks > div { position: absolute; width: 12.5%; height: 12.5%; }
+.mark-selected { background: rgba(255, 214, 79, 0.5); }
+.mark-dot::after {
+  content: ""; position: absolute; left: 37.5%; top: 37.5%; width: 25%; height: 25%;
+  border-radius: 50%; background: rgba(0, 0, 0, 0.22);
+}
+.mark-capture::after {
+  content: ""; position: absolute; inset: 4%;
+  border-radius: 50%; border: 5px solid rgba(0, 0, 0, 0.22);
+}
+
+.analysis-banner {
+  margin-top: 16px; padding: 12px 14px; border-radius: 8px;
+  background: #2c3a52; border: 1px solid #6e96d7;
+}
+.analysis-title { font-weight: 700; margin-bottom: 4px; }
+.analysis-line { font-size: 15px; margin-bottom: 10px; word-spacing: 2px; }
+.move-info.dimmed { opacity: 0.45; }
+
+.engine-line { margin-top: 12px; font-size: 14px; color: var(--text-dim); }
+.hint { font-size: 12px; color: var(--text-dim); margin-top: 14px; }

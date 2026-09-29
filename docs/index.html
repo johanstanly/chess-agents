@@ -12,8 +12,14 @@
   <p class="subtitle">Game replay</p>
 
   <div class="stage">
-    <div class="board-frame" id="board-frame">
-      <div class="board"></div>
+    <div class="board-wrap">
+      <div class="eval-bar" id="eval-bar" title="Evaluation by Stockfish">
+        <div class="eval-fill"></div>
+        <span class="eval-label"></span>
+      </div>
+      <div class="board-frame" id="board-frame">
+        <div class="board"></div>
+      </div>
     </div>
 
     <aside class="side-panel">
@@ -31,7 +37,13 @@
         <button id="flip" title="Turn the board around">⇅ Flip</button>
       </div>
 
-      <div class="move-info">
+      <div class="analysis-banner" id="analysis-banner" hidden>
+        <div class="analysis-title">Analysis mode: your own moves</div>
+        <div class="analysis-line" id="analysis-line"></div>
+        <button id="back-to-game">↩ Back to game</button>
+      </div>
+
+      <div class="move-info" id="move-info">
         <div class="counter" id="counter"></div>
         <div class="move" id="move"></div>
         <div class="who" id="who"></div>
@@ -39,7 +51,9 @@
         <div class="result" id="result"></div>
       </div>
 
+      <div class="engine-line" id="engine-line">Stockfish is starting…</div>
       <div class="check" id="check"></div>
+      <p class="hint">Tip: drag or click any piece to try your own moves.</p>
       <pre id="selftest" class="selftest" hidden></pre>
     </aside>
   </div>
@@ -47,23 +61,65 @@
 
 <script src="js/board.js"></script>
 <script src="js/replay.js"></script>
-<script>
+<script src="js/engine.js"></script>
+<script src="js/analysis.js"></script>
+<script type="module">
+  import { Chess } from "./js/lib/chess.js";
+
   const $ = (id) => document.getElementById(id);
   const board = new ChessBoard($("board-frame"));
+  const evalBar = new EvalBar($("eval-bar"));
   const replay = new Replay(board, {
     players: $("players"), counter: $("counter"), move: $("move"), who: $("who"),
     thought: $("thought"), result: $("result"), check: $("check"),
   });
 
-  $("next").onclick = () => replay.next();
-  $("back").onclick = () => replay.back();
-  $("start").onclick = () => replay.goTo(0);
-  $("end").onclick = () => replay.goTo(replay.total);
-  $("flip").onclick = () => board.flip();
+  let engine = null;
+  const analysis = new Analysis(board, replay, Chess, positionChanged);
+  replay.onChange = positionChanged;
+
+  /* Called after every change of position: refresh the analysis panel and
+     ask Stockfish to evaluate the new position. */
+  function positionChanged() {
+    const inAnalysis = analysis.active;
+    $("analysis-banner").hidden = !inAnalysis;
+    $("move-info").classList.toggle("dimmed", inAnalysis);
+    $("check").hidden = inAnalysis;  // the diary check only applies to the real game
+    if (inAnalysis) $("analysis-line").textContent = analysis.lineText();
+    if (!engine) return;
+
+    const fen = analysis.fen();
+    engine.analyse(fen, ({ score, depth, bestMoveUci }) => {
+      evalBar.show(score);
+      let best = "";
+      if (bestMoveUci) {
+        try {
+          const probe = new Chess(fen);
+          best = " · Best move: " + probe.move({
+            from: bestMoveUci.slice(0, 2), to: bestMoveUci.slice(2, 4),
+            promotion: bestMoveUci[4] || "q" }).san;
+        } catch { /* no move to show */ }
+      }
+      $("engine-line").textContent = `Stockfish: ${scoreText(score)} (depth ${depth})${best}`;
+    });
+  }
+
+  // In analysis, buttons first return to the real game.
+  const leaveAnalysis = () => analysis.exit();
+  $("next").onclick = () => { leaveAnalysis(); replay.next(); };
+  $("back").onclick = () => (analysis.active ? analysis.back() : replay.back());
+  $("start").onclick = () => { leaveAnalysis(); replay.goTo(0); };
+  $("end").onclick = () => { leaveAnalysis(); replay.goTo(replay.total); };
+  $("back-to-game").onclick = leaveAnalysis;
+  $("flip").onclick = () => {
+    analysis.clearSelection();
+    board.flip();
+    evalBar.setFlipped(board.flipped);
+  };
   document.addEventListener("keydown", (e) => {
     if (e.target.tagName === "SELECT") return;
-    if (e.key === "ArrowRight") replay.next();
-    if (e.key === "ArrowLeft") replay.back();
+    if (e.key === "ArrowRight") $("next").click();
+    if (e.key === "ArrowLeft") $("back").click();
   });
 
   async function start() {
@@ -82,6 +138,12 @@
       return;
     }
 
+    try {
+      engine = new Engine();
+    } catch (err) {
+      $("engine-line").textContent = "Stockfish could not start in this browser.";
+    }
+
     // A link can open a chosen game at a chosen move: ?game=<id>&move=<half-move>
     const params = new URLSearchParams(location.search);
     const chosen = games.find((g) => g.id === params.get("game")) || games[0];
@@ -89,11 +151,14 @@
     const select = $("game-select");
     for (const g of games) select.add(new Option(`${g.title}`, g.file));
     select.value = chosen.file;
-    select.onchange = () => replay.load(select.value);
+    select.onchange = () => { leaveAnalysis(); replay.load(select.value); };
     await replay.load(chosen.file);
     if (params.has("move")) replay.goTo(Number(params.get("move")));
   }
   start().catch((err) => { $("players").textContent = "Something went wrong: " + err.message; });
+
+  // Lets automatic tests reach the page's parts.
+  window.app = { board, replay, analysis, evalBar, get engine() { return engine; } };
 </script>
 </body>
 </html>
