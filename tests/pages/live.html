@@ -1,0 +1,15 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Live site</title>
+<style>body{margin:0} iframe{border:0;width:100vw;height:100vh;display:block}</style></head>
+<body>
+<img src="/__hold" hidden alt="">
+<iframe id="f"></iframe>
+<script>
+  // Shows any web address (e.g. the published site) and waits a few seconds
+  // before the harness takes the picture. Use: /__tests/live.html?url=...
+  const url = new URLSearchParams(location.search).get("url");
+  const f = document.getElementById("f");
+  f.onload = () => setTimeout(() => fetch("/__done", { method: "POST", body: "ok" }), 9000);
+  f.src = url;
+</script>
+</body></html>

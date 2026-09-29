@@ -1,12 +1,14 @@
 # Self-Improving AI Chess Agents
 
+**Live replay:** https://johanstanly.github.io/chess-agents/
+
 Two Claude agents play chess against each other. A plain referee program (no AI) checks every move is legal.
 Every game is saved as a diary (each move plus what the agent was thinking) and can be replayed on a 2D board in the browser.
 
 Agent A (the learner) writes lessons into a notebook after each loss or draw and reads it before the next game.
 Agent B (the control) never learns. The experiment measures whether Agent A's results improve over time.
 
-**Status:** Phase 4 — play/pause, speed, speech bubbles, move list, last-move and check highlights, result card.
+**Status:** Phase 5 — replay website published on GitHub Pages. Next: the referee and the AI agents.
 
 ## Try it
 Double-click `serve.bat` to open the replay page in your browser (keep its window open while you use the page).
