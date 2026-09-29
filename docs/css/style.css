@@ -1,0 +1,95 @@
+/* Colours used across the site, kept in one place. */
+:root {
+  --page-bg: #262421;
+  --panel-bg: #312e2b;
+  --text: #eeeae4;
+  --text-dim: #a9a49c;
+  --accent: #81b64c;
+  --frame-wood: #5a3620;
+  --frame-wood-dark: #3c2314;
+  --frame-text: #e7cfa9;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 16px 30px;
+}
+
+h1 { font-size: 20px; font-weight: 650; margin: 0 0 2px; }
+.subtitle { color: var(--text-dim); margin: 0 0 12px; font-size: 14px; }
+
+/* ---------- Board ---------- */
+
+/* Board on the left, side panel (controls, later the move list) on the right.
+   On narrow screens the panel drops below the board. */
+.stage { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+.side-panel { flex: 1 1 220px; min-width: 0; }
+
+/* The board is always square and fits the screen: never wider than the
+   window, never taller than the window. */
+.board-frame {
+  width: min(calc(100vw - 32px), calc(100vh - 90px), 960px);
+  flex: 0 0 auto;
+  aspect-ratio: 1;
+  padding: 1.6%;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #6b4128 0%, var(--frame-wood) 45%, var(--frame-wood-dark) 100%);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45),
+              inset 0 1px 0 rgba(255,255,255,0.18),
+              inset 0 0 0 2px rgba(0,0,0,0.35);
+  position: relative;
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: url("marble-board.svg") center / 100% 100%;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.5);
+  user-select: none;
+}
+
+/* Square names printed inside the edge squares, like chess.com:
+   numbers in the top-left of the left column, letters in the bottom-right
+   of the bottom row. Each uses the colour of the opposite square. */
+.coords { position: absolute; inset: 0; pointer-events: none; z-index: 0;
+          container-type: size; }
+.coords span { position: absolute; font-weight: 700; line-height: 1;
+               font-size: 2.6cqw; }
+.coords .on-light { color: #6f817a; }
+.coords .on-dark { color: #eceae4; }
+
+/* Pieces sit on top of the board, each exactly one square (12.5%) big. */
+.piece {
+  position: absolute;
+  width: 12.5%;
+  height: 12.5%;
+  pointer-events: none;
+  z-index: 1;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.35));
+}
+
+/* ---------- Controls ---------- */
+
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+
+button {
+  background: var(--panel-bg);
+  color: var(--text);
+  border: 1px solid #4a4642;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+button:hover { background: #3d3935; }

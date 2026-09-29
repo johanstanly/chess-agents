@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 -7 110 110">
+  <defs>
+    <filter id="streaks" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.22 0.018" numOctaves="3" seed="3" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.4 0 0 0 -1.05" result="a"/>
+      <feFlood flood-color="#b98a52" result="c"/>
+      <feComposite in="c" in2="a" operator="in"/>
+    </filter>
+    <pattern id="wood" patternUnits="userSpaceOnUse" width="100" height="100">
+      <rect width="100" height="100" fill="#e8c48e"/>
+      <rect width="100" height="100" filter="url(#streaks)"/>
+    </pattern>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.38"/>
+      <stop offset="0.35" stop-color="#fff" stop-opacity="0.06"/>
+      <stop offset="0.65" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.34"/>
+    </linearGradient>
+  </defs>
+  <rect x="17" y="82" width="66" height="11" rx="4.5" fill="url(#wood)"/>
+  <rect x="17" y="82" width="66" height="11" rx="4.5" fill="url(#shade)" stroke="#4a2e14" stroke-width="2.8" stroke-linejoin="round"/>
+  <rect x="23" y="75" width="54" height="9" rx="3" fill="url(#wood)"/>
+  <rect x="23" y="75" width="54" height="9" rx="3" fill="url(#shade)" stroke="#4a2e14" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M30 75 C36 64 41 58 41 53 L59 53 C59 58 64 64 70 75 Z" fill="url(#wood)"/>
+  <path d="M30 75 C36 64 41 58 41 53 L59 53 C59 58 64 64 70 75 Z" fill="url(#shade)" stroke="#4a2e14" stroke-width="2.8" stroke-linejoin="round"/>
+  <rect x="32" y="46" width="36" height="7.5" rx="3.7" fill="url(#wood)"/>
+  <rect x="32" y="46" width="36" height="7.5" rx="3.7" fill="url(#shade)" stroke="#4a2e14" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M50 13 C66 22 71 35 62 46 L38 46 C29 35 34 22 50 13 Z" fill="url(#wood)"/>
+  <path d="M50 13 C66 22 71 35 62 46 L38 46 C29 35 34 22 50 13 Z" fill="url(#shade)" stroke="#4a2e14" stroke-width="2.8" stroke-linejoin="round"/>
+  <circle cx="50" cy="10" r="5" fill="url(#wood)"/>
+  <circle cx="50" cy="10" r="5" fill="url(#shade)" stroke="#4a2e14" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M56 22 L47 33" fill="none" stroke="#4a2e14" stroke-width="3" stroke-linecap="round"/>
+</svg>

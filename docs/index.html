@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chess Agents Replay</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <h1>Self-Improving AI Chess Agents</h1>
+  <p class="subtitle">Game replay</p>
+
+  <div class="stage">
+    <div class="board-frame" id="board-frame">
+      <div class="board"></div>
+    </div>
+
+    <aside class="side-panel">
+      <div class="controls">
+        <button id="flip">⇅ Flip board</button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script src="js/board.js"></script>
+<script>
+  const START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+  const board = new ChessBoard(document.getElementById("board-frame"));
+  board.setPosition(START_FEN);
+  document.getElementById("flip").addEventListener("click", () => board.flip());
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <!-- Our own marble board: one continuous slab of light marble with dark
+       marble squares laid in a checker pattern. Veins are drawn with noise. -->
+  <defs>
+    <!-- Soft cloudy patches -->
+    <filter id="clouds" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="4" seed="4"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.9 0 0 0 -0.3"/>
+    </filter>
+    <!-- Thin veins in the light marble -->
+    <filter id="veinsLight" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="turbulence" baseFrequency="0.0045 0.009" numOctaves="5" seed="21" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -8 0 0 0 1.0" result="a"/>
+      <feFlood flood-color="#a3a6a1" result="c"/>
+      <feComposite in="c" in2="a" operator="in"/>
+    </filter>
+    <!-- Veins in the dark marble: pale streaks -->
+    <filter id="veinsDark" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="turbulence" baseFrequency="0.006 0.0035" numOctaves="5" seed="8" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -6 0 0 0 0.95" result="a"/>
+      <feFlood flood-color="#c9d3ce" result="c"/>
+      <feComposite in="c" in2="a" operator="in"/>
+    </filter>
+    <!-- Checker pattern: which squares are dark -->
+    <pattern id="checker" patternUnits="userSpaceOnUse" width="200" height="200">
+      <rect x="100" y="0" width="100" height="100" fill="#fff"/>
+      <rect x="0" y="100" width="100" height="100" fill="#fff"/>
+    </pattern>
+    <mask id="darkSquares">
+      <rect width="800" height="800" fill="url(#checker)"/>
+    </mask>
+  </defs>
+
+  <!-- Light marble slab -->
+  <rect width="800" height="800" fill="#eceae4"/>
+  <rect width="800" height="800" filter="url(#clouds)" fill="#fff" opacity="0.35" style="mix-blend-mode:multiply"/>
+  <rect width="800" height="800" filter="url(#veinsLight)"/>
+
+  <!-- Dark marble squares -->
+  <g mask="url(#darkSquares)">
+    <rect width="800" height="800" fill="#879690"/>
+    <rect width="800" height="800" filter="url(#clouds)" opacity="0.45"/>
+    <rect width="800" height="800" filter="url(#veinsDark)" opacity="0.8"/>
+  </g>
+</svg>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piece Preview</title>
+<style>
+  :root { --bg: #2b2926; --text: #eee; --light: #e9e6df; --dark: #7d8c86; }
+  body { margin: 0; padding: 24px 16px; background: var(--bg); color: var(--text);
+         font-family: system-ui, sans-serif; }
+  h1 { font-size: 20px; font-weight: 600; margin: 0 0 16px; }
+  .row { display: flex; flex-wrap: wrap; margin-bottom: 8px; }
+  .sq { width: 110px; height: 110px; display: grid; place-items: center; }
+  .sq:nth-child(odd) { background: var(--light); }
+  .sq:nth-child(even) { background: var(--dark); }
+  .row.alt .sq:nth-child(odd) { background: var(--dark); }
+  .row.alt .sq:nth-child(even) { background: var(--light); }
+  .sq img { width: 96%; height: 96%; }
+  .small .sq { width: 56px; height: 56px; }
+</style>
+</head>
+<body>
+<h1>Wood pieces: preview</h1>
+<div id="rows"></div>
+<script>
+  const kinds = ["K", "Q", "R", "B", "N", "P"];
+  const rows = document.getElementById("rows");
+  for (const [cls, size] of [["", ""], ["alt", ""], ["", "small"], ["alt", "small"]]) {
+    for (const c of ["w", "b"]) {
+      const row = document.createElement("div");
+      row.className = `row ${cls}`;
+      const wrap = document.createElement("div");
+      wrap.className = size;
+      for (const k of kinds) {
+        row.insertAdjacentHTML("beforeend", `<div class="sq"><img src="${c}${k}.svg" alt="${c}${k}"></div>`);
+      }
+      wrap.appendChild(row);
+      rows.appendChild(wrap);
+    }
+  }
+</script>
+</body>
+</html>
