@@ -48,7 +48,7 @@ class ChessBoard {
 
   /* Removes all pieces and draws a position from a FEN. */
   setPosition(fen) {
-    for (const img of Object.values(this.pieces)) img.remove();
+    this.board.querySelectorAll(".piece").forEach((img) => img.remove());
     this.pieces = {};
     for (const [square, code] of Object.entries(ChessBoard.parseFen(fen))) {
       const img = document.createElement("img");
@@ -60,6 +60,68 @@ class ChessBoard {
       this.board.appendChild(img);
       this.pieces[square] = img;
     }
+  }
+
+  /* Plays one move from the diary on the board.
+     `m` is a move record (from, to, captured, castling, promotion ...).
+     With animate=false the pieces jump instead of sliding. */
+  applyMove(m, animate = true) {
+    this.board.classList.toggle("no-animation", !animate);
+
+    // 1. Remove a captured piece. For en passant it is on a different square.
+    if (m.capture_square) {
+      const victim = this.pieces[m.capture_square];
+      delete this.pieces[m.capture_square];
+      if (victim) this.removePiece(victim, animate);
+    }
+
+    // 2. Move the piece itself.
+    this.slide(m.from, m.to);
+
+    // 3. Castling also moves the rook.
+    if (m.castling) this.slide(m.rook_from, m.rook_to);
+
+    // 4. Promotion: the pawn turns into the new piece.
+    if (m.promotion) {
+      const img = this.pieces[m.to];
+      const code = img.dataset.code[0] + m.promotion;
+      img.dataset.code = code;
+      img.alt = code;
+      const swap = () => { img.src = `pieces/${code}.svg`; };
+      animate ? setTimeout(swap, 250) : swap();
+    }
+  }
+
+  slide(from, to) {
+    const img = this.pieces[from];
+    if (!img) throw new Error(`No piece on ${from}`);
+    delete this.pieces[from];
+    this.pieces[to] = img;
+    img.classList.add("moving");
+    Object.assign(img.style, this.squarePosition(to));
+    setTimeout(() => img.classList.remove("moving"), 300);
+  }
+
+  removePiece(img, animate) {
+    if (!animate) { img.remove(); return; }
+    img.classList.add("captured");
+    setTimeout(() => img.remove(), 250);
+  }
+
+  /* The position currently shown, as { "e1": "wK", ... }. */
+  currentPlacement() {
+    const result = {};
+    for (const [square, img] of Object.entries(this.pieces)) result[square] = img.dataset.code;
+    return result;
+  }
+
+  /* True if the pieces on screen are exactly the pieces in `fen`. */
+  matchesFen(fen) {
+    const shown = this.currentPlacement();
+    const expected = ChessBoard.parseFen(fen);
+    const squares = new Set([...Object.keys(shown), ...Object.keys(expected)]);
+    for (const sq of squares) if (shown[sq] !== expected[sq]) return false;
+    return true;
   }
 
   /* Turns the board around so Black is at the bottom (or back again). */

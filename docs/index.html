@@ -17,19 +17,83 @@
     </div>
 
     <aside class="side-panel">
+      <label class="field">
+        <span>Game</span>
+        <select id="game-select"></select>
+      </label>
+      <p class="players" id="players"></p>
+
       <div class="controls">
-        <button id="flip">⇅ Flip board</button>
+        <button id="start" title="Go to the start">⏮</button>
+        <button id="back" title="Previous move (← key)">◀ Back</button>
+        <button id="next" title="Next move (→ key)">Next ▶</button>
+        <button id="end" title="Go to the end">⏭</button>
+        <button id="flip" title="Turn the board around">⇅ Flip</button>
       </div>
+
+      <div class="move-info">
+        <div class="counter" id="counter"></div>
+        <div class="move" id="move"></div>
+        <div class="who" id="who"></div>
+        <div class="thought" id="thought"></div>
+        <div class="result" id="result"></div>
+      </div>
+
+      <div class="check" id="check"></div>
+      <pre id="selftest" class="selftest" hidden></pre>
     </aside>
   </div>
 </main>
 
 <script src="js/board.js"></script>
+<script src="js/replay.js"></script>
 <script>
-  const START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-  const board = new ChessBoard(document.getElementById("board-frame"));
-  board.setPosition(START_FEN);
-  document.getElementById("flip").addEventListener("click", () => board.flip());
+  const $ = (id) => document.getElementById(id);
+  const board = new ChessBoard($("board-frame"));
+  const replay = new Replay(board, {
+    players: $("players"), counter: $("counter"), move: $("move"), who: $("who"),
+    thought: $("thought"), result: $("result"), check: $("check"),
+  });
+
+  $("next").onclick = () => replay.next();
+  $("back").onclick = () => replay.back();
+  $("start").onclick = () => replay.goTo(0);
+  $("end").onclick = () => replay.goTo(replay.total);
+  $("flip").onclick = () => board.flip();
+  document.addEventListener("keydown", (e) => {
+    if (e.target.tagName === "SELECT") return;
+    if (e.key === "ArrowRight") replay.next();
+    if (e.key === "ArrowLeft") replay.back();
+  });
+
+  async function start() {
+    board.setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    if (location.protocol === "file:") {
+      $("players").textContent =
+        "To load games, open this page by double-clicking serve.bat in the project folder.";
+      return;
+    }
+    const { games } = await (await fetch("games/index.json")).json();
+
+    if (new URLSearchParams(location.search).has("check")) {
+      const out = $("selftest");
+      out.hidden = false;
+      out.textContent = await runSelfTest(board, games);
+      return;
+    }
+
+    // A link can open a chosen game at a chosen move: ?game=<id>&move=<half-move>
+    const params = new URLSearchParams(location.search);
+    const chosen = games.find((g) => g.id === params.get("game")) || games[0];
+
+    const select = $("game-select");
+    for (const g of games) select.add(new Option(`${g.title}`, g.file));
+    select.value = chosen.file;
+    select.onchange = () => replay.load(select.value);
+    await replay.load(chosen.file);
+    if (params.has("move")) replay.goTo(Number(params.get("move")));
+  }
+  start().catch((err) => { $("players").textContent = "Something went wrong: " + err.message; });
 </script>
 </body>
 </html>
