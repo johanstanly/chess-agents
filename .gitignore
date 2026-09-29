@@ -1,0 +1,13 @@
+# Stockfish program files (too big for GitHub)
+engines/*
+!engines/README.md
+
+# Python's temporary files
+__pycache__/
+*.pyc
+.venv/
+
+# Computer clutter
+.DS_Store
+Thumbs.db
+.vscode/
