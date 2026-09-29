@@ -3,7 +3,7 @@
  *
  * The board reads a position written in FEN (a standard one-line text
  * description of where every piece stands) and places the piece pictures.
- * It knows nothing about chess rules: the Python referee has already
+ * It knows nothing about chess rules: the Python arbiter has already
  * checked everything and written it into the diary.
  */
 

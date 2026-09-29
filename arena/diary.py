@@ -2,11 +2,11 @@
 Builds "diary" files: one JSON file per game, holding every move plus what
 the player was thinking. The replay website reads these files.
 
-The referee works out every chess detail here (which piece moved, captures,
+The arbiter works out every chess detail here (which piece moved, captures,
 castling, en passant, promotion, check), so the website never needs to know
 the rules of chess. It only has to animate what the diary says.
 
-This file is shared by the sample-game converter and, later, the referee.
+This file is shared by the sample-game converter and, later, the arbiter.
 """
 
 import json
@@ -165,18 +165,21 @@ def finish_diary(diary: dict, result: str, termination: str) -> None:
     diary["result_text"] = result_text(result, termination)
 
 
-def save_diary(diary: dict) -> Path:
-    GAMES_DIR.mkdir(parents=True, exist_ok=True)
-    path = GAMES_DIR / f"{diary['id']}.json"
+def save_diary(diary: dict, games_dir: Path = GAMES_DIR, update_index: bool = True) -> Path:
+    """Saves a diary as <games_dir>/<id>.json. The arbiter saves after every
+    move (update_index=False) and updates the game list once at the end."""
+    games_dir.mkdir(parents=True, exist_ok=True)
+    path = games_dir / f"{diary['id']}.json"
     path.write_text(json.dumps(diary, indent=2, ensure_ascii=False), encoding="utf-8")
-    rebuild_index()
+    if update_index:
+        rebuild_index(games_dir)
     return path
 
 
-def rebuild_index() -> Path:
-    """Writes docs/games/index.json: the list of games the website offers."""
+def rebuild_index(games_dir: Path = GAMES_DIR) -> Path:
+    """Writes index.json: the list of games the website offers."""
     games = []
-    for path in sorted(GAMES_DIR.glob("*.json")):
+    for path in sorted(games_dir.glob("*.json")):
         if path.name == "index.json":
             continue
         d = json.loads(path.read_text(encoding="utf-8"))
@@ -191,7 +194,7 @@ def rebuild_index() -> Path:
             "result_text": d["result_text"],
             "moves": len(d["moves"]),
         })
-    index_path = GAMES_DIR / "index.json"
+    index_path = games_dir / "index.json"
     index_path.write_text(json.dumps({"games": games}, indent=2, ensure_ascii=False),
                           encoding="utf-8")
     return index_path

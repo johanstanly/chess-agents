@@ -1,2 +1,2 @@
 # arena — where games are played
-The referee, the players (random, Claude, weak engine) and the game runner. Written in Python.
+The arbiter, the players (random, Claude, weak engine) and the game runner. Written in Python.

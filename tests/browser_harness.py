@@ -44,6 +44,7 @@ def find_browser() -> str:
 class _Handler(http.server.SimpleHTTPRequestHandler):
     done = threading.Event()
     result = None
+    games_dir = None   # if set, the website's games/ folder is read from here
 
     def log_message(self, *args):  # keep the output quiet
         pass
@@ -51,6 +52,8 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
     def translate_path(self, path):
         if path.startswith("/__tests/"):
             return str(TEST_PAGES / path[len("/__tests/"):].split("?")[0])
+        if path.startswith("/games/") and _Handler.games_dir:
+            return str(Path(_Handler.games_dir) / path[len("/games/"):].split("?")[0])
         return super().translate_path(path)
 
     def do_GET(self):
@@ -78,11 +81,13 @@ class _QuietServer(http.server.ThreadingHTTPServer):
 
 
 def run_page(path: str, timeout: int = 120, screenshot: str | None = None,
-             size: str = "1366,768") -> str:
+             size: str = "1366,768", games_dir: Path | None = None) -> str:
     """Opens `path` in a hidden browser; returns the text the page reported.
-    With `screenshot`, also saves a picture of the page to that file."""
+    With `screenshot`, also saves a picture of the page to that file.
+    With `games_dir`, the website shows the games in that folder instead."""
     _Handler.done.clear()
     _Handler.result = None
+    _Handler.games_dir = games_dir
     server = _QuietServer(
         ("127.0.0.1", 0), partial(_Handler, directory=str(DOCS)))
     port = server.server_address[1]

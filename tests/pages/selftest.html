@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Replay self-test</title></head>
+<body>
+<img src="/__hold" hidden alt="">
+<iframe id="f" src="/index.html?check" style="width:1200px;height:800px"></iframe>
+<script>
+  // Runs the replay page's own self-test (every move of every game in the
+  // games list) and reports its result.
+  const f = document.getElementById("f");
+  const t0 = Date.now();
+  const timer = setInterval(() => {
+    const out = f.contentDocument && f.contentDocument.getElementById("selftest");
+    const text = out ? out.textContent : "";
+    if (/PASSED|FAILED/.test(text) || Date.now() - t0 > 60000) {
+      clearInterval(timer);
+      fetch("/__done", { method: "POST", body: text || "NO RESULT" });
+    }
+  }, 200);
+</script>
+</body></html>
