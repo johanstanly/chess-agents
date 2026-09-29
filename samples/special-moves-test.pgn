@@ -1,0 +1,16 @@
+[Event "Replay test (not a real game)"]
+[Site "Test"]
+[Date "2026.09.29"]
+[White "Test White"]
+[Black "Test Black"]
+[Result "*"]
+[Id "test-special-moves"]
+[Title "Test: en passant and promotion"]
+[Kind "test"]
+
+1. e4 a6 2. e5 d5 {My pawn jumps two squares, right past White's pawn.}
+3. exd6 {En passant! My pawn takes the black pawn as it passes. Watch d5 disappear.}
+h5 4. Nf3 h4 5. g4 {My pawn jumps two squares, right past Black's pawn.}
+hxg3 {En passant for Black this time. Watch g4 disappear.}
+6. dxc7 Nc6 7. cxd8=Q+ {My pawn takes the queen and becomes a new queen. Check!}
+Kxd8 8. Nc3 gxh2 9. Rg1 hxg1=N {My pawn takes the rook and becomes a knight, not a queen.} *

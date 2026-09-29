@@ -1,0 +1,37 @@
+{
+  "games": [
+    {
+      "id": "sample-kasparov-topalov-1999",
+      "file": "sample-kasparov-topalov-1999.json",
+      "title": "Kasparov vs Topalov, 1999 - Kasparov's Immortal",
+      "kind": "sample",
+      "date": "1999-01-20",
+      "white": "Garry Kasparov",
+      "black": "Veselin Topalov",
+      "result_text": "White wins (Black resigned)",
+      "moves": 87
+    },
+    {
+      "id": "sample-lasker-thomas-1912",
+      "file": "sample-lasker-thomas-1912.json",
+      "title": "Lasker vs Thomas, 1912 - The King Hunt",
+      "kind": "sample",
+      "date": "1912",
+      "white": "Edward Lasker",
+      "black": "George Alan Thomas",
+      "result_text": "White wins by checkmate",
+      "moves": 35
+    },
+    {
+      "id": "test-special-moves",
+      "file": "test-special-moves.json",
+      "title": "Test: en passant and promotion",
+      "kind": "test",
+      "date": "2026-09-29",
+      "white": "Test White",
+      "black": "Test Black",
+      "result_text": "Game not finished",
+      "moves": 18
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[Event "Casual game"]
+[Site "London, England"]
+[Date "1912.??.??"]
+[White "Edward Lasker"]
+[Black "George Alan Thomas"]
+[Result "1-0"]
+[Id "sample-lasker-thomas-1912"]
+[Title "Lasker vs Thomas, 1912 - The King Hunt"]
+[Kind "sample"]
+
+1. d4 e6 2. Nf3 f5 3. Nc3 Nf6 4. Bg5 Be7 5. Bxf6 Bxf6 6. e4 fxe4 7. Nxe4 b6
+8. Ne5 O-O {I castle kingside to keep my king safe.} 9. Bd3 Bb7
+10. Qh5 {My queen joins the attack, right next to Black's king.} Qe7
+11. Qxh7+ {Queen sacrifice! The king must take, and then it gets dragged out.}
+Kxh7 {I have no choice: I must take the queen.}
+12. Nxf6+ {Double check! The king has to move.} Kh6 13. Neg4+ Kg5
+14. h4+ Kf4 15. g3+ Kf3 16. Be2+ Kg2 17. Rh2+ Kg1
+18. Kd2# {A quiet king move uncovers my rook. Checkmate!} 1-0
