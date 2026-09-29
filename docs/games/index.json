@@ -1,6 +1,28 @@
 {
   "games": [
     {
+      "id": "2026-09-29-1706-claude-vs-claude",
+      "file": "2026-09-29-1706-claude-vs-claude.json",
+      "title": "Claude A vs Claude B (sonnet, 29 Sep 2026)",
+      "kind": "ai",
+      "date": "2026-09-29",
+      "white": "Claude A",
+      "black": "Claude B",
+      "result_text": "Draw: move limit reached",
+      "moves": 120
+    },
+    {
+      "id": "2026-09-29-1732-claude-vs-claude",
+      "file": "2026-09-29-1732-claude-vs-claude.json",
+      "title": "Claude A vs Claude B (sonnet, 29 Sep 2026)",
+      "kind": "ai",
+      "date": "2026-09-29",
+      "white": "Claude A",
+      "black": "Claude B",
+      "result_text": "Draw: not enough pieces left to checkmate",
+      "moves": 114
+    },
+    {
       "id": "sample-kasparov-topalov-1999",
       "file": "sample-kasparov-topalov-1999.json",
       "title": "Kasparov vs Topalov, 1999 - Kasparov's Immortal",

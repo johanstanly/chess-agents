@@ -104,6 +104,9 @@ async function run() {
   d.getElementById("speed").value = "4";
   d.getElementById("speed").dispatchEvent(new Event("change"));
   d.getElementById("play").click();
+  const sawThinking = await until(() => getComputedStyle(d.getElementById("thinking-dots")).display !== "none"
+                                   && d.getElementById("who").textContent.includes("is thinking"), 3000);
+  check(!!sawThinking, "autoplay shows 'is thinking' dots before a move");
   await sleep(2500);
   const afterPlay = app().replay.current;
   check(afterPlay >= 3 && app().autoplay.playing, `autoplay moves by itself (reached half-move ${afterPlay})`);
@@ -122,14 +125,19 @@ async function run() {
   check(hl.length === 2 && hl.includes(pos("e1")) && hl.includes(pos("c1")),
         "last move highlighted on e1 and c1");
   const bub = d.querySelector(".bubble");
+  check(!d.getElementById("thought-card").hidden && d.getElementById("thought").textContent.includes("castle queenside")
+        && getComputedStyle(d.getElementById("thinking-dots")).display === "none"
+        && d.getElementById("thought-avatar").getAttribute("src") === "pieces/wK.svg",
+        "thinking card shows White's thought for 11. O-O-O");
+  check(!bub.classList.contains("visible"), "no bubble on the board by default");
+  d.getElementById("show-bubbles").click();
   check(bub.classList.contains("visible") && bub.textContent.includes("castle queenside"),
-        "speech bubble shows the thought for 11. O-O-O");
+        "ticking 'Bubbles on board' shows the bubble");
   app().replay.goTo(3);  // 2. d4: plain move description, no bubble
   check(!bub.classList.contains("visible"), "no bubble for a plain move description");
   d.getElementById("show-bubbles").click();
   app().replay.goTo(21);
-  check(!bub.classList.contains("visible"), "bubbles can be switched off");
-  d.getElementById("show-bubbles").click();
+  check(!bub.classList.contains("visible"), "bubbles can be switched off again");
 
   app().replay.goTo(app().replay.total);
   const card = d.querySelector(".result-card");
@@ -148,6 +156,55 @@ async function run() {
   await until(() => app() && app().replay.current === 18);
   check(!doc().querySelector(".result-card").classList.contains("visible"),
         "no result card for an unfinished game");
+
+  // 7. Captured pieces and points ahead (Lasker vs Thomas after 11... Kxh7).
+  await load("/index.html?game=sample-lasker-thomas-1912&move=22");
+  await until(() => app() && app().replay.current === 22);
+  const pieceList = (el) => [...el.querySelectorAll(".captured img")].map((i) => i.getAttribute("src").slice(7, 9)).sort().join(" ");
+  const topBar = doc().getElementById("bar-top"), bottomBar = doc().getElementById("bar-bottom");
+  check(topBar.textContent.includes("George Alan Thomas") && topBar.querySelector(".lead")?.textContent === "+8",
+        `Black's bar shows +8 (${topBar.querySelector(".lead")?.textContent})`);
+  check(pieceList(topBar) === "wB wP wQ", `Black captured bishop, pawn, queen (${pieceList(topBar)})`);
+  check(pieceList(bottomBar) === "bN bP bP" && !bottomBar.querySelector(".lead"),
+        `White captured knight and two pawns, no lead (${pieceList(bottomBar)})`);
+  doc().getElementById("flip").click();
+  check(doc().getElementById("bar-top").textContent.includes("Edward Lasker"), "flipping moves White's bar to the top");
+  doc().getElementById("flip").click();
+  await load("/index.html?game=test-special-moves&move=18");  // both sides promoted
+  await until(() => app() && app().replay.current === 18);
+  const whiteBar = doc().getElementById("bar-bottom"), blackBar = doc().getElementById("bar-top");
+  check(pieceList(whiteBar) === "bP bP bQ" && whiteBar.querySelector(".lead")?.textContent === "+1",
+        `after promotions: White captured ${pieceList(whiteBar)}, lead ${whiteBar.querySelector(".lead")?.textContent}`);
+  check(pieceList(blackBar) === "wP wP wP wR",
+        `after promotions: Black captured ${pieceList(blackBar)} (promoted knight not counted as extra)`);
+
+  // 8. Arrows and circles with the right mouse button.
+  await load("/index.html?game=sample-kasparov-topalov-1999");
+  await until(() => app() && app().replay.diary);
+  const b = doc().querySelector(".board");
+  const rect = b.getBoundingClientRect();
+  const at = (sq) => ({ clientX: rect.left + ("abcdefgh".indexOf(sq[0]) + 0.5) * rect.width / 8,
+                        clientY: rect.top + (8 - Number(sq[1]) + 0.5) * rect.height / 8 });
+  const PE = frame.contentWindow.PointerEvent;
+  const right = (type, sq) => b.dispatchEvent(new PE(type, { ...at(sq), button: 2, bubbles: true, pointerId: 2 }));
+  right("pointerdown", "e2"); right("pointerup", "e4");
+  check(app().arrows.marks.length === 1 && b.querySelectorAll(".arrows polyline").length === 1,
+        "right-drag e2 to e4 draws an arrow");
+  check(!app().analysis.selected, "right-click does not pick up the piece");
+  right("pointerdown", "g1"); right("pointerup", "f3");
+  const knightLine = b.querySelectorAll(".arrows polyline")[1];
+  check(knightLine && knightLine.getAttribute("points").split(" ").length === 3, "knight arrow g1 to f3 is L-shaped");
+  right("pointerdown", "d5"); right("pointerup", "d5");
+  check(b.querySelectorAll(".arrows circle").length === 1, "right-click on one square draws a circle");
+  right("pointerdown", "e2"); right("pointerup", "e4");
+  check(app().arrows.marks.length === 2, "drawing the same arrow again removes it");
+  b.dispatchEvent(new PE("pointerdown", { ...at("d5"), button: 0, bubbles: true, pointerId: 1 }));
+  b.dispatchEvent(new PE("pointerup", { ...at("d5"), button: 0, bubbles: true, pointerId: 1 }));
+  check(app().arrows.marks.length === 0 && !b.querySelector(".arrows polyline, .arrows circle"),
+        "a left click clears all arrows and circles");
+  right("pointerdown", "e2"); right("pointerup", "e4");
+  doc().getElementById("next").click();
+  check(app().arrows.marks.length === 0, "making a move clears the arrows");
 
   const failed = results.filter((r) => r.startsWith("FAIL")).length;
   results.push(failed ? `${failed} CHECK(S) FAILED` : "ALL CHECKS PASSED");

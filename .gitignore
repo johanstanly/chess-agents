@@ -11,3 +11,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Progress printouts from game runs (the usage record logs/claude_calls.jsonl IS kept)
+logs/*.txt

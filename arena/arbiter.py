@@ -10,6 +10,7 @@ The arbiter: ordinary code (no AI) that runs a game between two players.
 - Saves the diary after every move, so nothing is lost if a game stops.
 """
 
+import json
 import random
 import re
 from pathlib import Path
@@ -67,7 +68,7 @@ def game_over(board: chess.Board, move_limit: int) -> tuple[str, str] | None:
         return "1/2-1/2", "repetition"
     if board.halfmove_clock >= 100:
         return "1/2-1/2", "fifty_moves"
-    if board.fullmove_number > move_limit:
+    if move_limit and board.fullmove_number > move_limit:  # 0 = no limit
         return "1/2-1/2", "move_limit"
     return None
 
@@ -75,12 +76,29 @@ def game_over(board: chess.Board, move_limit: int) -> tuple[str, str] | None:
 def play_game(white: Player, black: Player, game_id: str, title: str,
               kind: str = "test", games_dir: Path = diary.GAMES_DIR,
               start_fen: str = chess.STARTING_FEN, move_limit: int = MOVE_LIMIT,
-              seed: int | None = None, notes: str = "", log=print) -> dict:
-    """Plays one full game and returns its diary (also saved to games_dir)."""
-    board = chess.Board(start_fen)
-    d = diary.new_diary(game_id, title, kind, white.info(), black.info(),
-                        notes=notes, start_fen=start_fen)
+              seed: int | None = None, notes: str = "", log=print,
+              resume: bool = False, on_move=None) -> dict:
+    """Plays one full game and returns its diary (also saved to games_dir).
+    With resume=True, an unfinished game with the same id is continued from
+    where it stopped (e.g. after the Pro plan usage limit resets)."""
+    saved = games_dir / f"{game_id}.json"
+    if resume and saved.exists():
+        d = json.loads(saved.read_text(encoding="utf-8"))
+        if d["result"] != "*":
+            log(f"{game_id} is already finished: {d['result_text']}")
+            return d
+        board = chess.Board(d["start_fen"])
+        for m in d["moves"]:
+            board.push_uci(m["uci"])
+        log(f"Continuing {game_id} from half-move {len(d['moves']) + 1}")
+    else:
+        board = chess.Board(start_fen)
+        d = diary.new_diary(game_id, title, kind, white.info(), black.info(),
+                            notes=notes, start_fen=start_fen)
     fallback_rng = random.Random(seed)
+    for player in (white, black):
+        if hasattr(player, "game_id"):
+            player.game_id = game_id  # lets AI agents label their usage log
 
     while (ending := game_over(board, move_limit)) is None:
         color = "white" if board.turn == chess.WHITE else "black"
@@ -88,12 +106,18 @@ def play_game(white: Player, black: Player, game_id: str, title: str,
         feedback, illegal = [], []
         move, suggestion = None, None
 
+        usage = {"requests": 0, "input_tokens": 0, "output_tokens": 0, "seconds": 0.0}
         for _ in range(MAX_ATTEMPTS):
             suggestion = player.suggest(Turn(board.copy(), color, list(feedback)))
+            if getattr(player, "last_usage", None):
+                usage["requests"] += 1
+                for key in ("input_tokens", "output_tokens", "seconds"):
+                    usage[key] += player.last_usage[key]
             move, problem = read_move(board, suggestion.move_text)
             if move:
                 break
-            illegal.append(suggestion.move_text)
+            # If no move could be found at all, keep the start of what was written.
+            illegal.append(suggestion.move_text or f"(no move found in: {suggestion.raw[:150]!r})")
             feedback.append(problem)
 
         if move:
@@ -109,10 +133,15 @@ def play_game(white: Player, black: Player, game_id: str, title: str,
             record["fallback"] = True
         if illegal:
             record["illegal_suggestions"] = illegal
+        if usage["requests"]:
+            usage["seconds"] = round(usage["seconds"], 1)
+            record["usage"] = usage  # how much of the Pro allowance this move used
 
         d["moves"].append(record)
         board.push(move)
         diary.save_diary(d, games_dir, update_index=False)
+        if on_move:
+            on_move(record)  # e.g. print progress
 
     result, termination = ending
     diary.finish_diary(d, result, termination)

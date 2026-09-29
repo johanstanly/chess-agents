@@ -1,0 +1,14 @@
+You are playing {color}. It is your move ({move_label}).
+
+Board ({color_short} pieces are {piece_case}; the top row is rank 8, the left column is file a):
+{board}
+
+Position in FEN: {fen}
+
+Moves so far: {history}
+
+Legal moves: {legal_moves}
+{notebook}{feedback}
+Reply with exactly two lines:
+MOVE: <move>
+THOUGHT: <at most 30 words>

@@ -22,6 +22,7 @@ class Suggestion:
     move_text: str          # e.g. "Nf3", "O-O" or "g1f3"
     thought: str            # what the player was thinking
     thought_source: str = "move_description"
+    raw: str = ""           # the player's full answer (kept when no move could be read)
 
 
 @dataclass

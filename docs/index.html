@@ -12,18 +12,24 @@
 </head>
 <body>
 <main class="page">
-  <h1>Self-Improving AI Chess Agents</h1>
-  <p class="subtitle">Game replay</p>
+  <header class="page-head">
+    <h1>Self-Improving AI Chess Agents</h1>
+    <span class="subtitle">Game replay</span>
+  </header>
 
   <div class="stage">
-    <div class="board-wrap">
-      <div class="eval-bar" id="eval-bar" title="Evaluation by Stockfish">
-        <div class="eval-fill"></div>
-        <span class="eval-label"></span>
+    <div class="board-column">
+      <div class="player-bar" id="bar-top"></div>
+      <div class="board-wrap">
+        <div class="eval-bar" id="eval-bar" title="Evaluation by Stockfish">
+          <div class="eval-fill"></div>
+          <span class="eval-label"></span>
+        </div>
+        <div class="board-frame" id="board-frame">
+          <div class="board"></div>
+        </div>
       </div>
-      <div class="board-frame" id="board-frame">
-        <div class="board"></div>
-      </div>
+      <div class="player-bar" id="bar-bottom"></div>
     </div>
 
     <aside class="side-panel">
@@ -49,7 +55,7 @@
             <option value="4">4×</option>
           </select>
         </label>
-        <label class="inline-field"><input type="checkbox" id="show-bubbles" checked> Thought bubbles</label>
+        <label class="inline-field" title="Also show the thought as a speech bubble on the board"><input type="checkbox" id="show-bubbles"> Bubbles on board</label>
         <button id="flip" title="Turn the board around">⇅ Flip</button>
       </div>
 
@@ -62,8 +68,15 @@
       <div class="move-info" id="move-info">
         <div class="counter" id="counter"></div>
         <div class="move" id="move"></div>
-        <div class="who" id="who"></div>
-        <div class="thought" id="thought"></div>
+        <!-- The player's thinking, shown as a speech bubble from their king icon. -->
+        <div class="thought-card" id="thought-card" hidden>
+          <img class="thought-avatar" id="thought-avatar" alt="">
+          <div class="thought-bubble">
+            <div class="who" id="who"></div>
+            <div class="thought" id="thought"></div>
+            <div class="thinking-dots" id="thinking-dots" hidden><span></span><span></span><span></span></div>
+          </div>
+        </div>
         <div class="result" id="result"></div>
       </div>
 
@@ -83,6 +96,7 @@
 <script src="js/engine.js"></script>
 <script src="js/analysis.js"></script>
 <script src="js/overlays.js"></script>
+<script src="js/material.js"></script>
 <script type="module">
   import { Chess } from "./js/lib/chess.js";
 
@@ -91,6 +105,13 @@
   const evalBar = new EvalBar($("eval-bar"));
   const bubble = new ThoughtBubble(board);
   const resultCard = new ResultCard(board);
+  const arrows = new ArrowLayer(board);
+  const bars = new PlayerBars($("bar-top"), $("bar-bottom"));
+  const updateBars = () => bars.update(board, {
+    white: replay.diary ? replay.diary.white.name : "White",
+    black: replay.diary ? replay.diary.black.name : "Black",
+  });
+  board.flipListeners.push(updateBars);
   const replay = new Replay(board, {
     players: $("players"), counter: $("counter"), move: $("move"), who: $("who"),
     thought: $("thought"), result: $("result"), check: $("check"),
@@ -98,7 +119,17 @@
   const autoplay = new Autoplay(replay, (playing) => {
     $("play").textContent = playing ? "⏸ Pause" : "▶ Play";
     $("play").classList.toggle("playing", playing);
+    if (!playing) showThoughtCard();   // stopped while "thinking": show the real move again
   });
+  // During autoplay, the player about to move "thinks" for a moment first.
+  autoplay.onThinking = (color) => {
+    const name = color === "white" ? replay.diary.white.name : replay.diary.black.name;
+    $("thought-card").hidden = false;
+    $("thought-avatar").src = `pieces/${color[0]}K.svg`;
+    $("who").textContent = `${name} is thinking`;
+    $("thought").hidden = true;
+    $("thinking-dots").hidden = false;
+  };
   const moveList = new MoveList($("move-list"), (ply) => { stopEverything(); replay.goTo(ply); });
 
   let engine = null;
@@ -109,6 +140,8 @@
      result card, move list, analysis panel and the Stockfish evaluation. */
   function positionChanged() {
     const inAnalysis = analysis.active;
+    arrows.clear();   // like chess.com: arrows disappear when a move is made
+    updateBars();
     $("analysis-banner").hidden = !inAnalysis;
     $("move-info").classList.toggle("dimmed", inAnalysis);
     $("check").hidden = inAnalysis;  // the diary check only applies to the real game
@@ -128,6 +161,7 @@
       board.setHighlights(m ? { from: m.from, to: m.to } : null,
                           m && m.check ? board.findKing(sideToMove) : null);
       showBubble(m);
+      showThoughtCard();
       moveList.setCurrent(replay.current);
       if (replay.current === replay.total && replay.diary.result !== "*") {
         resultCard.show(replay.diary.result_text, `${replay.diary.result} · ${Math.ceil(replay.total / 2)} moves`,
@@ -152,6 +186,18 @@
       }
       $("engine-line").textContent = `Stockfish: ${scoreText(score)} (depth ${depth})${best}`;
     });
+  }
+
+  /* The thinking card in the side panel: king icon + what the player thought. */
+  function showThoughtCard() {
+    const m = replay.diary && replay.current > 0 ? replay.diary.moves[replay.current - 1] : null;
+    $("thought-card").hidden = !m;
+    $("thinking-dots").hidden = true;
+    $("thought").hidden = false;
+    if (!m) return;
+    $("thought-avatar").src = `pieces/${m.color[0]}K.svg`;
+    $("who").textContent = m.color === "white" ? replay.diary.white.name : replay.diary.black.name;
+    $("thought").textContent = m.thought;
   }
 
   /* The speech bubble shows real thoughts; plain move descriptions
@@ -232,7 +278,7 @@
   start().catch((err) => { $("players").textContent = "Something went wrong: " + err.message; });
 
   // Lets automatic tests reach the page's parts.
-  window.app = { board, replay, analysis, evalBar, autoplay, bubble, resultCard,
+  window.app = { board, replay, analysis, evalBar, autoplay, bubble, resultCard, arrows, bars,
                  get engine() { return engine; } };
 </script>
 </body>

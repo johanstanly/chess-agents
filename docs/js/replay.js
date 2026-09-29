@@ -125,6 +125,7 @@ class Autoplay {
     this.onStateChange = onStateChange;  // told when playing starts or stops
     this.speed = 1;
     this.timer = null;
+    this.onThinking = null;   // told which colour is about to move
   }
 
   get playing() { return this.timer !== null; }
@@ -134,8 +135,15 @@ class Autoplay {
   start() {
     if (!this.replay.diary) return;
     if (this.replay.current >= this.replay.total) this.replay.goTo(0);  // replay from the start
-    this.timer = setTimeout(() => this.step(), 400);
+    this.timer = setTimeout(() => this.think(), 300);
     this.onStateChange(true);
+  }
+
+  /* Shows "thinking..." for the player about to move, then plays the move. */
+  think() {
+    const next = this.replay.diary.moves[this.replay.current];
+    if (this.onThinking) this.onThinking(next.color);
+    this.timer = setTimeout(() => this.step(), 700 / this.speed);
   }
 
   stop() {
@@ -148,15 +156,15 @@ class Autoplay {
   step() {
     this.replay.next();
     if (this.replay.current >= this.replay.total) { this.stop(); return; }
-    this.timer = setTimeout(() => this.step(), this.delay());
+    this.timer = setTimeout(() => this.think(), this.delay());
   }
 
   /* Milliseconds to wait before the next move. */
   delay() {
     const m = this.replay.diary.moves[this.replay.current - 1];
-    const hasBubble = m && m.thought_source !== "move_description";
-    const reading = hasBubble ? Math.min(m.thought.length * 30, 4500) : 0;
-    return (900 + reading) / this.speed;
+    const realThought = m && m.thought_source !== "move_description";
+    const reading = realThought ? Math.min(m.thought.length * 30, 4500) : 0;
+    return (500 + reading) / this.speed;
   }
 }
 

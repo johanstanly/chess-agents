@@ -13,7 +13,7 @@ class ThoughtBubble {
     this.el.className = "bubble";
     this.el.innerHTML = '<div class="bubble-head"></div><div class="bubble-text"></div><div class="bubble-tail"></div>';
     board.board.appendChild(this.el);
-    board.onFlip = () => { if (this.square) this.place(); };
+    board.flipListeners.push(() => { if (this.square) this.place(); });
   }
 
   /* Shows `text` in a bubble pointing at `square`. `side` is "white"/"black". */
@@ -81,4 +81,105 @@ class ResultCard {
 
   /* A new game shows its card again even if the last one was closed. */
   reset() { this.dismissed = false; this.hide(); }
+}
+
+/* Arrows and circles drawn with the right mouse button, like on chess.com:
+   right-drag from one square to another draws an arrow (L-shaped for a
+   knight's jump), right-click on one square circles it. Doing the same again
+   removes it. A left click, or any change of position, clears them all. */
+class ArrowLayer {
+  constructor(board) {
+    this.board = board;
+    this.marks = [];         // { from, to } for arrows; from === to for circles
+    this.start = null;       // square where a right-drag began
+    this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this.svg.setAttribute("class", "arrows");
+    this.svg.setAttribute("viewBox", "0 0 8 8");
+    board.board.appendChild(this.svg);
+    board.flipListeners.push(() => this.draw());
+
+    const el = board.board;
+    el.addEventListener("contextmenu", (e) => e.preventDefault());  // no browser menu
+    el.addEventListener("pointerdown", (e) => {
+      if (e.button === 2) {
+        this.start = this.squareAt(e);
+      } else if (e.button === 0) {
+        this.clear();
+      }
+    });
+    el.addEventListener("pointerup", (e) => {
+      if (e.button !== 2 || !this.start) return;
+      const end = this.squareAt(e);
+      if (end) this.toggle(this.start, end);
+      this.start = null;
+    });
+  }
+
+  squareAt(e) {
+    const r = this.board.board.getBoundingClientRect();
+    let col = Math.floor(((e.clientX - r.left) / r.width) * 8);
+    let row = Math.floor(((e.clientY - r.top) / r.height) * 8);
+    if (col < 0 || col > 7 || row < 0 || row > 7) return null;
+    if (this.board.flipped) { col = 7 - col; row = 7 - row; }
+    return "abcdefgh"[col] + (8 - row);
+  }
+
+  toggle(from, to) {
+    const i = this.marks.findIndex((m) => m.from === from && m.to === to);
+    if (i >= 0) this.marks.splice(i, 1);
+    else this.marks.push({ from, to });
+    this.draw();
+  }
+
+  clear() {
+    if (!this.marks.length) return;
+    this.marks = [];
+    this.draw();
+  }
+
+  /* Centre of a square in board units (the board is 8 x 8). */
+  centre(square) {
+    const { col, row } = this.board.squareCell(square);
+    return [col + 0.5, row + 0.5];
+  }
+
+  draw() {
+    const parts = [];
+    for (const { from, to } of this.marks) {
+      const [x1, y1] = this.centre(from);
+      const [x2, y2] = this.centre(to);
+      if (from === to) {
+        parts.push(`<circle cx="${x1}" cy="${y1}" r="0.45" class="circle-mark"/>`);
+        continue;
+      }
+      const dx = x2 - x1, dy = y2 - y1;
+      const knight = (Math.abs(dx) === 1 && Math.abs(dy) === 2) || (Math.abs(dx) === 2 && Math.abs(dy) === 1);
+      // Knight jumps bend: first along the longer side, then the shorter one.
+      const points = knight
+        ? [[x1, y1], Math.abs(dy) > Math.abs(dx) ? [x1, y2] : [x2, y1], [x2, y2]]
+        : [[x1, y1], [x2, y2]];
+      parts.push(this.arrowPath(points));
+    }
+    this.svg.innerHTML = parts.join("");
+  }
+
+  /* A line through `points` ending in an arrow head at the last point. */
+  arrowPath(points) {
+    const HEAD = 0.42, WIDTH = 0.17, HEAD_WIDTH = 0.5;
+    const [px, py] = points[points.length - 2];
+    const [ex, ey] = points[points.length - 1];
+    const len = Math.hypot(ex - px, ey - py);
+    const ux = (ex - px) / len, uy = (ey - py) / len;
+    // Stop the line where the head starts, and start it a little off-centre.
+    const baseX = ex - ux * HEAD, baseY = ey - uy * HEAD;
+    const line = points.slice(0, -1).map(([x, y]) => `${x},${y}`);
+    const [sx, sy] = points[0];
+    const [nx, ny] = points[1];
+    const sl = Math.hypot(nx - sx, ny - sy);
+    line[0] = `${sx + ((nx - sx) / sl) * 0.2},${sy + ((ny - sy) / sl) * 0.2}`;
+    line.push(`${baseX},${baseY}`);
+    const hx = -uy * HEAD_WIDTH / 2, hy = ux * HEAD_WIDTH / 2;
+    return `<polyline points="${line.join(" ")}" class="arrow-line" stroke-width="${WIDTH}"/>` +
+      `<polygon points="${ex - ux * 0.08},${ey - uy * 0.08} ${baseX + hx},${baseY + hy} ${baseX - hx},${baseY - hy}" class="arrow-head"/>`;
+  }
 }

@@ -11,6 +11,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }  /* "hidden" always wins over other styles */
 
 body {
   margin: 0;
@@ -20,27 +21,36 @@ body {
 }
 
 .page {
-  max-width: 1400px;
+  max-width: 1900px;
   margin: 0 auto;
-  padding: 14px 16px 30px;
+  padding: 10px 16px 24px;
 }
 
-h1 { font-size: 20px; font-weight: 650; margin: 0 0 2px; }
-.subtitle { color: var(--text-dim); margin: 0 0 12px; font-size: 14px; }
+.page-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+h1 { font-size: 20px; font-weight: 650; margin: 0; }
+.subtitle { color: var(--text-dim); margin: 0; font-size: 14px; }
 
 /* ---------- Board ---------- */
 
 /* Board on the left, side panel (controls, later the move list) on the right.
    On narrow screens the panel drops below the board. */
-.stage { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
-.side-panel { flex: 1 1 220px; min-width: 0; }
+/* Two equal halves: board on the left, panel on the right. */
+.stage { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.side-panel { min-width: 0; }
+@media (max-width: 900px) {
+  .stage { grid-template-columns: 1fr; }   /* phones and narrow windows: stacked */
+}
 
 /* The board is always square and fits the screen: never wider than the
    window, never taller than the window. */
+.board-column { display: flex; flex-direction: column; gap: 5px; align-items: center; min-width: 0; }
 .board-wrap { display: flex; gap: 8px; flex: 0 0 auto; }
 
 .board-frame {
-  width: min(calc(100vw - 32px - 36px), calc(100vh - 90px), 960px);
+  /* As big as fits: half the page wide (minus the eval bar), and short
+     enough that the title and both player bars stay on screen. */
+  --half: calc((min(100vw, 1900px) - 32px - 24px) / 2 - 36px);
+  width: min(var(--half), calc(100vh - 116px), 960px);
   flex: 0 0 auto;
   aspect-ratio: 1;
   padding: 1.6%;
@@ -259,3 +269,56 @@ button.play.playing { background: #45613a; border-color: var(--accent); }
 .ml-move:hover { background: #3d3935; }
 .ml-move.current { background: #4b4845; color: #fff; box-shadow: inset 0 -2px 0 var(--accent); }
 .ml-move:disabled { color: var(--text-dim); cursor: default; }
+
+/* ---------- Player bars: name, captured pieces, points ahead ---------- */
+
+.player-bar {
+  display: flex; align-items: center; gap: 8px; height: 28px; align-self: stretch;
+  padding-left: 36px;                     /* line up with the board, past the eval bar */
+  font-size: 14px; min-width: 0;
+}
+.bar-king { width: 26px; height: 26px; flex: 0 0 auto; border-radius: 5px;
+            background: #3d3935; padding: 1px; }
+.bar-name { font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%; }
+.captured { display: flex; flex-wrap: nowrap; gap: 6px; min-width: 0; overflow: hidden; }
+.cap-group { display: flex; }
+.cap-group img { width: 22px; height: 22px; }
+/* Captured pieces get a soft light outline so they show on the dark page. */
+.cap-group img { filter: drop-shadow(0 0 1px rgba(255,255,255,0.9)) drop-shadow(0 0 1px rgba(255,255,255,0.6)); }
+.cap-group img + img { margin-left: -12px; }  /* same pieces overlap, like chess.com */
+.lead { color: var(--text-dim); font-weight: 650; font-size: 13px; }
+
+/* ---------- Arrows and circles (right mouse button) ---------- */
+
+.arrows { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+.arrow-line { fill: none; stroke: rgba(255, 170, 0, 0.85); stroke-linejoin: round; }
+.arrow-head { fill: rgba(255, 170, 0, 0.85); }
+.circle-mark { fill: none; stroke: rgba(255, 170, 0, 0.85); stroke-width: 0.07; }
+
+@media (max-width: 900px) {
+  .board-frame { width: min(calc(100vw - 32px - 36px), calc(100vh - 116px)); }
+}
+
+/* ---------- Thinking card (side panel) ---------- */
+
+.thought-card { display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; }
+.thought-avatar { width: 38px; height: 38px; flex: 0 0 auto; border-radius: 8px;
+                  background: #3d3935; padding: 2px; }
+.thought-bubble {
+  position: relative; flex: 1; min-width: 0;
+  background: #3a3632; border-radius: 12px; padding: 10px 14px;
+}
+.thought-bubble::before {            /* the little tail pointing at the king icon */
+  content: ""; position: absolute; left: -6px; top: 14px; width: 12px; height: 12px;
+  background: inherit; transform: rotate(45deg); border-radius: 2px;
+}
+.thought-card .who { font-size: 12px; font-weight: 700; color: var(--text-dim); margin: 0 0 3px; }
+.thinking-dots { display: flex; gap: 5px; padding: 6px 0 2px; }
+.thinking-dots span {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim);
+  animation: thinking 1s infinite ease-in-out;
+}
+.thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes thinking { 0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+                      40% { opacity: 1; transform: translateY(-3px); } }

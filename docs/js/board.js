@@ -22,7 +22,7 @@ class ChessBoard {
     this.board.appendChild(this.highlights);
     this.lastMove = null;
     this.checkSquare = null;
-    this.onFlip = null;  // other parts (e.g. the speech bubble) can react to a flip
+    this.flipListeners = [];  // other parts (speech bubble, arrows) redraw after a flip
   }
 
   /* Reads the piece placement part of a FEN into { "e1": "wK", ... }. */
@@ -176,7 +176,7 @@ class ChessBoard {
     }
     this.drawCoordinates();
     this.drawHighlights();
-    if (this.onFlip) this.onFlip();
+    this.flipListeners.forEach((listener) => listener());
   }
 
   /* Writes the letters a-h in the bottom row and numbers 1-8 in the left

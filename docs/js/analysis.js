@@ -130,6 +130,7 @@ class Analysis {
   }
 
   onDown(e) {
+    if (e.button !== 0) return;  // right button draws arrows instead
     const square = this.squareAt(e.clientX, e.clientY);
     if (!square) return;
     // Second click of click-click: move to the chosen square.
@@ -160,7 +161,7 @@ class Analysis {
   }
 
   onUp(e) {
-    if (!this.drag) return;
+    if (!this.drag || e.button !== 0) return;
     const { square, img } = this.drag;
     img.classList.remove("dragging");
     this.drag = null;
