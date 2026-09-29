@@ -31,9 +31,21 @@
 
       <div class="controls">
         <button id="start" title="Go to the start">⏮</button>
-        <button id="back" title="Previous move (← key)">◀ Back</button>
-        <button id="next" title="Next move (→ key)">Next ▶</button>
+        <button id="back" title="Previous move (← key)">◀</button>
+        <button id="play" class="play" title="Play / pause (space bar)">▶ Play</button>
+        <button id="next" title="Next move (→ key)">▶</button>
         <button id="end" title="Go to the end">⏭</button>
+      </div>
+      <div class="controls secondary">
+        <label class="inline-field">Speed
+          <select id="speed">
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+            <option value="4">4×</option>
+          </select>
+        </label>
+        <label class="inline-field"><input type="checkbox" id="show-bubbles" checked> Thought bubbles</label>
         <button id="flip" title="Turn the board around">⇅ Flip</button>
       </div>
 
@@ -53,6 +65,9 @@
 
       <div class="engine-line" id="engine-line">Stockfish is starting…</div>
       <div class="check" id="check"></div>
+
+      <div class="move-list" id="move-list" aria-label="Moves"></div>
+
       <p class="hint">Tip: drag or click any piece to try your own moves.</p>
       <pre id="selftest" class="selftest" hidden></pre>
     </aside>
@@ -63,31 +78,62 @@
 <script src="js/replay.js"></script>
 <script src="js/engine.js"></script>
 <script src="js/analysis.js"></script>
+<script src="js/overlays.js"></script>
 <script type="module">
   import { Chess } from "./js/lib/chess.js";
 
   const $ = (id) => document.getElementById(id);
   const board = new ChessBoard($("board-frame"));
   const evalBar = new EvalBar($("eval-bar"));
+  const bubble = new ThoughtBubble(board);
+  const resultCard = new ResultCard(board);
   const replay = new Replay(board, {
     players: $("players"), counter: $("counter"), move: $("move"), who: $("who"),
     thought: $("thought"), result: $("result"), check: $("check"),
   });
+  const autoplay = new Autoplay(replay, (playing) => {
+    $("play").textContent = playing ? "⏸ Pause" : "▶ Play";
+    $("play").classList.toggle("playing", playing);
+  });
+  const moveList = new MoveList($("move-list"), (ply) => { stopEverything(); replay.goTo(ply); });
 
   let engine = null;
   const analysis = new Analysis(board, replay, Chess, positionChanged);
   replay.onChange = positionChanged;
 
-  /* Called after every change of position: refresh the analysis panel and
-     ask Stockfish to evaluate the new position. */
+  /* Called after every change of position: highlights, speech bubble,
+     result card, move list, analysis panel and the Stockfish evaluation. */
   function positionChanged() {
     const inAnalysis = analysis.active;
     $("analysis-banner").hidden = !inAnalysis;
     $("move-info").classList.toggle("dimmed", inAnalysis);
     $("check").hidden = inAnalysis;  // the diary check only applies to the real game
-    if (inAnalysis) $("analysis-line").textContent = analysis.lineText();
-    if (!engine) return;
 
+    if (inAnalysis) {
+      autoplay.stop();
+      $("analysis-line").textContent = analysis.lineText();
+      const history = analysis.chess.history({ verbose: true });
+      const last = history[history.length - 1];
+      board.setHighlights(last ? { from: last.from, to: last.to } : null,
+                          analysis.chess.inCheck() ? board.findKing(analysis.chess.turn()) : null);
+      bubble.hide();
+      resultCard.hide();
+    } else if (replay.diary) {
+      const m = replay.current > 0 ? replay.diary.moves[replay.current - 1] : null;
+      const sideToMove = m && m.color === "white" ? "b" : "w";
+      board.setHighlights(m ? { from: m.from, to: m.to } : null,
+                          m && m.check ? board.findKing(sideToMove) : null);
+      showBubble(m);
+      moveList.setCurrent(replay.current);
+      if (replay.current === replay.total && replay.diary.result !== "*") {
+        resultCard.show(replay.diary.result_text, `${replay.diary.result} · ${Math.ceil(replay.total / 2)} moves`,
+                        m ? board.squareCell(m.to).row : 4);
+      } else {
+        resultCard.reset();
+      }
+    }
+
+    if (!engine) return;
     const fen = analysis.fen();
     engine.analyse(fen, ({ score, depth, bestMoveUci }) => {
       evalBar.show(score);
@@ -104,23 +150,47 @@
     });
   }
 
-  // In analysis, buttons first return to the real game.
-  const leaveAnalysis = () => analysis.exit();
-  $("next").onclick = () => { leaveAnalysis(); replay.next(); };
-  $("back").onclick = () => (analysis.active ? analysis.back() : replay.back());
-  $("start").onclick = () => { leaveAnalysis(); replay.goTo(0); };
-  $("end").onclick = () => { leaveAnalysis(); replay.goTo(replay.total); };
-  $("back-to-game").onclick = leaveAnalysis;
+  /* The speech bubble shows real thoughts; plain move descriptions
+     ("Pawn to e4.") only appear in the side panel. */
+  function showBubble(m) {
+    if (!m || !$("show-bubbles").checked || m.thought_source === "move_description") {
+      bubble.hide();
+      return;
+    }
+    const player = m.color === "white" ? replay.diary.white.name : replay.diary.black.name;
+    const dots = m.color === "white" ? "." : "...";
+    bubble.show(m.to, `${player} · ${m.move_number}${dots} ${m.san}`, m.thought, m.color);
+  }
+
+  // Using any control stops autoplay; moving through the game leaves analysis.
+  function stopEverything() { autoplay.stop(); analysis.exit(); }
+
+  $("play").onclick = () => { analysis.exit(); autoplay.toggle(); };
+  $("next").onclick = () => { stopEverything(); replay.next(); };
+  $("back").onclick = () => { autoplay.stop(); analysis.active ? analysis.back() : replay.back(); };
+  $("start").onclick = () => { stopEverything(); replay.goTo(0); };
+  $("end").onclick = () => { stopEverything(); replay.goTo(replay.total); };
+  $("back-to-game").onclick = () => analysis.exit();
+  $("speed").onchange = () => { autoplay.speed = Number($("speed").value); };
+  $("show-bubbles").onchange = () => positionChanged();
   $("flip").onclick = () => {
     analysis.clearSelection();
     board.flip();
     evalBar.setFlipped(board.flipped);
   };
   document.addEventListener("keydown", (e) => {
-    if (e.target.tagName === "SELECT") return;
+    if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
     if (e.key === "ArrowRight") $("next").click();
     if (e.key === "ArrowLeft") $("back").click();
+    if (e.key === " ") { e.preventDefault(); $("play").click(); }
   });
+
+  async function loadGame(file) {
+    stopEverything();
+    await replay.load(file);
+    moveList.build(replay.diary);
+    positionChanged();
+  }
 
   async function start() {
     board.setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -151,14 +221,15 @@
     const select = $("game-select");
     for (const g of games) select.add(new Option(`${g.title}`, g.file));
     select.value = chosen.file;
-    select.onchange = () => { leaveAnalysis(); replay.load(select.value); };
-    await replay.load(chosen.file);
+    select.onchange = () => loadGame(select.value);
+    await loadGame(chosen.file);
     if (params.has("move")) replay.goTo(Number(params.get("move")));
   }
   start().catch((err) => { $("players").textContent = "Something went wrong: " + err.message; });
 
   // Lets automatic tests reach the page's parts.
-  window.app = { board, replay, analysis, evalBar, get engine() { return engine; } };
+  window.app = { board, replay, analysis, evalBar, autoplay, bubble, resultCard,
+                 get engine() { return engine; } };
 </script>
 </body>
 </html>

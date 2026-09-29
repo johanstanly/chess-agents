@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Screenshot</title>
+<style>body{margin:0} iframe{border:0;width:100vw;height:100vh;display:block}</style></head>
+<body>
+<img src="/__hold" hidden alt="">
+<iframe id="f"></iframe>
+<script>
+  // Opens /index.html with the same ?game=&move= options, waits for it to
+  // settle (animations, engine), then tells the harness to take the picture.
+  const f = document.getElementById("f");
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const want = new URLSearchParams(location.search).get("move");
+  f.onload = async () => {
+    const t0 = Date.now();
+    while (Date.now() - t0 < 20000) {
+      const app = f.contentWindow.app;
+      if (app && app.replay.diary && (want === null || app.replay.current === Number(want))) break;
+      await sleep(100);
+    }
+    await sleep(3000);
+    fetch("/__done", { method: "POST", body: "ok" });
+  };
+  f.src = "/index.html" + location.search;
+</script>
+</body></html>

@@ -112,7 +112,7 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
 .players { font-size: 14px; color: var(--text-dim); margin: 0 0 14px; }
 
 .move-info { margin-top: 16px; background: var(--panel-bg); border-radius: 8px;
-             padding: 14px; min-height: 150px; }
+             padding: 14px; min-height: 120px; }
 .counter { font-size: 12px; color: var(--text-dim); }
 .move { font-size: 26px; font-weight: 700; margin: 4px 0 2px; }
 .who { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
@@ -184,3 +184,78 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
 
 .engine-line { margin-top: 12px; font-size: 14px; color: var(--text-dim); }
 .hint { font-size: 12px; color: var(--text-dim); margin-top: 14px; }
+
+/* ---------- Highlights: last move and check ---------- */
+
+.highlights { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.highlights > div { position: absolute; width: 12.5%; height: 12.5%; }
+.hl-last { background: rgba(255, 221, 61, 0.42); }
+.hl-check { background: radial-gradient(circle, rgba(235, 45, 35, 0.95) 0%, rgba(235, 45, 35, 0.6) 40%, rgba(235, 45, 35, 0) 72%); }
+
+/* ---------- Speech bubble ---------- */
+
+.bubble {
+  position: absolute; z-index: 4; pointer-events: none;
+  background: #fffdf8; color: #2a2724;
+  border-radius: 12px; padding: 0.7em 0.9em;
+  font-size: clamp(12px, 1.35vw, 16px); line-height: 1.4;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.bubble.visible { opacity: 1; transform: none; }
+.bubble[data-side="black"] { background: #2f2c29; color: #f3efe8; }
+.bubble-head { font-size: 0.78em; font-weight: 700; opacity: 0.65; margin-bottom: 2px; }
+.bubble-tail {
+  position: absolute; bottom: -8px; width: 16px; height: 16px; margin-left: -8px;
+  background: inherit; transform: rotate(45deg); border-radius: 2px;
+}
+.bubble.below .bubble-tail { bottom: auto; top: -8px; }
+
+/* ---------- Result card ---------- */
+
+.result-card {
+  position: absolute; z-index: 5; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  min-width: 46%; padding: 1.2em 1.6em; text-align: center;
+  background: rgba(38, 36, 33, 0.94); color: var(--text);
+  border-radius: 14px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+.result-card.visible { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
+.result-card.at-top { top: 4%; transform: translate(-50%, 0) scale(0.95); }
+.result-card.at-top.visible { transform: translate(-50%, 0); }
+.result-card.at-bottom { top: auto; bottom: 4%; transform: translate(-50%, 0) scale(0.95); }
+.result-card.at-bottom.visible { transform: translate(-50%, 0); }
+.result-title { font-size: clamp(18px, 2.4vw, 28px); font-weight: 750; color: var(--accent); }
+.result-sub { font-size: 14px; color: var(--text-dim); margin-top: 4px; }
+.result-hint { font-size: 11px; color: var(--text-dim); margin-top: 10px; opacity: 0.7; }
+
+/* ---------- Play controls ---------- */
+
+.controls.secondary { margin-top: 8px; align-items: center; }
+.controls button { min-width: 44px; }
+button.play { min-width: 104px; font-weight: 650; }
+button.play.playing { background: #45613a; border-color: var(--accent); }
+.inline-field { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-dim); }
+.inline-field select { padding: 5px 6px; }
+
+/* ---------- Move list ---------- */
+
+.move-list {
+  position: relative;
+  margin-top: 14px; max-height: 230px; overflow-y: auto;
+  background: var(--panel-bg); border-radius: 8px; padding: 6px 0;
+}
+.move-list:empty { display: none; }
+.ml-row { display: grid; grid-template-columns: 44px 1fr 1fr; align-items: center; padding: 0 8px; }
+.ml-row:nth-child(even) { background: rgba(255, 255, 255, 0.03); }
+.ml-num { color: var(--text-dim); font-size: 13px; }
+.ml-move {
+  background: none; border: 0; border-radius: 4px; text-align: left;
+  padding: 4px 8px; font-size: 14px; font-weight: 600; color: var(--text);
+}
+.ml-move:hover { background: #3d3935; }
+.ml-move.current { background: #4b4845; color: #fff; box-shadow: inset 0 -2px 0 var(--accent); }
+.ml-move:disabled { color: var(--text-dim); cursor: default; }

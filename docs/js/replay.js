@@ -116,3 +116,95 @@ async function runSelfTest(board, gamesList) {
   lines.push(failures ? `${failures} GAME(S) FAILED` : "ALL GAMES PASSED");
   return lines.join("\n");
 }
+
+/* Plays the game by itself, one move at a time. Moves with a longer thought
+   stay on screen longer so there is time to read the speech bubble. */
+class Autoplay {
+  constructor(replay, onStateChange) {
+    this.replay = replay;
+    this.onStateChange = onStateChange;  // told when playing starts or stops
+    this.speed = 1;
+    this.timer = null;
+  }
+
+  get playing() { return this.timer !== null; }
+
+  toggle() { this.playing ? this.stop() : this.start(); }
+
+  start() {
+    if (!this.replay.diary) return;
+    if (this.replay.current >= this.replay.total) this.replay.goTo(0);  // replay from the start
+    this.timer = setTimeout(() => this.step(), 400);
+    this.onStateChange(true);
+  }
+
+  stop() {
+    if (!this.playing) return;
+    clearTimeout(this.timer);
+    this.timer = null;
+    this.onStateChange(false);
+  }
+
+  step() {
+    this.replay.next();
+    if (this.replay.current >= this.replay.total) { this.stop(); return; }
+    this.timer = setTimeout(() => this.step(), this.delay());
+  }
+
+  /* Milliseconds to wait before the next move. */
+  delay() {
+    const m = this.replay.diary.moves[this.replay.current - 1];
+    const hasBubble = m && m.thought_source !== "move_description";
+    const reading = hasBubble ? Math.min(m.thought.length * 30, 4500) : 0;
+    return (900 + reading) / this.speed;
+  }
+}
+
+/* The list of moves beside the board, in two columns (White, Black).
+   Clicking a move jumps there. */
+class MoveList {
+  constructor(element, onPick) {
+    this.el = element;
+    this.onPick = onPick;
+    this.cells = [];
+  }
+
+  build(diary) {
+    this.el.replaceChildren();
+    this.cells = [];
+    let row = null;
+    diary.moves.forEach((m, i) => {
+      if (m.color === "white" || row === null) {
+        row = document.createElement("div");
+        row.className = "ml-row";
+        row.innerHTML = `<span class="ml-num">${m.move_number}.</span>`;
+        this.el.appendChild(row);
+        if (m.color === "black") row.appendChild(this.cell("…", null));  // game starts with Black
+      }
+      row.appendChild(this.cell(m.san, i + 1));
+    });
+  }
+
+  cell(text, ply) {
+    const button = document.createElement("button");
+    button.className = "ml-move";
+    button.textContent = text;
+    if (ply === null) { button.disabled = true; return button; }
+    button.onclick = () => this.onPick(ply);
+    this.cells[ply] = button;
+    return button;
+  }
+
+  /* Marks the current move and scrolls the list so it is visible. */
+  setCurrent(ply) {
+    this.el.querySelectorAll(".ml-move.current").forEach((b) => b.classList.remove("current"));
+    const cell = this.cells[ply];
+    if (!cell) { this.el.scrollTop = 0; return; }
+    cell.classList.add("current");
+    const row = cell.parentElement;
+    const top = row.offsetTop;  // the list is the reference point (position: relative)
+    if (top < this.el.scrollTop || top + row.offsetHeight > this.el.scrollTop + this.el.clientHeight) {
+      this.el.scrollTop = top - this.el.clientHeight / 2;
+    }
+  }
+}

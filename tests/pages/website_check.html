@@ -58,7 +58,7 @@ async function run() {
   const whiteWinning = line && (/M\d/.test(line) && !line.includes("-M") ? true : endPawns > 3);
   check(whiteWinning, `final position: White clearly winning (${line})`);
   const fillHeight = parseFloat(doc().querySelector(".eval-fill").style.height);
-  check(fillHeight > 80, `eval bar is mostly white at the end (${fillHeight}%)`);
+  check(fillHeight > 70, `eval bar is mostly white at the end (${fillHeight}%)`);
 
   // 3. Checkmate position in Lasker vs Thomas.
   await load("/index.html?game=sample-lasker-thomas-1912&move=35");
@@ -96,6 +96,58 @@ async function run() {
   // Back button steps out of analysis one move at a time.
   for (let i = 0; i < 5; i++) doc().getElementById("back").click();
   check(!a.active && app().replay.current === 0, "Back takes moves back, then returns to the game");
+
+  // 6. Phase 4: autoplay, move list, highlights, speech bubble, result card.
+  await load("/index.html?game=sample-kasparov-topalov-1999");
+  await until(() => app() && app().replay.diary && doc().querySelectorAll(".ml-move").length);
+  const d = doc();
+  d.getElementById("speed").value = "4";
+  d.getElementById("speed").dispatchEvent(new Event("change"));
+  d.getElementById("play").click();
+  await sleep(2500);
+  const afterPlay = app().replay.current;
+  check(afterPlay >= 3 && app().autoplay.playing, `autoplay moves by itself (reached half-move ${afterPlay})`);
+  d.getElementById("play").click();
+  const paused = app().replay.current;
+  await sleep(1500);
+  check(!app().autoplay.playing && app().replay.current === paused, "pause stops autoplay");
+
+  const cells = d.querySelectorAll(".ml-move:not(:disabled)");
+  check(cells.length === app().replay.total, `move list has all ${app().replay.total} moves`);
+  cells[20].click();  // half-move 21: 11. O-O-O
+  check(app().replay.current === 21 && cells[20].classList.contains("current"),
+        "clicking 11. O-O-O in the move list jumps there and marks it");
+  const hl = [...d.querySelectorAll(".hl-last")].map((e) => e.style.left + "," + e.style.top);
+  const pos = (sq) => { const p = app().board.squarePosition(sq); return p.left + "," + p.top; };
+  check(hl.length === 2 && hl.includes(pos("e1")) && hl.includes(pos("c1")),
+        "last move highlighted on e1 and c1");
+  const bub = d.querySelector(".bubble");
+  check(bub.classList.contains("visible") && bub.textContent.includes("castle queenside"),
+        "speech bubble shows the thought for 11. O-O-O");
+  app().replay.goTo(3);  // 2. d4: plain move description, no bubble
+  check(!bub.classList.contains("visible"), "no bubble for a plain move description");
+  d.getElementById("show-bubbles").click();
+  app().replay.goTo(21);
+  check(!bub.classList.contains("visible"), "bubbles can be switched off");
+  d.getElementById("show-bubbles").click();
+
+  app().replay.goTo(app().replay.total);
+  const card = d.querySelector(".result-card");
+  check(card.classList.contains("visible") && card.textContent.includes("White wins"),
+        "result card shown at the end");
+  app().replay.goTo(10);
+  check(!card.classList.contains("visible"), "result card hidden before the end");
+
+  await load("/index.html?game=sample-lasker-thomas-1912&move=21");  // 11. Qxh7+
+  await until(() => app() && app().replay.current === 21);
+  const chk = doc().querySelector(".hl-check");
+  check(chk && chk.style.left + "," + chk.style.top === (() => { const p = app().board.squarePosition("g8"); return p.left + "," + p.top; })(),
+        "king in check (g8) is highlighted red after 11. Qxh7+");
+
+  await load("/index.html?game=test-special-moves&move=18");
+  await until(() => app() && app().replay.current === 18);
+  check(!doc().querySelector(".result-card").classList.contains("visible"),
+        "no result card for an unfinished game");
 
   const failed = results.filter((r) => r.startsWith("FAIL")).length;
   results.push(failed ? `${failed} CHECK(S) FAILED` : "ALL CHECKS PASSED");

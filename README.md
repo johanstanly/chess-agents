@@ -6,7 +6,7 @@ Every game is saved as a diary (each move plus what the agent was thinking) and 
 Agent A (the learner) writes lessons into a notebook after each loss or draw and reads it before the next game.
 Agent B (the control) never learns. The experiment measures whether Agent A's results improve over time.
 
-**Status:** Phase 4b — evaluation bar (Stockfish in the browser) and try-your-own-moves analysis mode.
+**Status:** Phase 4 — play/pause, speed, speech bubbles, move list, last-move and check highlights, result card.
 
 ## Try it
 Double-click `serve.bat` to open the replay page in your browser (keep its window open while you use the page).

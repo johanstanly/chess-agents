@@ -16,6 +16,13 @@ class ChessBoard {
     this.flipped = false;
     this.pieces = {}; // square name (e.g. "e4") -> <img> element
     this.drawCoordinates();
+    // Coloured squares under the pieces: last move (yellow) and check (red).
+    this.highlights = document.createElement("div");
+    this.highlights.className = "highlights";
+    this.board.appendChild(this.highlights);
+    this.lastMove = null;
+    this.checkSquare = null;
+    this.onFlip = null;  // other parts (e.g. the speech bubble) can react to a flip
   }
 
   /* Reads the piece placement part of a FEN into { "e1": "wK", ... }. */
@@ -38,12 +45,49 @@ class ChessBoard {
     return result;
   }
 
-  /* Where a square sits on screen, as percentages from the top-left corner. */
-  squarePosition(square) {
+  /* Which column and row (0-7, from the top-left) a square is shown in. */
+  squareCell(square) {
     let col = FILES.indexOf(square[0]);
     let row = 8 - Number(square[1]);
     if (this.flipped) { col = 7 - col; row = 7 - row; }
+    return { col, row };
+  }
+
+  /* Where a square sits on screen, as percentages from the top-left corner. */
+  squarePosition(square) {
+    const { col, row } = this.squareCell(square);
     return { left: col * 12.5 + "%", top: row * 12.5 + "%" };
+  }
+
+  /* Shows the last move's two squares and a king in check.
+     lastMove is { from, to } or null; checkSquare is a square or null. */
+  setHighlights(lastMove, checkSquare) {
+    this.lastMove = lastMove;
+    this.checkSquare = checkSquare;
+    this.drawHighlights();
+  }
+
+  drawHighlights() {
+    this.highlights.replaceChildren();
+    const add = (square, cls) => {
+      const div = document.createElement("div");
+      div.className = cls;
+      Object.assign(div.style, this.squarePosition(square));
+      this.highlights.appendChild(div);
+    };
+    if (this.lastMove) {
+      add(this.lastMove.from, "hl-last");
+      add(this.lastMove.to, "hl-last");
+    }
+    if (this.checkSquare) add(this.checkSquare, "hl-check");
+  }
+
+  /* The square of a king ("w" or "b") in the position shown. */
+  findKing(color) {
+    for (const [square, img] of Object.entries(this.pieces)) {
+      if (img.dataset.code === color + "K") return square;
+    }
+    return null;
   }
 
   /* Removes all pieces and draws a position from a FEN. */
@@ -131,6 +175,8 @@ class ChessBoard {
       Object.assign(img.style, this.squarePosition(square));
     }
     this.drawCoordinates();
+    this.drawHighlights();
+    if (this.onFlip) this.onFlip();
   }
 
   /* Writes the letters a-h in the bottom row and numbers 1-8 in the left
