@@ -4,6 +4,7 @@ Runs games with the Claude agent. Uses your Claude Pro plan (never the paid API)
   python arena/play.py test-moves          5 single moves from different positions
   python arena/play.py game                one full Claude vs Claude game
   python arena/play.py game --resume ID    continue a game that stopped
+  python arena/play.py yardstick           Claude vs Stockfish at its weakest (--agent-color, --skill)
 
 Options for "game":  --model sonnet|haiku  --effort low|medium|high  --limit N (0 = none, the default)
 """
@@ -62,10 +63,19 @@ def test_moves(args) -> int:
 
 
 def play(args) -> int:
-    white = ClaudeAgent(args.white_name, model=args.model, effort=args.effort)
-    black = ClaudeAgent(args.black_name, model=args.model, effort=args.effort)
-    game_id = args.resume or f"{datetime.now():%Y-%m-%d-%H%M}-claude-vs-claude"
-    title = f"{args.white_name} vs {args.black_name} ({args.model}, {datetime.now():%d %b %Y})"
+    engine_player = None
+    if args.what == "yardstick":
+        from stockfish import StockfishPlayer
+        engine_player = StockfishPlayer(skill=args.skill)
+        agent = ClaudeAgent(args.white_name, model=args.model, effort=args.effort)
+        white, black = (agent, engine_player) if args.agent_color == "white" else (engine_player, agent)
+        kind_label, notes = "vs-stockfish", f"Yardstick game: Claude vs Stockfish at skill {args.skill}."
+    else:
+        white = ClaudeAgent(args.white_name, model=args.model, effort=args.effort)
+        black = ClaudeAgent(args.black_name, model=args.model, effort=args.effort)
+        kind_label, notes = "claude-vs-claude", "Claude vs Claude test game. Both agents have no notebook."
+    game_id = args.resume or f"{datetime.now():%Y-%m-%d-%H%M}-{kind_label}"
+    title = f"{white.name} vs {black.name} ({args.model}, {datetime.now():%d %b %Y})"
     totals = {"requests": 0, "input_tokens": 0, "output_tokens": 0}
     started = time.time()
 
@@ -79,24 +89,42 @@ def play(args) -> int:
         print(f"{m['move_number']}{dots} {m['san']:<8} {usage_text(u)}{extra}")
         print(f"      {m['thought']}")
 
-    print(f"Game {game_id}: {args.white_name} (White) vs {args.black_name} (Black)")
+    print(f"Game {game_id}: {white.name} (White) vs {black.name} (Black)")
     print(f"Model: {args.model}, effort: {args.effort}, "
           f"move limit: {args.limit or 'none (only the chess draw rules)'}\n")
     try:
         d = arbiter.play_game(white, black, game_id, title, kind="ai", move_limit=args.limit,
-                              resume=bool(args.resume), on_move=show,
-                              notes="Claude vs Claude test game (Phase 7). Both agents have no notebook.")
+                              resume=bool(args.resume), on_move=show, notes=notes)
     except AgentUnavailable as err:
         diary.rebuild_index()
         print(f"\nThe game stopped: {err}")
         print("Everything so far is saved. To continue later, run:")
-        print(f"   python arena/play.py game --resume {game_id}")
+        print(f"   python arena/play.py {args.what} --resume {game_id}")
         return 1
+    finally:
+        if engine_player:
+            engine_player.close()
     minutes = (time.time() - started) / 60
     print(f"\nResult: {d['result_text']} after {(len(d['moves']) + 1) // 2} moves")
     print(f"Claude requests: {totals['requests']}, text in: {totals['input_tokens']} tokens, "
           f"text out: {totals['output_tokens']} tokens, time: {minutes:.0f} minutes")
     print(f"Saved: docs/games/{game_id}.json")
+
+    # Grade every move with full-strength Stockfish (free, about 15 seconds).
+    import json
+    from review import review_diary
+    from stockfish import open_engine
+    engine = open_engine()
+    try:
+        summary = review_diary(d, engine)
+    finally:
+        engine.quit()
+    path = diary.GAMES_DIR / f"{game_id}.json"
+    path.write_text(json.dumps(d, indent=2, ensure_ascii=False), encoding="utf-8")
+    for color in ("white", "black"):
+        r = summary[color]
+        print(f"Accuracy {d[color]['name']}: {r['accuracy']}% "
+              f"({r['inaccuracies']} inaccuracies, {r['mistakes']} mistakes, {r['blunders']} blunders)")
     return 0
 
 
@@ -105,7 +133,7 @@ def main() -> int:
         sys.stdout.reconfigure(encoding="utf-8")
     check_no_paid_api()
     parser = argparse.ArgumentParser(description="Play chess with the Claude agent.")
-    parser.add_argument("what", choices=["test-moves", "game"])
+    parser.add_argument("what", choices=["test-moves", "game", "yardstick"])
     parser.add_argument("--model", default="sonnet")
     parser.add_argument("--effort", default="low", choices=["low", "medium", "high"])
     parser.add_argument("--limit", type=int, default=0,
@@ -113,6 +141,9 @@ def main() -> int:
     parser.add_argument("--resume", help="id of an unfinished game to continue")
     parser.add_argument("--white-name", default="Claude A")
     parser.add_argument("--black-name", default="Claude B")
+    parser.add_argument("--agent-color", default="white", choices=["white", "black"],
+                        help="yardstick: which colour Claude plays")
+    parser.add_argument("--skill", type=int, default=0, help="yardstick: Stockfish skill level (0-20)")
     args = parser.parse_args()
     return test_moves(args) if args.what == "test-moves" else play(args)
 

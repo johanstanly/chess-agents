@@ -41,7 +41,14 @@
       "fen_after": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
       "thought": "Pawn to e4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 34,
+        "win_before": 53.6,
+        "win_after": 53.1,
+        "accuracy": 99.0,
+        "label": null
+      }
     },
     {
       "ply": 2,
@@ -64,7 +71,14 @@
       "fen_after": "rnbqkbnr/1ppppppp/p7/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
       "thought": "Pawn to a6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 69,
+        "win_before": 46.9,
+        "win_after": 43.7,
+        "accuracy": 87.6,
+        "label": null
+      }
     },
     {
       "ply": 3,
@@ -87,7 +101,14 @@
       "fen_after": "rnbqkbnr/1ppppppp/p7/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
       "thought": "Pawn to e5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -31,
+        "win_before": 56.3,
+        "win_after": 47.1,
+        "accuracy": 67.0,
+        "label": "inaccuracy"
+      }
     },
     {
       "ply": 4,
@@ -110,7 +131,14 @@
       "fen_after": "rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3",
       "thought": "My pawn jumps two squares, right past White's pawn.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 14,
+        "win_before": 52.9,
+        "win_after": 48.7,
+        "accuracy": 84.0,
+        "label": null
+      }
     },
     {
       "ply": 5,
@@ -133,7 +161,14 @@
       "fen_after": "rnbqkbnr/1pp1pppp/p2P4/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3",
       "thought": "En passant! My pawn takes the black pawn as it passes. Watch d5 disappear.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -39,
+        "win_before": 51.3,
+        "win_after": 46.4,
+        "accuracy": 81.3,
+        "label": null
+      }
     },
     {
       "ply": 6,
@@ -156,7 +191,14 @@
       "fen_after": "rnbqkbnr/1pp1ppp1/p2P4/7p/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 4",
       "thought": "Pawn to h5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 54,
+        "win_before": 53.6,
+        "win_after": 45.0,
+        "accuracy": 69.0,
+        "label": "inaccuracy"
+      }
     },
     {
       "ply": 7,
@@ -179,7 +221,14 @@
       "fen_after": "rnbqkbnr/1pp1ppp1/p2P4/7p/8/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 4",
       "thought": "Knight to f3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 32,
+        "win_before": 55.0,
+        "win_after": 52.9,
+        "accuracy": 92.3,
+        "label": null
+      }
     },
     {
       "ply": 8,
@@ -202,7 +251,14 @@
       "fen_after": "rnbqkbnr/1pp1ppp1/p2P4/8/7p/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 5",
       "thought": "Pawn to h4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 105,
+        "win_before": 47.1,
+        "win_after": 40.5,
+        "accuracy": 75.2,
+        "label": "inaccuracy"
+      }
     },
     {
       "ply": 9,
@@ -225,7 +281,14 @@
       "fen_after": "rnbqkbnr/1pp1ppp1/p2P4/8/6Pp/5N2/PPPP1P1P/RNBQKB1R b KQkq g3 0 5",
       "thought": "My pawn jumps two squares, right past Black's pawn.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -153,
+        "win_before": 59.5,
+        "win_after": 36.3,
+        "accuracy": 35.3,
+        "label": "blunder"
+      }
     },
     {
       "ply": 10,
@@ -248,7 +311,14 @@
       "fen_after": "rnbqkbnr/1pp1ppp1/p2P4/8/8/5Np1/PPPP1P1P/RNBQKB1R w KQkq - 0 6",
       "thought": "En passant for Black this time. Watch g4 disappear.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -65,
+        "win_before": 63.7,
+        "win_after": 56.0,
+        "accuracy": 71.4,
+        "label": "inaccuracy"
+      }
     },
     {
       "ply": 11,
@@ -271,7 +341,14 @@
       "fen_after": "rnbqkbnr/1pP1ppp1/p7/8/8/5Np1/PPPP1P1P/RNBQKB1R b KQkq - 0 6",
       "thought": "Pawn takes Pawn on c7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -382,
+        "win_before": 44.0,
+        "win_after": 19.7,
+        "accuracy": 33.5,
+        "label": "blunder"
+      }
     },
     {
       "ply": 12,
@@ -294,7 +371,14 @@
       "fen_after": "r1bqkbnr/1pP1ppp1/p1n5/8/8/5Np1/PPPP1P1P/RNBQKB1R w KQkq - 1 7",
       "thought": "Knight to c6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 950,
+        "win_before": 80.3,
+        "win_after": 2.9,
+        "accuracy": 1.4,
+        "label": "blunder"
+      }
     },
     {
       "ply": 13,
@@ -317,7 +401,14 @@
       "fen_after": "r1bQkbnr/1p2ppp1/p1n5/8/8/5Np1/PPPP1P1P/RNBQKB1R b KQkq - 0 7",
       "thought": "My pawn takes the queen and becomes a new queen. Check!",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 932,
+        "win_before": 97.1,
+        "win_after": 96.9,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 14,
@@ -340,7 +431,14 @@
       "fen_after": "r1bk1bnr/1p2ppp1/p1n5/8/8/5Np1/PPPP1P1P/RNBQKB1R w KQ - 0 8",
       "thought": "King takes Queen on d8.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 914,
+        "win_before": 3.1,
+        "win_after": 3.3,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 15,
@@ -363,7 +461,14 @@
       "fen_after": "r1bk1bnr/1p2ppp1/p1n5/8/8/2N2Np1/PPPP1P1P/R1BQKB1R b KQ - 1 8",
       "thought": "Knight to c3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 851,
+        "win_before": 96.7,
+        "win_after": 95.8,
+        "accuracy": 97.3,
+        "label": null
+      }
     },
     {
       "ply": 16,
@@ -386,7 +491,14 @@
       "fen_after": "r1bk1bnr/1p2ppp1/p1n5/8/8/2N2N2/PPPP1P1p/R1BQKB1R w KQ - 0 9",
       "thought": "Pawn takes Pawn on h2.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 863,
+        "win_before": 4.2,
+        "win_after": 4.0,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 17,
@@ -409,7 +521,14 @@
       "fen_after": "r1bk1bnr/1p2ppp1/p1n5/8/8/2N2N2/PPPP1P1p/R1BQKBR1 b Q - 1 9",
       "thought": "Rook to g1.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 592,
+        "win_before": 96.0,
+        "win_after": 89.8,
+        "accuracy": 76.7,
+        "label": "inaccuracy"
+      }
     },
     {
       "ply": 18,
@@ -432,7 +551,32 @@
       "fen_after": "r1bk1bnr/1p2ppp1/p1n5/8/8/2N2N2/PPPP1P2/R1BQKBn1 w Q - 0 10",
       "thought": "My pawn takes the rook and becomes a knight, not a queen.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 604,
+        "win_before": 10.2,
+        "win_after": 9.8,
+        "accuracy": 99.2,
+        "label": null
+      }
     }
-  ]
+  ],
+  "review": {
+    "engine": "Stockfish 19",
+    "depth": 16,
+    "white": {
+      "accuracy": 57.0,
+      "acpl": 123,
+      "inaccuracies": 2,
+      "mistakes": 0,
+      "blunders": 2
+    },
+    "black": {
+      "accuracy": 28.2,
+      "acpl": 188,
+      "inaccuracies": 3,
+      "mistakes": 0,
+      "blunders": 1
+    }
+  }
 }

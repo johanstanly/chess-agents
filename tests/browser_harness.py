@@ -14,8 +14,10 @@ Use from another script:   result = run_page("/__tests/stockfish.html")
 """
 
 import http.server
+import os
 import shutil
 import subprocess
+import tempfile
 import threading
 from functools import partial
 from pathlib import Path
@@ -45,6 +47,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
     done = threading.Event()
     result = None
     games_dir = None   # if set, the website's games/ folder is read from here
+    hold_seconds = 90  # how long the page's /__hold request keeps the browser open
 
     def log_message(self, *args):  # keep the output quiet
         pass
@@ -58,7 +61,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path.startswith("/__hold"):
-            _Handler.done.wait(timeout=90)
+            _Handler.done.wait(timeout=_Handler.hold_seconds)
             self.send_response(204)
             self.end_headers()
             return
@@ -86,19 +89,30 @@ def run_page(path: str, timeout: int = 120, screenshot: str | None = None,
     With `screenshot`, also saves a picture of the page to that file.
     With `games_dir`, the website shows the games in that folder instead."""
     _Handler.done.clear()
+    _Handler.hold_seconds = timeout
     _Handler.result = None
     _Handler.games_dir = games_dir
     server = _QuietServer(
         ("127.0.0.1", 0), partial(_Handler, directory=str(DOCS)))
     port = server.server_address[1]
     threading.Thread(target=server.serve_forever, daemon=True).start()
+    # A separate, temporary browser profile: without it, an Edge window you
+    # already have open would take over the request and the test would get no result.
+    profile = tempfile.mkdtemp(prefix="chess-agents-browser-")
+    # Settings inherited from VS Code (itself built on Chromium, like Edge) make
+    # Edge hand over to VS Code's crash reporter and quit at once, and a Windows
+    # compatibility setting (__COMPAT_LAYER) does the same. Leave them out.
+    env = {k: v for k, v in os.environ.items()
+           if not k.upper().startswith(("CHROME_", "ELECTRON_", "VSCODE_", "__COMPAT_LAYER"))}
     try:
         subprocess.run(
             [find_browser(), "--headless=new", "--disable-gpu", "--no-first-run",
+             f"--user-data-dir={profile}", "--no-default-browser-check",
              "--hide-scrollbars", f"--window-size={size}",
              f"--screenshot={screenshot}" if screenshot else "--dump-dom",
              f"http://127.0.0.1:{port}{path}"],
-            capture_output=True, timeout=timeout)
+            capture_output=True, timeout=timeout, env=env)
     finally:
         server.shutdown()
+        shutil.rmtree(profile, ignore_errors=True)
     return _Handler.result if _Handler.result is not None else "NO RESULT (page did not report)"

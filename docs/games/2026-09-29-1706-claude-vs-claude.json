@@ -53,6 +53,13 @@
         "input_tokens": 1198,
         "output_tokens": 50,
         "seconds": 5.1
+      },
+      "review": {
+        "eval_cp": 34,
+        "win_before": 53.6,
+        "win_after": 53.1,
+        "accuracy": 99.0,
+        "label": null
       }
     },
     {
@@ -82,6 +89,13 @@
         "input_tokens": 1192,
         "output_tokens": 65,
         "seconds": 4.5
+      },
+      "review": {
+        "eval_cp": 32,
+        "win_before": 46.9,
+        "win_after": 47.1,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -111,6 +125,13 @@
         "input_tokens": 1251,
         "output_tokens": 63,
         "seconds": 5.7
+      },
+      "review": {
+        "eval_cp": 33,
+        "win_before": 52.9,
+        "win_after": 53.0,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -140,6 +161,13 @@
         "input_tokens": 1221,
         "output_tokens": 60,
         "seconds": 3.6
+      },
+      "review": {
+        "eval_cp": 28,
+        "win_before": 47.0,
+        "win_after": 47.4,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -169,6 +197,13 @@
         "input_tokens": 1261,
         "output_tokens": 63,
         "seconds": 4.1
+      },
+      "review": {
+        "eval_cp": 32,
+        "win_before": 52.6,
+        "win_after": 52.9,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -198,6 +233,13 @@
         "input_tokens": 1256,
         "output_tokens": 65,
         "seconds": 3.6
+      },
+      "review": {
+        "eval_cp": 59,
+        "win_before": 47.1,
+        "win_after": 44.6,
+        "accuracy": 90.5,
+        "label": null
       }
     },
     {
@@ -227,6 +269,13 @@
         "input_tokens": 1295,
         "output_tokens": 77,
         "seconds": 3.6
+      },
+      "review": {
+        "eval_cp": -315,
+        "win_before": 55.4,
+        "win_after": 23.9,
+        "accuracy": 24.0,
+        "label": "blunder"
       }
     },
     {
@@ -256,6 +305,13 @@
         "input_tokens": 1270,
         "output_tokens": 52,
         "seconds": 3.3
+      },
+      "review": {
+        "eval_cp": 47,
+        "win_before": 76.1,
+        "win_after": 45.7,
+        "accuracy": 25.2,
+        "label": "blunder"
       }
     },
     {
@@ -285,6 +341,13 @@
         "input_tokens": 1291,
         "output_tokens": 46,
         "seconds": 3.2
+      },
+      "review": {
+        "eval_cp": -238,
+        "win_before": 54.3,
+        "win_after": 29.4,
+        "accuracy": 32.7,
+        "label": "blunder"
       }
     },
     {
@@ -314,6 +377,13 @@
         "input_tokens": 1300,
         "output_tokens": 65,
         "seconds": 3.8
+      },
+      "review": {
+        "eval_cp": -265,
+        "win_before": 70.6,
+        "win_after": 72.6,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -343,6 +413,13 @@
         "input_tokens": 1280,
         "output_tokens": 78,
         "seconds": 4.5
+      },
+      "review": {
+        "eval_cp": -334,
+        "win_before": 27.4,
+        "win_after": 22.6,
+        "accuracy": 81.7,
+        "label": null
       }
     },
     {
@@ -375,6 +452,13 @@
         "input_tokens": 2676,
         "output_tokens": 110,
         "seconds": 7.0
+      },
+      "review": {
+        "eval_cp": -4,
+        "win_before": 77.4,
+        "win_after": 50.4,
+        "accuracy": 29.7,
+        "label": "blunder"
       }
     },
     {
@@ -404,6 +488,13 @@
         "input_tokens": 1308,
         "output_tokens": 64,
         "seconds": 3.8
+      },
+      "review": {
+        "eval_cp": -355,
+        "win_before": 49.6,
+        "win_after": 21.3,
+        "accuracy": 27.9,
+        "label": "blunder"
       }
     },
     {
@@ -433,6 +524,13 @@
         "input_tokens": 1339,
         "output_tokens": 62,
         "seconds": 3.9
+      },
+      "review": {
+        "eval_cp": 28,
+        "win_before": 78.7,
+        "win_after": 47.4,
+        "accuracy": 24.3,
+        "label": "blunder"
       }
     },
     {
@@ -462,6 +560,13 @@
         "input_tokens": 1318,
         "output_tokens": 76,
         "seconds": 3.8
+      },
+      "review": {
+        "eval_cp": 0,
+        "win_before": 52.6,
+        "win_after": 50.0,
+        "accuracy": 90.1,
+        "label": null
       }
     },
     {
@@ -491,6 +596,13 @@
         "input_tokens": 1361,
         "output_tokens": 69,
         "seconds": 3.9
+      },
+      "review": {
+        "eval_cp": 53,
+        "win_before": 50.0,
+        "win_after": 45.1,
+        "accuracy": 81.3,
+        "label": null
       }
     },
     {
@@ -520,6 +632,13 @@
         "input_tokens": 1331,
         "output_tokens": 63,
         "seconds": 3.6
+      },
+      "review": {
+        "eval_cp": 12,
+        "win_before": 54.9,
+        "win_after": 51.1,
+        "accuracy": 85.4,
+        "label": null
       }
     },
     {
@@ -549,6 +668,13 @@
         "input_tokens": 1367,
         "output_tokens": 55,
         "seconds": 3.8
+      },
+      "review": {
+        "eval_cp": 11,
+        "win_before": 48.9,
+        "win_after": 49.0,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -578,6 +704,13 @@
         "input_tokens": 1374,
         "output_tokens": 65,
         "seconds": 3.7
+      },
+      "review": {
+        "eval_cp": -8,
+        "win_before": 51.0,
+        "win_after": 49.3,
+        "accuracy": 93.4,
+        "label": null
       }
     },
     {
@@ -607,6 +740,13 @@
         "input_tokens": 1371,
         "output_tokens": 65,
         "seconds": 4.7
+      },
+      "review": {
+        "eval_cp": 13,
+        "win_before": 50.7,
+        "win_after": 48.8,
+        "accuracy": 92.7,
+        "label": null
       }
     },
     {
@@ -636,6 +776,13 @@
         "input_tokens": 1372,
         "output_tokens": 75,
         "seconds": 5.3
+      },
+      "review": {
+        "eval_cp": 10,
+        "win_before": 51.2,
+        "win_after": 50.9,
+        "accuracy": 99.8,
+        "label": null
       }
     },
     {
@@ -665,6 +812,13 @@
         "input_tokens": 1379,
         "output_tokens": 77,
         "seconds": 4.7
+      },
+      "review": {
+        "eval_cp": 14,
+        "win_before": 49.1,
+        "win_after": 48.7,
+        "accuracy": 99.4,
+        "label": null
       }
     },
     {
@@ -694,6 +848,13 @@
         "input_tokens": 1382,
         "output_tokens": 70,
         "seconds": 4.6
+      },
+      "review": {
+        "eval_cp": 11,
+        "win_before": 51.3,
+        "win_after": 51.0,
+        "accuracy": 99.8,
+        "label": null
       }
     },
     {
@@ -723,6 +884,13 @@
         "input_tokens": 1388,
         "output_tokens": 58,
         "seconds": 4.2
+      },
+      "review": {
+        "eval_cp": 83,
+        "win_before": 49.0,
+        "win_after": 42.4,
+        "accuracy": 75.3,
+        "label": "inaccuracy"
       }
     },
     {
@@ -752,6 +920,13 @@
         "input_tokens": 1382,
         "output_tokens": 70,
         "seconds": 4.8
+      },
+      "review": {
+        "eval_cp": 12,
+        "win_before": 57.6,
+        "win_after": 51.1,
+        "accuracy": 75.6,
+        "label": "inaccuracy"
       }
     },
     {
@@ -781,6 +956,13 @@
         "input_tokens": 1402,
         "output_tokens": 81,
         "seconds": 6.1
+      },
+      "review": {
+        "eval_cp": 8,
+        "win_before": 48.9,
+        "win_after": 49.3,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -810,6 +992,13 @@
         "input_tokens": 1395,
         "output_tokens": 51,
         "seconds": 5.0
+      },
+      "review": {
+        "eval_cp": 12,
+        "win_before": 50.7,
+        "win_after": 51.1,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -839,6 +1028,13 @@
         "input_tokens": 1419,
         "output_tokens": 61,
         "seconds": 4.0
+      },
+      "review": {
+        "eval_cp": 14,
+        "win_before": 48.9,
+        "win_after": 48.7,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -871,6 +1067,13 @@
         "input_tokens": 2920,
         "output_tokens": 143,
         "seconds": 7.7
+      },
+      "review": {
+        "eval_cp": -79,
+        "win_before": 51.3,
+        "win_after": 42.8,
+        "accuracy": 69.1,
+        "label": "inaccuracy"
       }
     },
     {
@@ -900,6 +1103,13 @@
         "input_tokens": 1413,
         "output_tokens": 71,
         "seconds": 3.9
+      },
+      "review": {
+        "eval_cp": -12,
+        "win_before": 57.2,
+        "win_after": 51.1,
+        "accuracy": 76.9,
+        "label": "inaccuracy"
       }
     },
     {
@@ -929,6 +1139,13 @@
         "input_tokens": 1476,
         "output_tokens": 87,
         "seconds": 5.4
+      },
+      "review": {
+        "eval_cp": -633,
+        "win_before": 48.9,
+        "win_after": 8.9,
+        "accuracy": 15.9,
+        "label": "blunder"
       }
     },
     {
@@ -958,6 +1175,13 @@
         "input_tokens": 1466,
         "output_tokens": 51,
         "seconds": 3.3
+      },
+      "review": {
+        "eval_cp": -620,
+        "win_before": 91.1,
+        "win_after": 90.7,
+        "accuracy": 99.2,
+        "label": null
       }
     },
     {
@@ -987,6 +1211,13 @@
         "input_tokens": 1484,
         "output_tokens": 101,
         "seconds": 4.7
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 9.3,
+        "win_after": 2.5,
+        "accuracy": 74.6,
+        "label": "inaccuracy"
       }
     },
     {
@@ -1016,6 +1247,13 @@
         "input_tokens": 1490,
         "output_tokens": 59,
         "seconds": 3.7
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 97.5,
+        "win_after": 97.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1045,6 +1283,13 @@
         "input_tokens": 1459,
         "output_tokens": 193,
         "seconds": 5.7
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 2.5,
+        "win_after": 2.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1074,6 +1319,13 @@
         "input_tokens": 1516,
         "output_tokens": 871,
         "seconds": 12.9
+      },
+      "review": {
+        "eval_cp": -579,
+        "win_before": 97.5,
+        "win_after": 89.4,
+        "accuracy": 70.2,
+        "label": "inaccuracy"
       }
     },
     {
@@ -1103,6 +1355,13 @@
         "input_tokens": 1489,
         "output_tokens": 93,
         "seconds": 5.7
+      },
+      "review": {
+        "eval_cp": -569,
+        "win_before": 10.6,
+        "win_after": 11.0,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1132,6 +1391,13 @@
         "input_tokens": 1476,
         "output_tokens": 1004,
         "seconds": 14.6
+      },
+      "review": {
+        "eval_cp": -371,
+        "win_before": 89.0,
+        "win_after": 79.7,
+        "accuracy": 66.4,
+        "label": "inaccuracy"
       }
     },
     {
@@ -1167,6 +1433,13 @@
         "input_tokens": 4598,
         "output_tokens": 361,
         "seconds": 16.7
+      },
+      "review": {
+        "eval_cp": -665,
+        "win_before": 20.3,
+        "win_after": 8.0,
+        "accuracy": 58.0,
+        "label": "mistake"
       }
     },
     {
@@ -1196,6 +1469,13 @@
         "input_tokens": 1483,
         "output_tokens": 397,
         "seconds": 11.1
+      },
+      "review": {
+        "eval_cp": -259,
+        "win_before": 92.0,
+        "win_after": 72.2,
+        "accuracy": 41.3,
+        "label": "blunder"
       }
     },
     {
@@ -1225,6 +1505,13 @@
         "input_tokens": 1514,
         "output_tokens": 93,
         "seconds": 5.6
+      },
+      "review": {
+        "eval_cp": -314,
+        "win_before": 27.8,
+        "win_after": 23.9,
+        "accuracy": 85.0,
+        "label": null
       }
     },
     {
@@ -1254,6 +1541,13 @@
         "input_tokens": 1480,
         "output_tokens": 64,
         "seconds": 3.6
+      },
+      "review": {
+        "eval_cp": -163,
+        "win_before": 76.1,
+        "win_after": 64.6,
+        "accuracy": 60.4,
+        "label": "mistake"
       }
     },
     {
@@ -1283,6 +1577,13 @@
         "input_tokens": 1487,
         "output_tokens": 205,
         "seconds": 5.1
+      },
+      "review": {
+        "eval_cp": -151,
+        "win_before": 35.4,
+        "win_after": 36.4,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1312,6 +1613,13 @@
         "input_tokens": 1377,
         "output_tokens": 58,
         "seconds": 4.5
+      },
+      "review": {
+        "eval_cp": -161,
+        "win_before": 63.6,
+        "win_after": 64.4,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1341,6 +1649,13 @@
         "input_tokens": 1469,
         "output_tokens": 127,
         "seconds": 8.7
+      },
+      "review": {
+        "eval_cp": -163,
+        "win_before": 35.6,
+        "win_after": 35.4,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1370,6 +1685,13 @@
         "input_tokens": 1481,
         "output_tokens": 114,
         "seconds": 3.8
+      },
+      "review": {
+        "eval_cp": -159,
+        "win_before": 64.6,
+        "win_after": 64.2,
+        "accuracy": 99.5,
+        "label": null
       }
     },
     {
@@ -1399,6 +1721,13 @@
         "input_tokens": 1511,
         "output_tokens": 70,
         "seconds": 8.9
+      },
+      "review": {
+        "eval_cp": -730,
+        "win_before": 35.8,
+        "win_after": 6.4,
+        "accuracy": 26.5,
+        "label": "blunder"
       }
     },
     {
@@ -1428,6 +1757,13 @@
         "input_tokens": 1492,
         "output_tokens": 69,
         "seconds": 3.7
+      },
+      "review": {
+        "eval_cp": -715,
+        "win_before": 93.6,
+        "win_after": 93.3,
+        "accuracy": 99.5,
+        "label": null
       }
     },
     {
@@ -1457,6 +1793,13 @@
         "input_tokens": 1463,
         "output_tokens": 375,
         "seconds": 7.2
+      },
+      "review": {
+        "eval_cp": -723,
+        "win_before": 6.7,
+        "win_after": 6.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1486,6 +1829,13 @@
         "input_tokens": 1506,
         "output_tokens": 109,
         "seconds": 5.1
+      },
+      "review": {
+        "eval_cp": -569,
+        "win_before": 93.5,
+        "win_after": 89.0,
+        "accuracy": 82.9,
+        "label": null
       }
     },
     {
@@ -1515,6 +1865,13 @@
         "input_tokens": 1430,
         "output_tokens": 53,
         "seconds": 4.3
+      },
+      "review": {
+        "eval_cp": -561,
+        "win_before": 11.0,
+        "win_after": 11.2,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1544,6 +1901,13 @@
         "input_tokens": 1491,
         "output_tokens": 85,
         "seconds": 4.1
+      },
+      "review": {
+        "eval_cp": -581,
+        "win_before": 88.8,
+        "win_after": 89.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1573,6 +1937,13 @@
         "input_tokens": 1530,
         "output_tokens": 219,
         "seconds": 6.1
+      },
+      "review": {
+        "eval_cp": -593,
+        "win_before": 10.5,
+        "win_after": 10.1,
+        "accuracy": 99.2,
+        "label": null
       }
     },
     {
@@ -1602,6 +1973,13 @@
         "input_tokens": 1509,
         "output_tokens": 174,
         "seconds": 5.9
+      },
+      "review": {
+        "eval_cp": -497,
+        "win_before": 89.9,
+        "win_after": 86.2,
+        "accuracy": 85.7,
+        "label": null
       }
     },
     {
@@ -1631,6 +2009,13 @@
         "input_tokens": 1516,
         "output_tokens": 52,
         "seconds": 6.4
+      },
+      "review": {
+        "eval_cp": -495,
+        "win_before": 13.8,
+        "win_after": 13.9,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1660,6 +2045,13 @@
         "input_tokens": 1528,
         "output_tokens": 121,
         "seconds": 8.5
+      },
+      "review": {
+        "eval_cp": -505,
+        "win_before": 86.1,
+        "win_after": 86.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1689,6 +2081,13 @@
         "input_tokens": 1535,
         "output_tokens": 56,
         "seconds": 4.1
+      },
+      "review": {
+        "eval_cp": -627,
+        "win_before": 13.5,
+        "win_after": 9.0,
+        "accuracy": 82.9,
+        "label": null
       }
     },
     {
@@ -1718,6 +2117,13 @@
         "input_tokens": 1543,
         "output_tokens": 52,
         "seconds": 4.6
+      },
+      "review": {
+        "eval_cp": -613,
+        "win_before": 91.0,
+        "win_after": 90.5,
+        "accuracy": 99.1,
+        "label": null
       }
     },
     {
@@ -1747,6 +2153,13 @@
         "input_tokens": 1505,
         "output_tokens": 104,
         "seconds": 4.2
+      },
+      "review": {
+        "eval_cp": -622,
+        "win_before": 9.5,
+        "win_after": 9.2,
+        "accuracy": 99.7,
+        "label": null
       }
     },
     {
@@ -1776,6 +2189,13 @@
         "input_tokens": 1535,
         "output_tokens": 259,
         "seconds": 18.1
+      },
+      "review": {
+        "eval_cp": -609,
+        "win_before": 90.8,
+        "win_after": 90.4,
+        "accuracy": 99.2,
+        "label": null
       }
     },
     {
@@ -1805,6 +2225,13 @@
         "input_tokens": 1512,
         "output_tokens": 62,
         "seconds": 5.3
+      },
+      "review": {
+        "eval_cp": -613,
+        "win_before": 9.6,
+        "win_after": 9.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -1834,6 +2261,13 @@
         "input_tokens": 1562,
         "output_tokens": 83,
         "seconds": 5.2
+      },
+      "review": {
+        "eval_cp": -580,
+        "win_before": 90.5,
+        "win_after": 89.4,
+        "accuracy": 96.2,
+        "label": null
       }
     },
     {
@@ -1863,6 +2297,13 @@
         "input_tokens": 1517,
         "output_tokens": 62,
         "seconds": 4.4
+      },
+      "review": {
+        "eval_cp": -705,
+        "win_before": 10.6,
+        "win_after": 6.9,
+        "accuracy": 85.9,
+        "label": null
       }
     },
     {
@@ -1892,6 +2333,13 @@
         "input_tokens": 1557,
         "output_tokens": 62,
         "seconds": 6.4
+      },
+      "review": {
+        "eval_cp": -591,
+        "win_before": 93.1,
+        "win_after": 89.8,
+        "accuracy": 87.4,
+        "label": null
       }
     },
     {
@@ -1921,6 +2369,13 @@
         "input_tokens": 1527,
         "output_tokens": 67,
         "seconds": 3.8
+      },
+      "review": {
+        "eval_cp": -675,
+        "win_before": 10.2,
+        "win_after": 7.7,
+        "accuracy": 90.3,
+        "label": null
       }
     },
     {
@@ -1950,6 +2405,13 @@
         "input_tokens": 1589,
         "output_tokens": 94,
         "seconds": 4.2
+      },
+      "review": {
+        "eval_cp": -430,
+        "win_before": 92.3,
+        "win_after": 83.0,
+        "accuracy": 66.5,
+        "label": "inaccuracy"
       }
     },
     {
@@ -1979,6 +2441,13 @@
         "input_tokens": 1542,
         "output_tokens": 58,
         "seconds": 4.3
+      },
+      "review": {
+        "eval_cp": -438,
+        "win_before": 17.0,
+        "win_after": 16.6,
+        "accuracy": 99.2,
+        "label": null
       }
     },
     {
@@ -2008,6 +2477,13 @@
         "input_tokens": 1568,
         "output_tokens": 63,
         "seconds": 4.6
+      },
+      "review": {
+        "eval_cp": -427,
+        "win_before": 83.4,
+        "win_after": 82.8,
+        "accuracy": 98.5,
+        "label": null
       }
     },
     {
@@ -2037,6 +2513,13 @@
         "input_tokens": 1541,
         "output_tokens": 286,
         "seconds": 10.0
+      },
+      "review": {
+        "eval_cp": -438,
+        "win_before": 17.2,
+        "win_after": 16.6,
+        "accuracy": 98.5,
+        "label": null
       }
     },
     {
@@ -2066,6 +2549,13 @@
         "input_tokens": 1569,
         "output_tokens": 98,
         "seconds": 4.1
+      },
+      "review": {
+        "eval_cp": -3,
+        "win_before": 83.4,
+        "win_after": 50.3,
+        "accuracy": 22.2,
+        "label": "blunder"
       }
     },
     {
@@ -2095,6 +2585,13 @@
         "input_tokens": 1566,
         "output_tokens": 98,
         "seconds": 4.6
+      },
+      "review": {
+        "eval_cp": 0,
+        "win_before": 49.7,
+        "win_after": 50.0,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2124,6 +2621,13 @@
         "input_tokens": 1586,
         "output_tokens": 554,
         "seconds": 11.0
+      },
+      "review": {
+        "eval_cp": 0,
+        "win_before": 50.0,
+        "win_after": 50.0,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2153,6 +2657,13 @@
         "input_tokens": 1574,
         "output_tokens": 56,
         "seconds": 4.0
+      },
+      "review": {
+        "eval_cp": -363,
+        "win_before": 50.0,
+        "win_after": 20.8,
+        "accuracy": 26.8,
+        "label": "blunder"
       }
     },
     {
@@ -2182,6 +2693,13 @@
         "input_tokens": 1607,
         "output_tokens": 60,
         "seconds": 7.1
+      },
+      "review": {
+        "eval_cp": -416,
+        "win_before": 79.2,
+        "win_after": 82.2,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2211,6 +2729,13 @@
         "input_tokens": 1582,
         "output_tokens": 108,
         "seconds": 4.9
+      },
+      "review": {
+        "eval_cp": -420,
+        "win_before": 17.8,
+        "win_after": 17.6,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2243,6 +2768,13 @@
         "input_tokens": 3221,
         "output_tokens": 188,
         "seconds": 15.0
+      },
+      "review": {
+        "eval_cp": -346,
+        "win_before": 82.4,
+        "win_after": 78.1,
+        "accuracy": 83.4,
+        "label": null
       }
     },
     {
@@ -2272,6 +2804,13 @@
         "input_tokens": 1585,
         "output_tokens": 63,
         "seconds": 4.6
+      },
+      "review": {
+        "eval_cp": -356,
+        "win_before": 21.9,
+        "win_after": 21.2,
+        "accuracy": 98.2,
+        "label": null
       }
     },
     {
@@ -2301,6 +2840,13 @@
         "input_tokens": 1622,
         "output_tokens": 181,
         "seconds": 6.7
+      },
+      "review": {
+        "eval_cp": -369,
+        "win_before": 78.8,
+        "win_after": 79.6,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2330,6 +2876,13 @@
         "input_tokens": 1592,
         "output_tokens": 58,
         "seconds": 5.5
+      },
+      "review": {
+        "eval_cp": -376,
+        "win_before": 20.4,
+        "win_after": 20.0,
+        "accuracy": 99.1,
+        "label": null
       }
     },
     {
@@ -2359,6 +2912,13 @@
         "input_tokens": 1622,
         "output_tokens": 419,
         "seconds": 14.0
+      },
+      "review": {
+        "eval_cp": -390,
+        "win_before": 80.0,
+        "win_after": 80.8,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2388,6 +2948,13 @@
         "input_tokens": 1604,
         "output_tokens": 53,
         "seconds": 6.0
+      },
+      "review": {
+        "eval_cp": -520,
+        "win_before": 19.2,
+        "win_after": 12.8,
+        "accuracy": 76.0,
+        "label": "inaccuracy"
       }
     },
     {
@@ -2417,6 +2984,13 @@
         "input_tokens": 1641,
         "output_tokens": 165,
         "seconds": 5.0
+      },
+      "review": {
+        "eval_cp": -12,
+        "win_before": 87.2,
+        "win_after": 51.1,
+        "accuracy": 19.3,
+        "label": "blunder"
       }
     },
     {
@@ -2446,6 +3020,13 @@
         "input_tokens": 1609,
         "output_tokens": 64,
         "seconds": 4.6
+      },
+      "review": {
+        "eval_cp": -12,
+        "win_before": 48.9,
+        "win_after": 48.9,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2475,6 +3056,13 @@
         "input_tokens": 1644,
         "output_tokens": 146,
         "seconds": 5.6
+      },
+      "review": {
+        "eval_cp": -16,
+        "win_before": 51.1,
+        "win_after": 51.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2504,6 +3092,13 @@
         "input_tokens": 1620,
         "output_tokens": 60,
         "seconds": 4.7
+      },
+      "review": {
+        "eval_cp": -20,
+        "win_before": 48.5,
+        "win_after": 48.2,
+        "accuracy": 99.4,
+        "label": null
       }
     },
     {
@@ -2533,6 +3128,13 @@
         "input_tokens": 1667,
         "output_tokens": 320,
         "seconds": 7.2
+      },
+      "review": {
+        "eval_cp": -9,
+        "win_before": 51.8,
+        "win_after": 50.8,
+        "accuracy": 96.6,
+        "label": null
       }
     },
     {
@@ -2562,6 +3164,13 @@
         "input_tokens": 1641,
         "output_tokens": 62,
         "seconds": 3.1
+      },
+      "review": {
+        "eval_cp": -378,
+        "win_before": 49.2,
+        "win_after": 19.9,
+        "accuracy": 26.7,
+        "label": "blunder"
       }
     },
     {
@@ -2591,6 +3200,13 @@
         "input_tokens": 1674,
         "output_tokens": 981,
         "seconds": 13.6
+      },
+      "review": {
+        "eval_cp": 851,
+        "win_before": 80.1,
+        "win_after": 4.2,
+        "accuracy": 1.6,
+        "label": "blunder"
       }
     },
     {
@@ -2620,6 +3236,13 @@
         "input_tokens": 1651,
         "output_tokens": 64,
         "seconds": 3.3
+      },
+      "review": {
+        "eval_cp": 854,
+        "win_before": 95.8,
+        "win_after": 95.9,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2649,6 +3272,13 @@
         "input_tokens": 1671,
         "output_tokens": 459,
         "seconds": 9.1
+      },
+      "review": {
+        "eval_cp": 912,
+        "win_before": 4.1,
+        "win_after": 3.4,
+        "accuracy": 97.6,
+        "label": null
       }
     },
     {
@@ -2678,6 +3308,13 @@
         "input_tokens": 1669,
         "output_tokens": 58,
         "seconds": 6.9
+      },
+      "review": {
+        "eval_cp": 907,
+        "win_before": 96.6,
+        "win_after": 96.6,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2707,6 +3344,13 @@
         "input_tokens": 1683,
         "output_tokens": 129,
         "seconds": 16.5
+      },
+      "review": {
+        "eval_cp": 926,
+        "win_before": 3.4,
+        "win_after": 3.2,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2736,6 +3380,13 @@
         "input_tokens": 1669,
         "output_tokens": 45,
         "seconds": 3.2
+      },
+      "review": {
+        "eval_cp": -472,
+        "win_before": 96.8,
+        "win_after": 15.0,
+        "accuracy": 0.8,
+        "label": "blunder"
       }
     },
     {
@@ -2765,6 +3416,13 @@
         "input_tokens": 1709,
         "output_tokens": 49,
         "seconds": 7.3
+      },
+      "review": {
+        "eval_cp": -550,
+        "win_before": 85.0,
+        "win_after": 88.3,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2794,6 +3452,13 @@
         "input_tokens": 1664,
         "output_tokens": 103,
         "seconds": 4.6
+      },
+      "review": {
+        "eval_cp": -583,
+        "win_before": 11.7,
+        "win_after": 10.5,
+        "accuracy": 95.8,
+        "label": null
       }
     },
     {
@@ -2823,6 +3488,13 @@
         "input_tokens": 1703,
         "output_tokens": 119,
         "seconds": 4.1
+      },
+      "review": {
+        "eval_cp": -57,
+        "win_before": 89.5,
+        "win_after": 55.2,
+        "accuracy": 21.0,
+        "label": "blunder"
       }
     },
     {
@@ -2852,6 +3524,13 @@
         "input_tokens": 1689,
         "output_tokens": 66,
         "seconds": 6.8
+      },
+      "review": {
+        "eval_cp": -433,
+        "win_before": 44.8,
+        "win_after": 16.9,
+        "accuracy": 28.5,
+        "label": "blunder"
       }
     },
     {
@@ -2881,6 +3560,13 @@
         "input_tokens": 1725,
         "output_tokens": 127,
         "seconds": 5.1
+      },
+      "review": {
+        "eval_cp": -472,
+        "win_before": 83.1,
+        "win_after": 85.0,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2910,6 +3596,13 @@
         "input_tokens": 1709,
         "output_tokens": 65,
         "seconds": 4.1
+      },
+      "review": {
+        "eval_cp": -588,
+        "win_before": 15.0,
+        "win_after": 10.3,
+        "accuracy": 82.0,
+        "label": null
       }
     },
     {
@@ -2939,6 +3632,13 @@
         "input_tokens": 1744,
         "output_tokens": 109,
         "seconds": 8.5
+      },
+      "review": {
+        "eval_cp": -602,
+        "win_before": 89.7,
+        "win_after": 90.2,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -2968,6 +3668,13 @@
         "input_tokens": 1706,
         "output_tokens": 116,
         "seconds": 3.1
+      },
+      "review": {
+        "eval_cp": -615,
+        "win_before": 9.8,
+        "win_after": 9.4,
+        "accuracy": 99.1,
+        "label": null
       }
     },
     {
@@ -2997,6 +3704,13 @@
         "input_tokens": 1728,
         "output_tokens": 254,
         "seconds": 6.2
+      },
+      "review": {
+        "eval_cp": -592,
+        "win_before": 90.6,
+        "win_after": 89.8,
+        "accuracy": 97.7,
+        "label": null
       }
     },
     {
@@ -3026,6 +3740,13 @@
         "input_tokens": 1716,
         "output_tokens": 118,
         "seconds": 5.6
+      },
+      "review": {
+        "eval_cp": -592,
+        "win_before": 10.2,
+        "win_after": 10.2,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3055,6 +3776,13 @@
         "input_tokens": 1733,
         "output_tokens": 376,
         "seconds": 10.3
+      },
+      "review": {
+        "eval_cp": -593,
+        "win_before": 89.8,
+        "win_after": 89.9,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3087,6 +3815,13 @@
         "input_tokens": 3479,
         "output_tokens": 98,
         "seconds": 10.9
+      },
+      "review": {
+        "eval_cp": -668,
+        "win_before": 10.1,
+        "win_after": 7.9,
+        "accuracy": 91.4,
+        "label": null
       }
     },
     {
@@ -3116,6 +3851,13 @@
         "input_tokens": 1730,
         "output_tokens": 568,
         "seconds": 9.0
+      },
+      "review": {
+        "eval_cp": -668,
+        "win_before": 92.1,
+        "win_after": 92.1,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3145,6 +3887,13 @@
         "input_tokens": 1723,
         "output_tokens": 59,
         "seconds": 2.9
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 7.9,
+        "win_after": 2.5,
+        "accuracy": 79.3,
+        "label": "inaccuracy"
       }
     },
     {
@@ -3174,6 +3923,13 @@
         "input_tokens": 1749,
         "output_tokens": 152,
         "seconds": 6.4
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 97.5,
+        "win_after": 97.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3203,6 +3959,13 @@
         "input_tokens": 1762,
         "output_tokens": 56,
         "seconds": 4.2
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 2.5,
+        "win_after": 2.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3232,6 +3995,13 @@
         "input_tokens": 1778,
         "output_tokens": 157,
         "seconds": 4.3
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 97.5,
+        "win_after": 97.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3261,6 +4031,13 @@
         "input_tokens": 1775,
         "output_tokens": 77,
         "seconds": 5.1
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 2.5,
+        "win_after": 2.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3290,6 +4067,13 @@
         "input_tokens": 1783,
         "output_tokens": 61,
         "seconds": 6.0
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 97.5,
+        "win_after": 97.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3319,6 +4103,13 @@
         "input_tokens": 1782,
         "output_tokens": 77,
         "seconds": 4.0
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 2.5,
+        "win_after": 2.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3348,6 +4139,13 @@
         "input_tokens": 1769,
         "output_tokens": 217,
         "seconds": 6.1
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 97.5,
+        "win_after": 97.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3377,6 +4175,13 @@
         "input_tokens": 1777,
         "output_tokens": 187,
         "seconds": 6.8
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 2.5,
+        "win_after": 2.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3406,6 +4211,13 @@
         "input_tokens": 1786,
         "output_tokens": 52,
         "seconds": 5.0
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 97.5,
+        "win_after": 97.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3435,6 +4247,13 @@
         "input_tokens": 1794,
         "output_tokens": 1235,
         "seconds": 24.1
+      },
+      "review": {
+        "eval_cp": -1000,
+        "win_before": 2.5,
+        "win_after": 2.5,
+        "accuracy": 100.0,
+        "label": null
       }
     },
     {
@@ -3464,6 +4283,13 @@
         "input_tokens": 1798,
         "output_tokens": 68,
         "seconds": 3.0
+      },
+      "review": {
+        "eval_cp": -559,
+        "win_before": 97.5,
+        "win_after": 88.7,
+        "accuracy": 68.0,
+        "label": "inaccuracy"
       }
     },
     {
@@ -3493,6 +4319,13 @@
         "input_tokens": 1808,
         "output_tokens": 71,
         "seconds": 4.1
+      },
+      "review": {
+        "eval_cp": -669,
+        "win_before": 11.3,
+        "win_after": 7.8,
+        "accuracy": 86.5,
+        "label": null
       }
     },
     {
@@ -3522,7 +4355,32 @@
         "input_tokens": 1840,
         "output_tokens": 62,
         "seconds": 3.9
+      },
+      "review": {
+        "eval_cp": -665,
+        "win_before": 92.2,
+        "win_after": 92.0,
+        "accuracy": 100.0,
+        "label": null
       }
     }
-  ]
+  ],
+  "review": {
+    "engine": "Stockfish 19",
+    "depth": 16,
+    "white": {
+      "accuracy": 55.5,
+      "acpl": 117,
+      "inaccuracies": 5,
+      "mistakes": 1,
+      "blunders": 9
+    },
+    "black": {
+      "accuracy": 60.6,
+      "acpl": 109,
+      "inaccuracies": 6,
+      "mistakes": 1,
+      "blunders": 8
+    }
+  }
 }

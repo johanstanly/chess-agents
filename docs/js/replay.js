@@ -5,6 +5,13 @@
  * 0 = starting position, diary.moves.length = final position.
  */
 
+/* Move grades saved in the diary by Stockfish, marked as on chess.com. */
+const GRADES = {
+  inaccuracy: { mark: "?!", name: "Inaccuracy" },
+  mistake: { mark: "?", name: "Mistake" },
+  blunder: { mark: "??", name: "Blunder" },
+};
+
 class Replay {
   constructor(board, ui) {
     this.board = board;
@@ -79,6 +86,14 @@ class Replay {
       this.ui.thought.textContent = "";
       this.ui.who.textContent = "";
     }
+
+    // Stockfish's grade of this move (see arena/review.py), if it was a slip.
+    const label = m && m.review ? m.review.label : null;
+    this.ui.grade.textContent = label
+      ? `${GRADES[label].mark} ${GRADES[label].name}: winning chances ` +
+        `${Math.round(m.review.win_before)}% → ${Math.round(m.review.win_after)}%`
+      : "";
+    this.ui.grade.className = label ? `grade ${label}` : "grade";
 
     this.ui.result.textContent = this.current === this.total ? d.result_text : "";
 
@@ -189,7 +204,15 @@ class MoveList {
         this.el.appendChild(row);
         if (m.color === "black") row.appendChild(this.cell("…", null));  // game starts with Black
       }
-      row.appendChild(this.cell(m.san, i + 1));
+      const cell = row.appendChild(this.cell(m.san, i + 1));
+      const label = m.review && m.review.label;
+      if (label) {
+        const mark = document.createElement("span");
+        mark.className = `ml-mark ${label}`;
+        mark.textContent = GRADES[label].mark;
+        mark.title = GRADES[label].name;
+        cell.appendChild(mark);
+      }
     });
   }
 

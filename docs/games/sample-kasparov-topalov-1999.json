@@ -41,7 +41,14 @@
       "fen_after": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
       "thought": "I claim the centre with my king's pawn.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 34,
+        "win_before": 53.6,
+        "win_after": 53.1,
+        "accuracy": 99.0,
+        "label": null
+      }
     },
     {
       "ply": 2,
@@ -64,7 +71,14 @@
       "fen_after": "rnbqkbnr/ppp1pppp/3p4/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
       "thought": "A flexible setup. I will put my bishop on g7 later.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 44,
+        "win_before": 46.9,
+        "win_after": 46.0,
+        "accuracy": 97.0,
+        "label": null
+      }
     },
     {
       "ply": 3,
@@ -87,7 +101,14 @@
       "fen_after": "rnbqkbnr/ppp1pppp/3p4/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2",
       "thought": "Pawn to d4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 56,
+        "win_before": 54.0,
+        "win_after": 55.1,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 4,
@@ -110,7 +131,14 @@
       "fen_after": "rnbqkb1r/ppp1pppp/3p1n2/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 1 3",
       "thought": "Knight to f6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 51,
+        "win_before": 44.9,
+        "win_after": 45.3,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 5,
@@ -133,7 +161,14 @@
       "fen_after": "rnbqkb1r/ppp1pppp/3p1n2/8/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq - 2 3",
       "thought": "Knight to c3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 52,
+        "win_before": 54.7,
+        "win_after": 54.8,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 6,
@@ -156,7 +191,14 @@
       "fen_after": "rnbqkb1r/ppp1pp1p/3p1np1/8/3PP3/2N5/PPP2PPP/R1BQKBNR w KQkq - 0 4",
       "thought": "Pawn to g6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 66,
+        "win_before": 45.2,
+        "win_after": 44.0,
+        "accuracy": 95.4,
+        "label": null
+      }
     },
     {
       "ply": 7,
@@ -179,7 +221,14 @@
       "fen_after": "rnbqkb1r/ppp1pp1p/3p1np1/8/3PP3/2N1B3/PPP2PPP/R2QKBNR b KQkq - 1 4",
       "thought": "Bishop to e3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 64,
+        "win_before": 56.0,
+        "win_after": 55.9,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 8,
@@ -202,7 +251,14 @@
       "fen_after": "rnbqk2r/ppp1ppbp/3p1np1/8/3PP3/2N1B3/PPP2PPP/R2QKBNR w KQkq - 2 5",
       "thought": "Bishop to g7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 79,
+        "win_before": 44.1,
+        "win_after": 42.8,
+        "accuracy": 95.1,
+        "label": null
+      }
     },
     {
       "ply": 9,
@@ -225,7 +281,14 @@
       "fen_after": "rnbqk2r/ppp1ppbp/3p1np1/8/3PP3/2N1B3/PPPQ1PPP/R3KBNR b KQkq - 3 5",
       "thought": "Queen and bishop line up to swap off Black's best bishop.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 73,
+        "win_before": 57.2,
+        "win_after": 56.7,
+        "accuracy": 98.6,
+        "label": null
+      }
     },
     {
       "ply": 10,
@@ -248,7 +311,14 @@
       "fen_after": "rnbqk2r/pp2ppbp/2pp1np1/8/3PP3/2N1B3/PPPQ1PPP/R3KBNR w KQkq - 0 6",
       "thought": "Pawn to c6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 70,
+        "win_before": 43.3,
+        "win_after": 43.6,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 11,
@@ -271,7 +341,14 @@
       "fen_after": "rnbqk2r/pp2ppbp/2pp1np1/8/3PP3/2N1BP2/PPPQ2PP/R3KBNR b KQkq - 0 6",
       "thought": "Pawn to f3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 36,
+        "win_before": 56.4,
+        "win_after": 53.3,
+        "accuracy": 88.0,
+        "label": null
+      }
     },
     {
       "ply": 12,
@@ -294,7 +371,14 @@
       "fen_after": "rnbqk2r/p3ppbp/2pp1np1/1p6/3PP3/2N1BP2/PPPQ2PP/R3KBNR w KQkq - 0 7",
       "thought": "Pawn to b5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 32,
+        "win_before": 46.7,
+        "win_after": 47.1,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 13,
@@ -317,7 +401,14 @@
       "fen_after": "rnbqk2r/p3ppbp/2pp1np1/1p6/3PP3/2N1BP2/PPPQN1PP/R3KB1R b KQkq - 1 7",
       "thought": "Knight to e2.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 30,
+        "win_before": 52.9,
+        "win_after": 52.8,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 14,
@@ -340,7 +431,14 @@
       "fen_after": "r1bqk2r/p2nppbp/2pp1np1/1p6/3PP3/2N1BP2/PPPQN1PP/R3KB1R w KQkq - 2 8",
       "thought": "Knight to d7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 37,
+        "win_before": 47.2,
+        "win_after": 46.6,
+        "accuracy": 98.2,
+        "label": null
+      }
     },
     {
       "ply": 15,
@@ -363,7 +461,14 @@
       "fen_after": "r1bqk2r/p2nppbp/2pp1npB/1p6/3PP3/2N2P2/PPPQN1PP/R3KB1R b KQkq - 3 8",
       "thought": "Offer to trade bishops so Black's king loses its guard.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 28,
+        "win_before": 53.4,
+        "win_after": 52.6,
+        "accuracy": 97.4,
+        "label": null
+      }
     },
     {
       "ply": 16,
@@ -386,7 +491,14 @@
       "fen_after": "r1bqk2r/p2npp1p/2pp1npb/1p6/3PP3/2N2P2/PPPQN1PP/R3KB1R w KQkq - 0 9",
       "thought": "Bishop takes Bishop on h6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 21,
+        "win_before": 47.4,
+        "win_after": 48.1,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 17,
@@ -409,7 +521,14 @@
       "fen_after": "r1bqk2r/p2npp1p/2pp1npQ/1p6/3PP3/2N2P2/PPP1N1PP/R3KB1R b KQkq - 0 9",
       "thought": "Queen takes Bishop on h6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 21,
+        "win_before": 51.9,
+        "win_after": 51.9,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 18,
@@ -432,7 +551,14 @@
       "fen_after": "r2qk2r/pb1npp1p/2pp1npQ/1p6/3PP3/2N2P2/PPP1N1PP/R3KB1R w KQkq - 1 10",
       "thought": "Bishop to b7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 13,
+        "win_before": 48.1,
+        "win_after": 48.8,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 19,
@@ -455,7 +581,14 @@
       "fen_after": "r2qk2r/pb1npp1p/2pp1npQ/1p6/3PP3/P1N2P2/1PP1N1PP/R3KB1R b KQkq - 0 10",
       "thought": "Pawn to a3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 2,
+        "win_before": 51.2,
+        "win_after": 50.2,
+        "accuracy": 96.6,
+        "label": null
+      }
     },
     {
       "ply": 20,
@@ -478,7 +611,14 @@
       "fen_after": "r2qk2r/pb1n1p1p/2pp1npQ/1p2p3/3PP3/P1N2P2/1PP1N1PP/R3KB1R w KQkq - 0 11",
       "thought": "Pawn to e5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 33,
+        "win_before": 49.8,
+        "win_after": 47.0,
+        "accuracy": 89.0,
+        "label": null
+      }
     },
     {
       "ply": 21,
@@ -501,7 +641,14 @@
       "fen_after": "r2qk2r/pb1n1p1p/2pp1npQ/1p2p3/3PP3/P1N2P2/1PP1N1PP/2KR1B1R b kq - 1 11",
       "thought": "I castle queenside and get my king to safety.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 32,
+        "win_before": 53.0,
+        "win_after": 52.9,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 22,
@@ -524,7 +671,14 @@
       "fen_after": "r3k2r/pb1nqp1p/2pp1npQ/1p2p3/3PP3/P1N2P2/1PP1N1PP/2KR1B1R w kq - 2 12",
       "thought": "Queen to e7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 30,
+        "win_before": 47.1,
+        "win_after": 47.2,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 23,
@@ -547,7 +701,14 @@
       "fen_after": "r3k2r/pb1nqp1p/2pp1npQ/1p2p3/3PP3/P1N2P2/1PP1N1PP/1K1R1B1R b kq - 3 12",
       "thought": "King to b1.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 34,
+        "win_before": 52.8,
+        "win_after": 53.1,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 24,
@@ -570,7 +731,14 @@
       "fen_after": "r3k2r/1b1nqp1p/p1pp1npQ/1p2p3/3PP3/P1N2P2/1PP1N1PP/1K1R1B1R w kq - 0 13",
       "thought": "Pawn to a6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 46,
+        "win_before": 46.9,
+        "win_after": 45.8,
+        "accuracy": 96.2,
+        "label": null
+      }
     },
     {
       "ply": 25,
@@ -593,7 +761,14 @@
       "fen_after": "r3k2r/1b1nqp1p/p1pp1npQ/1p2p3/3PP3/P1N2P2/1PP3PP/1KNR1B1R b kq - 1 13",
       "thought": "Knight to c1.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 23,
+        "win_before": 54.2,
+        "win_after": 52.1,
+        "accuracy": 92.0,
+        "label": null
+      }
     },
     {
       "ply": 26,
@@ -616,7 +791,14 @@
       "fen_after": "2kr3r/1b1nqp1p/p1pp1npQ/1p2p3/3PP3/P1N2P2/1PP3PP/1KNR1B1R w - - 2 14",
       "thought": "I castle queenside too. Both kings are now on the same side.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 52,
+        "win_before": 47.9,
+        "win_after": 45.2,
+        "accuracy": 89.7,
+        "label": null
+      }
     },
     {
       "ply": 27,
@@ -639,7 +821,14 @@
       "fen_after": "2kr3r/1b1nqp1p/p1pp1npQ/1p2p3/3PP3/PNN2P2/1PP3PP/1K1R1B1R b - - 3 14",
       "thought": "Knight to b3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 21,
+        "win_before": 54.8,
+        "win_after": 51.9,
+        "accuracy": 89.0,
+        "label": null
+      }
     },
     {
       "ply": 28,
@@ -662,7 +851,14 @@
       "fen_after": "2kr3r/1b1nqp1p/p1pp1npQ/1p6/3pP3/PNN2P2/1PP3PP/1K1R1B1R w - - 0 15",
       "thought": "Pawn takes Pawn on d4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 24,
+        "win_before": 48.1,
+        "win_after": 47.8,
+        "accuracy": 99.8,
+        "label": null
+      }
     },
     {
       "ply": 29,
@@ -685,7 +881,14 @@
       "fen_after": "2kr3r/1b1nqp1p/p1pp1npQ/1p6/3RP3/PNN2P2/1PP3PP/1K3B1R b - - 0 15",
       "thought": "Rook takes Pawn on d4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 21,
+        "win_before": 52.2,
+        "win_after": 51.9,
+        "accuracy": 99.8,
+        "label": null
+      }
     },
     {
       "ply": 30,
@@ -708,7 +911,14 @@
       "fen_after": "2kr3r/1b1nqp1p/p2p1npQ/1pp5/3RP3/PNN2P2/1PP3PP/1K3B1R w - - 0 16",
       "thought": "Pawn to c5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 22,
+        "win_before": 48.1,
+        "win_after": 48.0,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 31,
@@ -731,7 +941,14 @@
       "fen_after": "2kr3r/1b1nqp1p/p2p1npQ/1pp5/4P3/PNN2P2/1PP3PP/1K1R1B1R b - - 1 16",
       "thought": "Rook to d1.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 18,
+        "win_before": 52.0,
+        "win_after": 51.7,
+        "accuracy": 99.4,
+        "label": null
+      }
     },
     {
       "ply": 32,
@@ -754,7 +971,14 @@
       "fen_after": "2kr3r/1b2qp1p/pn1p1npQ/1pp5/4P3/PNN2P2/1PP3PP/1K1R1B1R w - - 2 17",
       "thought": "Knight to b6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 29,
+        "win_before": 48.3,
+        "win_after": 47.3,
+        "accuracy": 96.6,
+        "label": null
+      }
     },
     {
       "ply": 33,
@@ -777,7 +1001,14 @@
       "fen_after": "2kr3r/1b2qp1p/pn1p1npQ/1pp5/4P3/PNN2PP1/1PP4P/1K1R1B1R b - - 0 17",
       "thought": "Pawn to g3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 12,
+        "win_before": 52.7,
+        "win_after": 51.1,
+        "accuracy": 94.2,
+        "label": null
+      }
     },
     {
       "ply": 34,
@@ -800,7 +1031,14 @@
       "fen_after": "1k1r3r/1b2qp1p/pn1p1npQ/1pp5/4P3/PNN2PP1/1PP4P/1K1R1B1R w - - 1 18",
       "thought": "King to b8.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 27,
+        "win_before": 48.9,
+        "win_after": 47.5,
+        "accuracy": 95.0,
+        "label": null
+      }
     },
     {
       "ply": 35,
@@ -823,7 +1061,14 @@
       "fen_after": "1k1r3r/1b2qp1p/pn1p1npQ/Npp5/4P3/P1N2PP1/1PP4P/1K1R1B1R b - - 2 18",
       "thought": "Knight to a5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -17,
+        "win_before": 52.5,
+        "win_after": 48.4,
+        "accuracy": 84.3,
+        "label": null
+      }
     },
     {
       "ply": 36,
@@ -846,7 +1091,14 @@
       "fen_after": "bk1r3r/4qp1p/pn1p1npQ/Npp5/4P3/P1N2PP1/1PP4P/1K1R1B1R w - - 3 19",
       "thought": "Bishop to a8.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 0,
+        "win_before": 51.6,
+        "win_after": 50.0,
+        "accuracy": 94.2,
+        "label": null
+      }
     },
     {
       "ply": 37,
@@ -869,7 +1121,14 @@
       "fen_after": "bk1r3r/4qp1p/pn1p1npQ/Npp5/4P3/P1N2PPB/1PP4P/1K1R3R b - - 4 19",
       "thought": "Bishop to h3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -28,
+        "win_before": 50.0,
+        "win_after": 47.4,
+        "accuracy": 90.1,
+        "label": null
+      }
     },
     {
       "ply": 38,
@@ -892,7 +1151,14 @@
       "fen_after": "bk1r3r/4qp1p/pn3npQ/Nppp4/4P3/P1N2PPB/1PP4P/1K1R3R w - - 0 20",
       "thought": "Pawn to d5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -30,
+        "win_before": 52.6,
+        "win_after": 52.8,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 39,
@@ -915,7 +1181,14 @@
       "fen_after": "bk1r3r/4qp1p/pn3np1/Nppp4/4PQ2/P1N2PPB/1PP4P/1K1R3R b - - 1 20",
       "thought": "Check! Black's king has to step into the corner.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -37,
+        "win_before": 47.2,
+        "win_after": 46.6,
+        "accuracy": 98.2,
+        "label": null
+      }
     },
     {
       "ply": 40,
@@ -938,7 +1211,14 @@
       "fen_after": "b2r3r/k3qp1p/pn3np1/Nppp4/4PQ2/P1N2PPB/1PP4P/1K1R3R w - - 2 21",
       "thought": "King to a7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -39,
+        "win_before": 53.4,
+        "win_after": 53.6,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 41,
@@ -961,7 +1241,14 @@
       "fen_after": "b2r3r/k3qp1p/pn3np1/Nppp4/4PQ2/P1N2PPB/1PP4P/1K1RR3 b - - 3 21",
       "thought": "Rook to e1.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -38,
+        "win_before": 46.4,
+        "win_after": 46.5,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 42,
@@ -984,7 +1271,14 @@
       "fen_after": "b2r3r/k3qp1p/pn3np1/Npp5/3pPQ2/P1N2PPB/1PP4P/1K1RR3 w - - 0 22",
       "thought": "Pawn to d4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -39,
+        "win_before": 53.5,
+        "win_after": 53.6,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 43,
@@ -1007,7 +1301,14 @@
       "fen_after": "b2r3r/k3qp1p/pn3np1/NppN4/3pPQ2/P4PPB/1PP4P/1K1RR3 b - - 1 22",
       "thought": "Knight to d5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -31,
+        "win_before": 46.4,
+        "win_after": 47.1,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 44,
@@ -1030,7 +1331,14 @@
       "fen_after": "b2r3r/k3qp1p/p4np1/Nppn4/3pPQ2/P4PPB/1PP4P/1K1RR3 w - - 0 23",
       "thought": "Knight takes Knight on d5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -30,
+        "win_before": 52.9,
+        "win_after": 52.8,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 45,
@@ -1053,7 +1361,14 @@
       "fen_after": "b2r3r/k3qp1p/p4np1/NppP4/3p1Q2/P4PPB/1PP4P/1K1RR3 b - - 0 23",
       "thought": "Pawn takes Knight on d5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -30,
+        "win_before": 47.2,
+        "win_after": 47.2,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 46,
@@ -1076,7 +1391,14 @@
       "fen_after": "b2r3r/k4p1p/p2q1np1/NppP4/3p1Q2/P4PPB/1PP4P/1K1RR3 w - - 1 24",
       "thought": "Queen to d6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -28,
+        "win_before": 52.8,
+        "win_after": 52.6,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 47,
@@ -1099,7 +1421,14 @@
       "fen_after": "b2r3r/k4p1p/p2q1np1/NppP4/3R1Q2/P4PPB/1PP4P/1K2R3 b - - 0 24",
       "thought": "A rook sacrifice! If Black takes it, the king gets dragged into the open.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": -35,
+        "win_before": 47.4,
+        "win_after": 46.8,
+        "accuracy": 98.2,
+        "label": null
+      }
     },
     {
       "ply": 48,
@@ -1122,7 +1451,14 @@
       "fen_after": "b2r3r/k4p1p/p2q1np1/Np1P4/3p1Q2/P4PPB/1PP4P/1K2R3 w - - 0 25",
       "thought": "I'll take the free rook and see if the attack really works.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 46,
+        "win_before": 53.2,
+        "win_after": 45.8,
+        "accuracy": 72.4,
+        "label": "inaccuracy"
+      }
     },
     {
       "ply": 49,
@@ -1145,7 +1481,14 @@
       "fen_after": "b2r3r/k3Rp1p/p2q1np1/Np1P4/3p1Q2/P4PPB/1PP4P/1K6 b - - 1 25",
       "thought": "Check. The black king has nowhere safe to hide.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 55,
+        "win_before": 54.2,
+        "win_after": 55.0,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 50,
@@ -1168,7 +1511,14 @@
       "fen_after": "b2r3r/4Rp1p/pk1q1np1/Np1P4/3p1Q2/P4PPB/1PP4P/1K6 w - - 2 26",
       "thought": "King to b6.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 58,
+        "win_before": 45.0,
+        "win_after": 44.7,
+        "accuracy": 99.8,
+        "label": null
+      }
     },
     {
       "ply": 51,
@@ -1191,7 +1541,14 @@
       "fen_after": "b2r3r/4Rp1p/pk1q1np1/Np1P4/3Q4/P4PPB/1PP4P/1K6 b - - 0 26",
       "thought": "Queen takes Pawn on d4. Check!",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 164,
+        "win_before": 55.3,
+        "win_after": 64.7,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 52,
@@ -1214,7 +1571,14 @@
       "fen_after": "b2r3r/4Rp1p/p2q1np1/kp1P4/3Q4/P4PPB/1PP4P/1K6 w - - 0 27",
       "thought": "King takes Knight on a5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 98,
+        "win_before": 35.3,
+        "win_after": 41.1,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 53,
@@ -1237,7 +1601,14 @@
       "fen_after": "b2r3r/4Rp1p/p2q1np1/kp1P4/1P1Q4/P4PPB/2P4P/1K6 b - - 0 27",
       "thought": "Another check, pulling the king even further up the board.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 119,
+        "win_before": 58.9,
+        "win_after": 60.8,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 54,
@@ -1260,7 +1631,14 @@
       "fen_after": "b2r3r/4Rp1p/p2q1np1/1p1P4/kP1Q4/P4PPB/2P4P/1K6 w - - 1 28",
       "thought": "King to a4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 134,
+        "win_before": 39.2,
+        "win_after": 37.9,
+        "accuracy": 95.3,
+        "label": null
+      }
     },
     {
       "ply": 55,
@@ -1283,7 +1661,14 @@
       "fen_after": "b2r3r/4Rp1p/p2q1np1/1p1P4/kP6/P1Q2PPB/2P4P/1K6 b - - 2 28",
       "thought": "Queen to c3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 134,
+        "win_before": 62.1,
+        "win_after": 62.1,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 56,
@@ -1306,7 +1691,14 @@
       "fen_after": "b2r3r/4Rp1p/p4np1/1p1q4/kP6/P1Q2PPB/2P4P/1K6 w - - 0 29",
       "thought": "Queen takes Pawn on d5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 134,
+        "win_before": 37.9,
+        "win_after": 37.9,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 57,
@@ -1329,7 +1721,14 @@
       "fen_after": "b2r3r/R4p1p/p4np1/1p1q4/kP6/P1Q2PPB/2P4P/1K6 b - - 1 29",
       "thought": "Rook to a7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 89,
+        "win_before": 62.1,
+        "win_after": 58.1,
+        "accuracy": 84.6,
+        "label": null
+      }
     },
     {
       "ply": 58,
@@ -1352,7 +1751,14 @@
       "fen_after": "3r3r/Rb3p1p/p4np1/1p1q4/kP6/P1Q2PPB/2P4P/1K6 w - - 2 30",
       "thought": "Bishop to b7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 118,
+        "win_before": 41.9,
+        "win_after": 39.3,
+        "accuracy": 90.1,
+        "label": null
+      }
     },
     {
       "ply": 59,
@@ -1375,7 +1781,14 @@
       "fen_after": "3r3r/1R3p1p/p4np1/1p1q4/kP6/P1Q2PPB/2P4P/1K6 b - - 0 30",
       "thought": "Rook takes Bishop on b7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 73,
+        "win_before": 60.7,
+        "win_after": 56.7,
+        "accuracy": 84.5,
+        "label": null
+      }
     },
     {
       "ply": 60,
@@ -1398,7 +1811,14 @@
       "fen_after": "3r3r/1R3p1p/p4np1/1p6/kPq5/P1Q2PPB/2P4P/1K6 w - - 1 31",
       "thought": "Queen to c4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 75,
+        "win_before": 43.3,
+        "win_after": 43.1,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 61,
@@ -1421,7 +1841,14 @@
       "fen_after": "3r3r/1R3p1p/p4Qp1/1p6/kPq5/P4PPB/2P4P/1K6 b - - 0 31",
       "thought": "I win a knight while the king is stuck on my side of the board.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 79,
+        "win_before": 56.9,
+        "win_after": 57.2,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 62,
@@ -1444,7 +1871,14 @@
       "fen_after": "3r3r/1R3p1p/p4Qp1/1p6/1Pq5/k4PPB/2P4P/1K6 w - - 0 32",
       "thought": "King takes Pawn on a3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 394,
+        "win_before": 42.8,
+        "win_after": 19.0,
+        "accuracy": 34.4,
+        "label": "blunder"
+      }
     },
     {
       "ply": 63,
@@ -1467,7 +1901,14 @@
       "fen_after": "3r3r/1R3p1p/Q5p1/1p6/1Pq5/k4PPB/2P4P/1K6 b - - 0 32",
       "thought": "Queen takes Pawn on a6. Check!",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 439,
+        "win_before": 81.0,
+        "win_after": 83.4,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 64,
@@ -1490,7 +1931,14 @@
       "fen_after": "3r3r/1R3p1p/Q5p1/1p6/1kq5/5PPB/2P4P/1K6 w - - 0 33",
       "thought": "King takes Pawn on b4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 332,
+        "win_before": 16.6,
+        "win_after": 22.8,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 65,
@@ -1513,7 +1961,14 @@
       "fen_after": "3r3r/1R3p1p/Q5p1/1p6/1kq5/2P2PPB/7P/1K6 b - - 0 33",
       "thought": "Pawn to c3. Check!",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 333,
+        "win_before": 77.2,
+        "win_after": 77.3,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 66,
@@ -1536,7 +1991,14 @@
       "fen_after": "3r3r/1R3p1p/Q5p1/1p6/2q5/2k2PPB/7P/1K6 w - - 0 34",
       "thought": "King takes Pawn on c3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 431,
+        "win_before": 22.7,
+        "win_after": 17.0,
+        "accuracy": 78.3,
+        "label": "inaccuracy"
+      }
     },
     {
       "ply": 67,
@@ -1559,7 +2021,14 @@
       "fen_after": "3r3r/1R3p1p/6p1/1p6/2q5/2k2PPB/7P/QK6 b - - 1 34",
       "thought": "Queen to a1. Check!",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 430,
+        "win_before": 83.0,
+        "win_after": 83.0,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 68,
@@ -1582,7 +2051,14 @@
       "fen_after": "3r3r/1R3p1p/6p1/1p6/2q5/5PPB/3k3P/QK6 w - - 2 35",
       "thought": "King to d2.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 420,
+        "win_before": 17.0,
+        "win_after": 17.6,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 69,
@@ -1605,7 +2081,14 @@
       "fen_after": "3r3r/1R3p1p/6p1/1p6/2q5/5PPB/1Q1k3P/1K6 b - - 3 35",
       "thought": "Queen to b2. Check!",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 430,
+        "win_before": 82.4,
+        "win_after": 83.0,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 70,
@@ -1628,7 +2111,14 @@
       "fen_after": "3r3r/1R3p1p/6p1/1p6/2q5/5PPB/1Q5P/1K1k4 w - - 4 36",
       "thought": "King to d1.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 410,
+        "win_before": 17.0,
+        "win_after": 18.1,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 71,
@@ -1651,7 +2141,14 @@
       "fen_after": "3r3r/1R3p1p/6p1/1p6/2q5/5PP1/1Q5P/1K1k1B2 b - - 5 36",
       "thought": "A quiet move with a sharp idea: my bishop now attacks Black's queen.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 387,
+        "win_before": 81.9,
+        "win_after": 80.6,
+        "accuracy": 95.4,
+        "label": null
+      }
     },
     {
       "ply": 72,
@@ -1674,7 +2171,14 @@
       "fen_after": "7r/1R3p1p/6p1/1p6/2q5/5PP1/1Q1r3P/1K1k1B2 w - - 6 37",
       "thought": "Rook to d2.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 519,
+        "win_before": 19.4,
+        "win_after": 12.9,
+        "accuracy": 75.6,
+        "label": "inaccuracy"
+      }
     },
     {
       "ply": 73,
@@ -1697,7 +2201,14 @@
       "fen_after": "7r/3R1p1p/6p1/1p6/2q5/5PP1/1Q1r3P/1K1k1B2 b - - 7 37",
       "thought": "Rook to d7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 515,
+        "win_before": 87.1,
+        "win_after": 86.9,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 74,
@@ -1720,7 +2231,14 @@
       "fen_after": "7r/3r1p1p/6p1/1p6/2q5/5PP1/1Q5P/1K1k1B2 w - - 0 38",
       "thought": "Rook takes Rook on d7.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 512,
+        "win_before": 13.1,
+        "win_after": 13.2,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 75,
@@ -1743,7 +2261,14 @@
       "fen_after": "7r/3r1p1p/6p1/1p6/2B5/5PP1/1Q5P/1K1k4 b - - 0 38",
       "thought": "Bishop takes Queen on c4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 488,
+        "win_before": 86.8,
+        "win_after": 85.8,
+        "accuracy": 96.4,
+        "label": null
+      }
     },
     {
       "ply": 76,
@@ -1766,7 +2291,14 @@
       "fen_after": "7r/3r1p1p/6p1/8/2p5/5PP1/1Q5P/1K1k4 w - - 0 39",
       "thought": "Pawn takes Bishop on c4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 482,
+        "win_before": 14.2,
+        "win_after": 14.5,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 77,
@@ -1789,7 +2321,14 @@
       "fen_after": "7Q/3r1p1p/6p1/8/2p5/5PP1/7P/1K1k4 b - - 0 39",
       "thought": "Queen takes Rook on h8.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 452,
+        "win_before": 85.5,
+        "win_after": 84.1,
+        "accuracy": 94.8,
+        "label": null
+      }
     },
     {
       "ply": 78,
@@ -1812,7 +2351,14 @@
       "fen_after": "7Q/5p1p/6p1/8/2p5/3r1PP1/7P/1K1k4 w - - 1 40",
       "thought": "Rook to d3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 481,
+        "win_before": 15.9,
+        "win_after": 14.5,
+        "accuracy": 95.0,
+        "label": null
+      }
     },
     {
       "ply": 79,
@@ -1835,7 +2381,14 @@
       "fen_after": "Q7/5p1p/6p1/8/2p5/3r1PP1/7P/1K1k4 b - - 2 40",
       "thought": "Queen to a8.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 388,
+        "win_before": 85.5,
+        "win_after": 80.7,
+        "accuracy": 81.6,
+        "label": null
+      }
     },
     {
       "ply": 80,
@@ -1858,7 +2411,14 @@
       "fen_after": "Q7/5p1p/6p1/8/8/2pr1PP1/7P/1K1k4 w - - 0 41",
       "thought": "Pawn to c3.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 526,
+        "win_before": 19.3,
+        "win_after": 12.6,
+        "accuracy": 74.8,
+        "label": "inaccuracy"
+      }
     },
     {
       "ply": 81,
@@ -1881,7 +2441,14 @@
       "fen_after": "8/5p1p/6p1/8/Q7/2pr1PP1/7P/1K1k4 b - - 1 41",
       "thought": "Queen to a4. Check!",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 534,
+        "win_before": 87.4,
+        "win_after": 87.7,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 82,
@@ -1904,7 +2471,14 @@
       "fen_after": "8/5p1p/6p1/8/Q7/2pr1PP1/7P/1K2k3 w - - 2 42",
       "thought": "King to e1.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 562,
+        "win_before": 12.3,
+        "win_after": 11.2,
+        "accuracy": 96.3,
+        "label": null
+      }
     },
     {
       "ply": 83,
@@ -1927,7 +2501,14 @@
       "fen_after": "8/5p1p/6p1/8/Q4P2/2pr2P1/7P/1K2k3 b - - 0 42",
       "thought": "Pawn to f4.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 518,
+        "win_before": 88.8,
+        "win_after": 87.1,
+        "accuracy": 93.6,
+        "label": null
+      }
     },
     {
       "ply": 84,
@@ -1950,7 +2531,14 @@
       "fen_after": "8/7p/6p1/5p2/Q4P2/2pr2P1/7P/1K2k3 w - - 0 43",
       "thought": "Pawn to f5.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 558,
+        "win_before": 12.9,
+        "win_after": 11.4,
+        "accuracy": 94.2,
+        "label": null
+      }
     },
     {
       "ply": 85,
@@ -1973,7 +2561,14 @@
       "fen_after": "8/7p/6p1/5p2/Q4P2/2pr2P1/7P/2K1k3 b - - 1 43",
       "thought": "King to c1.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 577,
+        "win_before": 88.6,
+        "win_after": 89.3,
+        "accuracy": 100.0,
+        "label": null
+      }
     },
     {
       "ply": 86,
@@ -1996,7 +2591,14 @@
       "fen_after": "8/7p/6p1/5p2/Q4P2/2p3P1/3r3P/2K1k3 w - - 2 44",
       "thought": "Rook to d2.",
       "thought_source": "move_description",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 598,
+        "win_before": 10.7,
+        "win_after": 10.0,
+        "accuracy": 97.8,
+        "label": null
+      }
     },
     {
       "ply": 87,
@@ -2019,7 +2621,32 @@
       "fen_after": "8/Q6p/6p1/5p2/5P2/2p3P1/3r3P/2K1k3 b - - 3 44",
       "thought": "Black can no longer stop my passed pawns and threats. Black resigns.",
       "thought_source": "sample_note",
-      "illegal_attempts": 0
+      "illegal_attempts": 0,
+      "review": {
+        "eval_cp": 617,
+        "win_before": 90.0,
+        "win_after": 90.7,
+        "accuracy": 100.0,
+        "label": null
+      }
     }
-  ]
+  ],
+  "review": {
+    "engine": "Stockfish 19",
+    "depth": 16,
+    "white": {
+      "accuracy": 97.0,
+      "acpl": 12,
+      "inaccuracies": 0,
+      "mistakes": 0,
+      "blunders": 0
+    },
+    "black": {
+      "accuracy": 90.8,
+      "acpl": 26,
+      "inaccuracies": 4,
+      "mistakes": 0,
+      "blunders": 1
+    }
+  }
 }

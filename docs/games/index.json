@@ -23,6 +23,17 @@
       "moves": 114
     },
     {
+      "id": "2026-09-30-1222-vs-stockfish",
+      "file": "2026-09-30-1222-vs-stockfish.json",
+      "title": "Claude A vs Stockfish (skill 0) (sonnet, 30 Sep 2026)",
+      "kind": "ai",
+      "date": "2026-09-30",
+      "white": "Claude A",
+      "black": "Stockfish (skill 0)",
+      "result_text": "Black wins by checkmate",
+      "moves": 48
+    },
+    {
       "id": "sample-kasparov-topalov-1999",
       "file": "sample-kasparov-topalov-1999.json",
       "title": "Kasparov vs Topalov, 1999 - Kasparov's Immortal",

@@ -127,6 +127,23 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
 .move { font-size: 26px; font-weight: 700; margin: 4px 0 2px; }
 .who { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
 .thought { font-size: 15px; line-height: 1.45; }
+/* Stockfish's move grades, coloured as on chess.com. */
+:root { --inaccuracy: #f7c631; --mistake: #e58f2a; --blunder: #ca3431; }
+.grade { font-size: 13px; font-weight: 600; min-height: 0; }
+.grade:empty { display: none; }
+.grade.inaccuracy, .review-counts .inaccuracy, .ml-mark.inaccuracy { color: var(--inaccuracy); }
+.grade.mistake, .review-counts .mistake, .ml-mark.mistake { color: var(--mistake); }
+.grade.blunder, .review-counts .blunder, .ml-mark.blunder { color: var(--blunder); }
+.ml-mark { margin-left: 3px; font-weight: 800; }
+.review-card { margin-top: 12px; background: var(--panel-bg); border-radius: 8px; padding: 10px 14px; }
+.review-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); }
+.review-row { display: grid; grid-template-columns: 22px 1fr auto auto; gap: 8px; align-items: center;
+              margin-top: 6px; font-size: 14px; }
+.review-row img { width: 22px; height: 22px; }
+.review-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.review-acc { font-weight: 700; font-size: 16px; }
+.review-counts { display: flex; gap: 8px; font-size: 13px; }
+.review-note { font-size: 11px; color: var(--text-dim); margin-top: 8px; }
 .result { margin-top: 10px; font-weight: 700; color: var(--accent); }
 
 .check { margin-top: 12px; font-size: 13px; font-weight: 600; }

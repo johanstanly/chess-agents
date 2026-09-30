@@ -68,6 +68,7 @@
       <div class="move-info" id="move-info">
         <div class="counter" id="counter"></div>
         <div class="move" id="move"></div>
+        <div class="grade" id="grade"></div>
         <!-- The player's thinking, shown as a speech bubble from their king icon. -->
         <div class="thought-card" id="thought-card" hidden>
           <img class="thought-avatar" id="thought-avatar" alt="">
@@ -78,6 +79,13 @@
           </div>
         </div>
         <div class="result" id="result"></div>
+      </div>
+
+      <!-- Game review: each player's accuracy, graded by Stockfish (arena/review.py). -->
+      <div class="review-card" id="review-card" hidden>
+        <div class="review-title">Game review</div>
+        <div class="review-rows" id="review-rows"></div>
+        <div class="review-note">Graded by Stockfish, using Lichess's accuracy formula.</div>
       </div>
 
       <div class="engine-line" id="engine-line">Stockfish is starting…</div>
@@ -114,7 +122,7 @@
   board.flipListeners.push(updateBars);
   const replay = new Replay(board, {
     players: $("players"), counter: $("counter"), move: $("move"), who: $("who"),
-    thought: $("thought"), result: $("result"), check: $("check"),
+    thought: $("thought"), result: $("result"), check: $("check"), grade: $("grade"),
   });
   const autoplay = new Autoplay(replay, (playing) => {
     $("play").textContent = playing ? "⏸ Pause" : "▶ Play";
@@ -212,6 +220,24 @@
     bubble.show(m.to, `${player} · ${m.move_number}${dots} ${m.san}`, m.thought, m.color);
   }
 
+  /* The game review card: accuracy and counts of ?! ? ?? for each player. */
+  function showReview(d) {
+    $("review-card").hidden = !d.review;
+    if (!d.review) return;
+    const rows = ["white", "black"].map((color) => {
+      const r = d.review[color];
+      const row = document.createElement("div");
+      row.className = "review-row";
+      row.innerHTML = `<img alt="" src="pieces/${color[0]}K.svg"><span class="review-name"></span>` +
+        `<span class="review-acc">${r.accuracy.toFixed(1)}%</span>` +
+        `<span class="review-counts"><b class="inaccuracy">?! ${r.inaccuracies}</b>` +
+        `<b class="mistake">? ${r.mistakes}</b><b class="blunder">?? ${r.blunders}</b></span>`;
+      row.querySelector(".review-name").textContent = d[color].name;
+      return row;
+    });
+    $("review-rows").replaceChildren(...rows);
+  }
+
   // Using any control stops autoplay; moving through the game leaves analysis.
   function stopEverything() { autoplay.stop(); analysis.exit(); }
 
@@ -239,6 +265,7 @@
     stopEverything();
     await replay.load(file);
     moveList.build(replay.diary);
+    showReview(replay.diary);
     positionChanged();
   }
 
