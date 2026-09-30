@@ -59,7 +59,8 @@
         "win_before": 53.6,
         "win_after": 53.1,
         "accuracy": 99.0,
-        "label": null
+        "label": null,
+        "best": "e4"
       }
     },
     {
@@ -95,7 +96,8 @@
         "win_before": 46.9,
         "win_after": 47.1,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "e5"
       }
     },
     {
@@ -131,7 +133,8 @@
         "win_before": 52.9,
         "win_after": 53.0,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Nf3"
       }
     },
     {
@@ -167,7 +170,8 @@
         "win_before": 47.0,
         "win_after": 47.4,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Nc6"
       }
     },
     {
@@ -203,7 +207,8 @@
         "win_before": 52.6,
         "win_after": 52.9,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Nc3"
       }
     },
     {
@@ -239,7 +244,8 @@
         "win_before": 47.1,
         "win_after": 44.6,
         "accuracy": 90.5,
-        "label": null
+        "label": null,
+        "best": "e6"
       }
     },
     {
@@ -275,7 +281,8 @@
         "win_before": 55.4,
         "win_after": 23.9,
         "accuracy": 24.0,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Bxc6"
       }
     },
     {
@@ -311,7 +318,8 @@
         "win_before": 76.1,
         "win_after": 45.7,
         "accuracy": 25.2,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "b5"
       }
     },
     {
@@ -347,7 +355,8 @@
         "win_before": 54.3,
         "win_after": 29.4,
         "accuracy": 32.7,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Bxc6"
       }
     },
     {
@@ -383,7 +392,8 @@
         "win_before": 70.6,
         "win_after": 72.6,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "b5"
       }
     },
     {
@@ -419,7 +429,8 @@
         "win_before": 27.4,
         "win_after": 22.6,
         "accuracy": 81.7,
-        "label": null
+        "label": null,
+        "best": "e5"
       }
     },
     {
@@ -455,7 +466,8 @@
         "win_before": 77.4,
         "win_after": 49.3,
         "accuracy": 28.2,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "c4"
       }
     },
     {
@@ -491,7 +503,8 @@
         "win_before": 50.7,
         "win_after": 50.7,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "c3"
       }
     },
     {
@@ -527,7 +540,8 @@
         "win_before": 49.3,
         "win_after": 49.9,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "c4"
       }
     },
     {
@@ -563,7 +577,8 @@
         "win_before": 50.1,
         "win_after": 48.9,
         "accuracy": 95.8,
-        "label": null
+        "label": null,
+        "best": "Qe2"
       }
     },
     {
@@ -599,7 +614,8 @@
         "win_before": 51.1,
         "win_after": 46.6,
         "accuracy": 82.6,
-        "label": null
+        "label": null,
+        "best": "g6"
       }
     },
     {
@@ -635,7 +651,8 @@
         "win_before": 53.4,
         "win_after": 51.2,
         "accuracy": 91.6,
-        "label": null
+        "label": null,
+        "best": "d4"
       }
     },
     {
@@ -671,7 +688,8 @@
         "win_before": 48.8,
         "win_after": 47.7,
         "accuracy": 96.2,
-        "label": null
+        "label": null,
+        "best": "c4"
       }
     },
     {
@@ -707,7 +725,8 @@
         "win_before": 52.3,
         "win_after": 51.7,
         "accuracy": 98.1,
-        "label": null
+        "label": null,
+        "best": "d4"
       }
     },
     {
@@ -743,7 +762,8 @@
         "win_before": 48.3,
         "win_after": 42.2,
         "accuracy": 76.9,
-        "label": "inaccuracy"
+        "label": "inaccuracy",
+        "best": "exd4"
       }
     },
     {
@@ -779,7 +799,8 @@
         "win_before": 57.8,
         "win_after": 47.3,
         "accuracy": 63.3,
-        "label": "mistake"
+        "label": "mistake",
+        "best": "d5"
       }
     },
     {
@@ -815,7 +836,8 @@
         "win_before": 52.7,
         "win_after": 52.9,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "dxc5"
       }
     },
     {
@@ -851,7 +873,8 @@
         "win_before": 47.1,
         "win_after": 46.4,
         "accuracy": 97.8,
-        "label": null
+        "label": null,
+        "best": "Qxd8"
       }
     },
     {
@@ -887,7 +910,8 @@
         "win_before": 53.6,
         "win_after": 50.6,
         "accuracy": 88.2,
-        "label": null
+        "label": null,
+        "best": "Qc7"
       }
     },
     {
@@ -923,7 +947,8 @@
         "win_before": 49.4,
         "win_after": 10.2,
         "accuracy": 16.5,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Bc2"
       }
     },
     {
@@ -959,7 +984,8 @@
         "win_before": 89.8,
         "win_after": 46.5,
         "accuracy": 13.5,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "bxc4"
       }
     },
     {
@@ -998,7 +1024,8 @@
         "win_before": 53.5,
         "win_after": 10.9,
         "accuracy": 14.0,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Nb6"
       }
     },
     {
@@ -1034,7 +1061,8 @@
         "win_before": 89.1,
         "win_after": 50.7,
         "accuracy": 17.2,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "bxc4"
       }
     },
     {
@@ -1070,7 +1098,8 @@
         "win_before": 49.3,
         "win_after": 11.1,
         "accuracy": 17.4,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Ncd2"
       }
     },
     {
@@ -1106,7 +1135,8 @@
         "win_before": 88.9,
         "win_after": 89.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Qc7"
       }
     },
     {
@@ -1142,7 +1172,8 @@
         "win_before": 10.5,
         "win_after": 11.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Nxe5"
       }
     },
     {
@@ -1178,7 +1209,8 @@
         "win_before": 88.5,
         "win_after": 2.9,
         "accuracy": 0.3,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Qc7"
       }
     },
     {
@@ -1214,7 +1246,8 @@
         "win_before": 97.1,
         "win_after": 95.7,
         "accuracy": 94.9,
-        "label": null
+        "label": null,
+        "best": "cxd4"
       }
     },
     {
@@ -1250,7 +1283,8 @@
         "win_before": 4.3,
         "win_after": 3.9,
         "accuracy": 99.5,
-        "label": null
+        "label": null,
+        "best": "cxd4"
       }
     },
     {
@@ -1286,7 +1320,8 @@
         "win_before": 96.1,
         "win_after": 90.8,
         "accuracy": 79.9,
-        "label": "inaccuracy"
+        "label": "inaccuracy",
+        "best": "cxd4"
       }
     },
     {
@@ -1325,7 +1360,8 @@
         "win_before": 9.2,
         "win_after": 8.7,
         "accuracy": 99.0,
-        "label": null
+        "label": null,
+        "best": "Rxd4"
       }
     },
     {
@@ -1361,7 +1397,8 @@
         "win_before": 91.3,
         "win_after": 91.3,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "cxd4"
       }
     },
     {
@@ -1397,7 +1434,8 @@
         "win_before": 8.7,
         "win_after": 8.8,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Nxe4"
       }
     },
     {
@@ -1433,7 +1471,8 @@
         "win_before": 91.2,
         "win_after": 84.9,
         "accuracy": 76.2,
-        "label": "inaccuracy"
+        "label": "inaccuracy",
+        "best": "d5"
       }
     },
     {
@@ -1469,7 +1508,8 @@
         "win_before": 15.1,
         "win_after": 13.8,
         "accuracy": 95.4,
-        "label": null
+        "label": null,
+        "best": "Bxe4"
       }
     },
     {
@@ -1505,7 +1545,8 @@
         "win_before": 86.2,
         "win_after": 64.7,
         "accuracy": 38.2,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Re1"
       }
     },
     {
@@ -1541,7 +1582,8 @@
         "win_before": 35.3,
         "win_after": 7.6,
         "accuracy": 28.6,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Bb7"
       }
     },
     {
@@ -1577,7 +1619,8 @@
         "win_before": 92.4,
         "win_after": 92.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Bxd5"
       }
     },
     {
@@ -1613,7 +1656,8 @@
         "win_before": 7.5,
         "win_after": 6.8,
         "accuracy": 97.9,
-        "label": null
+        "label": null,
+        "best": "Rc8"
       }
     },
     {
@@ -1649,7 +1693,8 @@
         "win_before": 93.2,
         "win_after": 93.0,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Nc6"
       }
     },
     {
@@ -1685,7 +1730,8 @@
         "win_before": 7.0,
         "win_after": 5.4,
         "accuracy": 93.9,
-        "label": null
+        "label": null,
+        "best": "Kf8"
       }
     },
     {
@@ -1721,7 +1767,8 @@
         "win_before": 94.6,
         "win_after": 93.9,
         "accuracy": 97.7,
-        "label": null
+        "label": null,
+        "best": "Nc6"
       }
     },
     {
@@ -1757,7 +1804,8 @@
         "win_before": 6.1,
         "win_after": 6.7,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "bxc4"
       }
     },
     {
@@ -1796,7 +1844,8 @@
         "win_before": 93.3,
         "win_after": 7.4,
         "accuracy": 0.3,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Bb3"
       }
     },
     {
@@ -1832,7 +1881,8 @@
         "win_before": 92.6,
         "win_after": 5.6,
         "accuracy": 0.2,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Rxd1+"
       }
     },
     {
@@ -1868,7 +1918,8 @@
         "win_before": 94.4,
         "win_after": 94.0,
         "accuracy": 99.2,
-        "label": null
+        "label": null,
+        "best": "Nxc4"
       }
     },
     {
@@ -1904,7 +1955,8 @@
         "win_before": 6.0,
         "win_after": 6.3,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "bxc4"
       }
     },
     {
@@ -1940,7 +1992,8 @@
         "win_before": 93.7,
         "win_after": 93.2,
         "accuracy": 98.9,
-        "label": null
+        "label": null,
+        "best": "Rc1"
       }
     },
     {
@@ -1976,7 +2029,8 @@
         "win_before": 6.8,
         "win_after": 6.4,
         "accuracy": 99.2,
-        "label": null
+        "label": null,
+        "best": "Bf6"
       }
     },
     {
@@ -2012,7 +2066,8 @@
         "win_before": 93.6,
         "win_after": 92.9,
         "accuracy": 97.6,
-        "label": null
+        "label": null,
+        "best": "Kf1"
       }
     },
     {
@@ -2048,7 +2103,8 @@
         "win_before": 7.1,
         "win_after": 2.5,
         "accuracy": 82.0,
-        "label": null
+        "label": null,
+        "best": "Kg8"
       }
     },
     {
@@ -2084,7 +2140,8 @@
         "win_before": 97.5,
         "win_after": 93.9,
         "accuracy": 86.0,
-        "label": null
+        "label": null,
+        "best": "Rd8+"
       }
     },
     {
@@ -2123,7 +2180,8 @@
         "win_before": 6.1,
         "win_after": 5.6,
         "accuracy": 98.8,
-        "label": null
+        "label": null,
+        "best": "Kg8"
       }
     },
     {
@@ -2159,7 +2217,8 @@
         "win_before": 94.4,
         "win_after": 37.6,
         "accuracy": 6.5,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "f4"
       }
     },
     {
@@ -2195,7 +2254,8 @@
         "win_before": 62.4,
         "win_after": 63.2,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kxg7"
       }
     },
     {
@@ -2231,7 +2291,8 @@
         "win_before": 36.8,
         "win_after": 36.1,
         "accuracy": 98.0,
-        "label": null
+        "label": null,
+        "best": "g3"
       }
     },
     {
@@ -2267,7 +2328,8 @@
         "win_before": 63.9,
         "win_after": 63.2,
         "accuracy": 98.0,
-        "label": null
+        "label": null,
+        "best": "Kf6"
       }
     },
     {
@@ -2303,7 +2365,8 @@
         "win_before": 36.8,
         "win_after": 35.5,
         "accuracy": 95.4,
-        "label": null
+        "label": null,
+        "best": "Kg2"
       }
     },
     {
@@ -2339,7 +2402,8 @@
         "win_before": 64.5,
         "win_after": 49.2,
         "accuracy": 50.8,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Ke5"
       }
     },
     {
@@ -2375,7 +2439,8 @@
         "win_before": 50.8,
         "win_after": 30.0,
         "accuracy": 39.5,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "f4"
       }
     },
     {
@@ -2411,7 +2476,8 @@
         "win_before": 70.0,
         "win_after": 8.1,
         "accuracy": 4.8,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Ke5"
       }
     },
     {
@@ -2447,7 +2513,8 @@
         "win_before": 91.9,
         "win_after": 92.7,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "cxd4"
       }
     },
     {
@@ -2483,7 +2550,8 @@
         "win_before": 7.3,
         "win_after": 6.5,
         "accuracy": 97.5,
-        "label": null
+        "label": null,
+        "best": "Ke6"
       }
     },
     {
@@ -2519,7 +2587,8 @@
         "win_before": 93.5,
         "win_after": 89.1,
         "accuracy": 83.0,
-        "label": null
+        "label": null,
+        "best": "f4"
       }
     },
     {
@@ -2555,7 +2624,8 @@
         "win_before": 10.9,
         "win_after": 9.0,
         "accuracy": 92.9,
-        "label": null
+        "label": null,
+        "best": "Kxd5"
       }
     },
     {
@@ -2591,7 +2661,8 @@
         "win_before": 91.0,
         "win_after": 90.2,
         "accuracy": 97.8,
-        "label": null
+        "label": null,
+        "best": "g4"
       }
     },
     {
@@ -2627,7 +2698,8 @@
         "win_before": 9.8,
         "win_after": 9.0,
         "accuracy": 97.8,
-        "label": null
+        "label": null,
+        "best": "Ke5"
       }
     },
     {
@@ -2663,7 +2735,8 @@
         "win_before": 91.0,
         "win_after": 90.9,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "f4"
       }
     },
     {
@@ -2699,7 +2772,8 @@
         "win_before": 9.1,
         "win_after": 8.9,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kd4"
       }
     },
     {
@@ -2735,7 +2809,8 @@
         "win_before": 91.1,
         "win_after": 89.0,
         "accuracy": 92.1,
-        "label": null
+        "label": null,
+        "best": "f4"
       }
     },
     {
@@ -2771,7 +2846,8 @@
         "win_before": 11.0,
         "win_after": 11.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kxa4"
       }
     },
     {
@@ -2807,7 +2883,8 @@
         "win_before": 88.5,
         "win_after": 90.8,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kc3"
       }
     },
     {
@@ -2843,7 +2920,8 @@
         "win_before": 9.2,
         "win_after": 8.2,
         "accuracy": 96.6,
-        "label": null
+        "label": null,
+        "best": "Kb4"
       }
     },
     {
@@ -2879,7 +2957,8 @@
         "win_before": 91.8,
         "win_after": 91.7,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "g4"
       }
     },
     {
@@ -2915,7 +2994,8 @@
         "win_before": 8.3,
         "win_after": 7.9,
         "accuracy": 99.2,
-        "label": null
+        "label": null,
+        "best": "Kc5"
       }
     },
     {
@@ -2951,7 +3031,8 @@
         "win_before": 92.1,
         "win_after": 91.1,
         "accuracy": 96.4,
-        "label": null
+        "label": null,
+        "best": "g4"
       }
     },
     {
@@ -2987,7 +3068,8 @@
         "win_before": 8.9,
         "win_after": 9.2,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kc5"
       }
     },
     {
@@ -3023,7 +3105,8 @@
         "win_before": 90.8,
         "win_after": 92.2,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "f4"
       }
     },
     {
@@ -3059,7 +3142,8 @@
         "win_before": 7.8,
         "win_after": 7.8,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kc5"
       }
     },
     {
@@ -3095,7 +3179,8 @@
         "win_before": 92.2,
         "win_after": 92.8,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kxa2"
       }
     },
     {
@@ -3131,7 +3216,8 @@
         "win_before": 7.2,
         "win_after": 7.3,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "h6"
       }
     },
     {
@@ -3167,7 +3253,8 @@
         "win_before": 92.7,
         "win_after": 92.7,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "g4"
       }
     },
     {
@@ -3203,7 +3290,8 @@
         "win_before": 7.3,
         "win_after": 2.8,
         "accuracy": 82.7,
-        "label": null
+        "label": null,
+        "best": "h6"
       }
     },
     {
@@ -3239,7 +3327,8 @@
         "win_before": 97.2,
         "win_after": 97.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "gxh5"
       }
     },
     {
@@ -3275,7 +3364,8 @@
         "win_before": 2.5,
         "win_after": 2.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kc4"
       }
     },
     {
@@ -3311,7 +3401,8 @@
         "win_before": 97.5,
         "win_after": 97.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "h6"
       }
     },
     {
@@ -3347,7 +3438,8 @@
         "win_before": 2.5,
         "win_after": 2.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kd4"
       }
     },
     {
@@ -3383,7 +3475,8 @@
         "win_before": 97.5,
         "win_after": 97.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "h4"
       }
     },
     {
@@ -3419,7 +3512,8 @@
         "win_before": 2.5,
         "win_after": 2.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kc4"
       }
     },
     {
@@ -3455,7 +3549,8 @@
         "win_before": 97.5,
         "win_after": 97.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "h8=Q"
       }
     },
     {
@@ -3491,7 +3586,8 @@
         "win_before": 2.5,
         "win_after": 2.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kd5"
       }
     },
     {
@@ -3527,7 +3623,8 @@
         "win_before": 97.5,
         "win_after": 97.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "h4"
       }
     },
     {
@@ -3563,7 +3660,8 @@
         "win_before": 2.5,
         "win_after": 2.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kf6"
       }
     },
     {
@@ -3599,7 +3697,8 @@
         "win_before": 97.5,
         "win_after": 90.7,
         "accuracy": 74.5,
-        "label": "inaccuracy"
+        "label": "inaccuracy",
+        "best": "Qh8+"
       }
     },
     {
@@ -3635,7 +3734,8 @@
         "win_before": 9.3,
         "win_after": 6.8,
         "accuracy": 90.4,
-        "label": null
+        "label": null,
+        "best": "Kxg5"
       }
     },
     {
@@ -3671,7 +3771,8 @@
         "win_before": 93.2,
         "win_after": 93.0,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kb3"
       }
     },
     {
@@ -3707,7 +3808,8 @@
         "win_before": 7.0,
         "win_after": 2.5,
         "accuracy": 82.6,
-        "label": null
+        "label": null,
+        "best": "Kf4"
       }
     },
     {
@@ -3743,7 +3845,8 @@
         "win_before": 97.5,
         "win_after": 97.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "f4"
       }
     },
     {
@@ -3779,7 +3882,8 @@
         "win_before": 2.5,
         "win_after": 3.6,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kh5"
       }
     },
     {
@@ -3815,7 +3919,8 @@
         "win_before": 96.4,
         "win_after": 96.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "f5"
       }
     },
     {
@@ -3851,7 +3956,8 @@
         "win_before": 3.5,
         "win_after": 2.5,
         "accuracy": 96.2,
-        "label": null
+        "label": null,
+        "best": "Kg4"
       }
     },
     {
@@ -3887,7 +3993,8 @@
         "win_before": 97.5,
         "win_after": 97.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "f6"
       }
     },
     {
@@ -3923,7 +4030,8 @@
         "win_before": 2.5,
         "win_after": 2.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kg3"
       }
     },
     {
@@ -3959,7 +4067,8 @@
         "win_before": 97.5,
         "win_after": 97.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "f7"
       }
     },
     {
@@ -3995,7 +4104,8 @@
         "win_before": 2.5,
         "win_after": 2.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kf4"
       }
     },
     {
@@ -4031,7 +4141,8 @@
         "win_before": 97.5,
         "win_after": 97.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "f8=Q+"
       }
     },
     {
@@ -4067,7 +4178,8 @@
         "win_before": 2.5,
         "win_after": 2.5,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Ke5"
       }
     },
     {
@@ -4103,7 +4215,8 @@
         "win_before": 97.5,
         "win_after": 50.5,
         "accuracy": 11.1,
-        "label": "blunder"
+        "label": "blunder",
+        "best": "Kc3"
       }
     },
     {
@@ -4139,7 +4252,8 @@
         "win_before": 49.5,
         "win_after": 50.0,
         "accuracy": 100.0,
-        "label": null
+        "label": null,
+        "best": "Kxg7"
       }
     }
   ],

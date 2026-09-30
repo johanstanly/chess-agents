@@ -8,3 +8,4 @@ Small programs that confirm everything still works (illegal moves rejected, diar
 | `check_agent.py` | The Claude player handles answers correctly (uses a pretend Claude, so it costs nothing). |
 | `check_website.py` | The replay website works, in a hidden browser (Edge, or Chrome if Edge is missing). |
 | `check_stockfish.py` | Move grades are correct and repeatable, and the random player loses to the yardstick. |
+| `check_notebook.py` | Magnus's notebook, lesson-writing, merging, colour swaps and resuming (uses a pretend Claude, so it costs nothing). |

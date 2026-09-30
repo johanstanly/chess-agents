@@ -1,0 +1,13 @@
+You just played {color} and the game ended: {result_text}.
+
+The whole game: {history}
+
+A chess engine (Stockfish) checked every move afterwards. These were your {count} worst moves (in the boards, White pieces are UPPERCASE and Black pieces are lowercase; you were {color}):
+{worst_moves}
+Your notebook now:
+{notebook}
+
+Write up to {max_lessons} new lessons that would have helped you avoid these mistakes. Do not repeat a lesson already in your notebook.
+
+Reply with one line per lesson:
+LESSON: <at most 30 words>

@@ -7,7 +7,8 @@ A move that keeps the chances scores near 100%; one that throws them away
 scores near 0%. We use Lichess's published formulas (chess.com's are secret).
 
 Saved into each diary:
-- per move:  "review": {eval_cp, win_before, win_after, accuracy, label}
+- per move:  "review": {eval_cp, win_before, win_after, accuracy, label, best}
+  (best = Stockfish's choice in the position before the move)
 - per game:  "review": {engine, depth, white: {...}, black: {...}}
   with accuracy %, average centipawn loss (a centipawn is 1/100 of a pawn),
   and counts of inaccuracies, mistakes and blunders.
@@ -82,8 +83,12 @@ def review_diary(d: dict, engine: chess.engine.SimpleEngine, depth: int = DEPTH)
     # (A new `game` label makes python-chess tell Stockfish "new game".)
     limit, game = chess.engine.Limit(depth=depth), object()
 
+    best = []   # Stockfish's best move in each position, in normal chess notation
+
     def evaluate(board: chess.Board) -> int:
-        return white_cp(engine.analyse(board, limit, game=game)["score"])
+        info = engine.analyse(board, limit, game=game)
+        best.append(board.san(info["pv"][0]) if info.get("pv") else None)
+        return white_cp(info["score"])
 
     board = chess.Board(d["start_fen"])
     evals = [evaluate(board)]
@@ -108,7 +113,8 @@ def review_diary(d: dict, engine: chess.engine.SimpleEngine, depth: int = DEPTH)
         drop = before - after
         label = next((name for limit, name in LABELS if drop >= limit), None)
         m["review"] = {"eval_cp": evals[i + 1], "win_before": round(before, 1),
-                       "win_after": round(after, 1), "accuracy": round(acc, 1), "label": label}
+                       "win_after": round(after, 1), "accuracy": round(acc, 1), "label": label,
+                       "best": best[i]}
         side = per_side[m["color"]]
         side["acc"].append(acc)
         side["w"].append(weights[i])

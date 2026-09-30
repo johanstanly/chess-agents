@@ -67,7 +67,7 @@ class ClaudeAgent(Player):
         self.name = name
         self.model = model
         self.effort = effort
-        self.notebook_path = notebook_path   # used by Agent A in Phase 9
+        self.notebook_path = notebook_path   # Magnus's notebook (Hans has none)
         self.timeout = timeout
         self.system_prompt = (PROMPTS / "move_system.txt").read_text(encoding="utf-8")
         self.turn_template = (PROMPTS / "move_turn.txt").read_text(encoding="utf-8")
@@ -86,7 +86,8 @@ class ClaudeAgent(Player):
         white = turn.color == "white"
         notebook = ""
         if self.notebook_path and self.notebook_path.exists():
-            text = self.notebook_path.read_text(encoding="utf-8").strip()
+            lines = self.notebook_path.read_text(encoding="utf-8").splitlines()
+            text = "\n".join(line for line in lines if not line.startswith("#")).strip()  # no heading
             if text:
                 notebook = f"\nYour notebook (lessons from your earlier games):\n{text}\n"
         feedback = ""
