@@ -8,7 +8,5 @@ Position in FEN: {fen}
 Moves so far: {history}
 
 Legal moves: {legal_moves}
-{notebook}{feedback}
-Reply with exactly two lines:
-THOUGHT: <at most 30 words>
-MOVE: <move>
+{notebook}{mistakes}{feedback}
+{protocol}

@@ -1,0 +1,7 @@
+How to choose your move:
+1. Analyse the position. Calculate at least 2 candidate moves; for each one, work out your opponent's best reply, especially captures and checks.
+2. Play the move, copied exactly from the list of legal moves.
+
+Reply with exactly two lines and nothing else:
+THOUGHT: <1 to 3 sentences in the first person: what you saw and why you chose your move>
+MOVE: <one move copied exactly from the list of legal moves>

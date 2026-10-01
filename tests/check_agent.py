@@ -68,6 +68,13 @@ def main() -> int:
         check(s.move_text == move and s.thought == thought,
               f"{answer.splitlines()[0][:40]!r:44} -> move {s.move_text!r}")
 
+    rules = ClaudeAgent.read_answer("RULES: 2, 7\nTHOUGHT: Rule 2 says count defenders.\nMOVE: Nf3")
+    check(rules.extra == {"rules": [2, 7]} and rules.thought == "Rule 2 says count defenders."
+          and rules.move_text == "Nf3", "Magnus's RULES line is read as rule numbers, apart from the thought")
+    check(ClaudeAgent.read_answer("RULES: none\nTHOUGHT: x\nMOVE: e4").extra == {"rules": []}
+          and ClaudeAgent.read_answer("THOUGHT: x\nMOVE: e4").extra == {},
+          "'none' means no rules; Hans's answers have no RULES line")
+
     print("\n2. Paid API safety stop")
     os.environ["ANTHROPIC_API_KEY"] = "test-not-a-real-key"
     try:
@@ -79,7 +86,7 @@ def main() -> int:
         del os.environ["ANTHROPIC_API_KEY"]
 
     print("\n3. Retries in a real game (pretend Claude)")
-    agent = PretendClaude(["MOVE: Ke9\nTHOUGHT: Oops.", "MOVE: e4\nTHOUGHT: Better.",
+    agent = PretendClaude(["MOVE: Ke9\nTHOUGHT: Oops.", "RULES: 3\nTHOUGHT: Better.\nMOVE: e4",
                            "MOVE: d4\nTHOUGHT: Centre."], name="Pretend")
     with tempfile.TemporaryDirectory() as tmp:
         d = play_game(agent, RandomPlayer(seed=1), "pretend", "pretend", games_dir=Path(tmp),
@@ -91,8 +98,8 @@ def main() -> int:
           "the retry message tells Claude why it was refused")
     check(first["usage"] == {"requests": 2, "input_tokens": 2000, "output_tokens": 100, "seconds": 2.0},
           "usage of both requests is recorded for the move")
-    check(first["thought"] == "Better." and first["thought_source"] == "claude",
-          "the thought of the accepted answer is saved")
+    check(first["thought"] == "Better." and first["thought_source"] == "claude" and first["rules"] == [3],
+          "the thought (and rules) of the accepted answer are saved")
 
     print("\n4. Notebook (Magnus has one, Hans does not)")
     with tempfile.TemporaryDirectory() as tmp:

@@ -219,12 +219,21 @@ export class ChessRoom {
   }
 
   // ---------- What the live page uses ----------
-  think(color) {
-    // Only the player whose turn it is has a bubble; the other one's fades away.
-    for (const [c, p] of Object.entries(this.players)) if (c !== color) p.quiet();
-    this.players[color]?.think();
+  /* opts: { since } seconds already spent thinking (live), or { total } the real thinking time (replays). */
+  think(color, opts = {}) {
+    this.quietOthers(color);
+    this.players[color]?.think(opts);
   }
-  say(color, text, instant = false) { this.players[color]?.say(text, instant); }
+  say(color, text, instant = false) {
+    // Also here, not only in think(): a fast player (Stockfish) can answer between two
+    // looks at the live file, so the page may never see it "thinking".
+    this.quietOthers(color);
+    this.players[color]?.say(text, instant);
+  }
+  /* Only the player whose turn it is has a bubble; the other one's fades away. */
+  quietOthers(color) {
+    for (const [c, p] of Object.entries(this.players)) if (c !== color && p.state !== "idle") p.quiet();
+  }
   whenTyped(color) { return this.players[color]?.whenTyped() ?? Promise.resolve(); }
 
   /* The player reaches for the piece, carries it to its new square and pulls back.
@@ -334,6 +343,7 @@ class Character {
   /* Takes the character (and its label) out of the room. */
   remove() {
     this.stopTyping();
+    clearInterval(this.clock);
     clearTimeout(this.fadeTimer);
     this.room.scene.remove(this.model, this.anchor);
   }
@@ -356,8 +366,21 @@ class Character {
   }
 
   setBadge(text) {
+    clearInterval(this.clock);
+    this.clock = null;
     this.badge.hidden = !text;
     this.badge.textContent = text || "";
+  }
+
+  /* "…", plus how long the player has been thinking once that is 10 seconds or more
+     (at "max" effort Claude can think for minutes, so the page should not look frozen). */
+  thinkingBadge({ since = 0, total = null } = {}) {
+    const show = (s) => { this.badge.textContent = s >= 10 ? `… ${clockText(s)}` : "…"; };
+    this.setBadge("…");
+    if (total !== null) { show(total); return; }   // a replay: the real thinking time
+    const started = performance.now() - since * 1000;
+    show(since);
+    this.clock = setInterval(() => show((performance.now() - started) / 1000), 1000);
   }
 
   /* The other player's turn: the badge goes, and the bubble fades after a moment for reading. */
@@ -374,9 +397,9 @@ class Character {
     }, LINGER_SECONDS * 1000 / this.room.speed);
   }
 
-  think() {
+  think(opts = {}) {
     this.state = "thinking";
-    this.setBadge("…");
+    this.thinkingBadge(opts);
     clearTimeout(this.fadeTimer);
     this.bubble.classList.remove("gone");
     this.stopTyping();
@@ -388,6 +411,7 @@ class Character {
   /* Types the thought out at a readable pace (Claude writes far faster than we can read). */
   say(text, instant = false) {
     if (!text) return;
+    clearInterval(this.clock);   // the thinking is over: the clock stops where it is
     this.bubble.hidden = false;
     this.bubble.classList.remove("thinking", "gone");
     if (instant) { this.stopTyping(); this.bubble.textContent = text; this.typed = text; return; }
@@ -507,6 +531,10 @@ class Character {
     this.bubble.style.transform = dx || dy ? `translate(${dx}px, ${dy}px)` : "";
     this.bubble.style.setProperty("--tail", `${tail}px`);
   }
+}
+
+function clockText(seconds) {
+  return `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
 }
 
 /* The little chess set on the table: our own simple wooden pieces. */

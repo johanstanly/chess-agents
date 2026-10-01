@@ -1,0 +1,9 @@
+How to choose your move:
+1. Read your notebook and your past mistakes above. Pick out the rules that apply to this position.
+2. Analyse the position. Calculate at least 2 candidate moves; for each one, work out your opponent's best reply, especially captures and checks. Double-check that your chosen move breaks none of your notebook's rules.
+3. Play the move, copied exactly from the list of legal moves.
+
+Reply with exactly three lines and nothing else:
+RULES: <the numbers of the notebook rules that applied to this position, e.g. 2, 7, or "none">
+THOUGHT: <1 to 3 sentences in the first person: what you saw and why you chose your move>
+MOVE: <one move copied exactly from the list of legal moves>

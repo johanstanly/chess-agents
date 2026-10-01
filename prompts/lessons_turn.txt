@@ -4,10 +4,13 @@ The whole game: {history}
 
 A chess engine (Stockfish) checked every move afterwards. These were your {count} worst moves (in the boards, White pieces are UPPERCASE and Black pieces are lowercase; you were {color}):
 {worst_moves}
-Your notebook now:
+Your notebook now ({size} of at most {cap} lessons):
 {notebook}
 
-Write up to {max_lessons} new lessons that would have helped you avoid these mistakes. Do not repeat a lesson already in your notebook.
+Rewrite your whole notebook so that it would have helped you avoid these mistakes:
+- keep the lessons that are still useful, sharpen vague ones, and replace the least useful ones if you need room;
+- never keep two lessons that say the same thing: merge them into one;
+- at most {cap} lessons, the most important first.
 
 Reply with one line per lesson:
-LESSON: <at most 30 words>
+LESSON: <opening|middlegame|endgame> | <rule> | <example>

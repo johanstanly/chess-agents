@@ -115,6 +115,8 @@ def review_diary(d: dict, engine: chess.engine.SimpleEngine, depth: int = DEPTH)
         m["review"] = {"eval_cp": evals[i + 1], "win_before": round(before, 1),
                        "win_after": round(after, 1), "accuracy": round(acc, 1), "label": label,
                        "best": best[i]}
+        if m.get("thought_source") == "book":
+            continue   # opening-book moves were not the player's choice: graded, but not counted
         side = per_side[m["color"]]
         side["acc"].append(acc)
         side["w"].append(weights[i])

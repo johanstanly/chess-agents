@@ -128,6 +128,7 @@ def play_game(white: Player, black: Player, game_id: str, title: str,
         if move:
             record = diary.move_record(board, move, suggestion.thought,
                                        suggestion.thought_source, len(illegal))
+            record.update(suggestion.extra)
         else:
             move = fallback_rng.choice(list(board.legal_moves))
             record = diary.move_record(

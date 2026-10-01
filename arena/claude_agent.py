@@ -65,14 +65,21 @@ class ClaudeAgent(Player):
     kind = "claude"
 
     def __init__(self, name: str = "Claude", model: str = "sonnet", effort: str = "low",
-                 notebook_path: Path | None = None, timeout: int = 180):
+                 notebook_path: Path | None = None, mistakes=None, learner: bool | None = None,
+                 timeout: int = 1800):
         self.name = name
         self.model = model
         self.effort = effort
         self.notebook_path = notebook_path   # Magnus's notebook (Hans has none)
-        self.timeout = timeout
+        self.mistakes = mistakes             # Magnus's mistake library (notebook.MistakeLibrary)
+        self.learner = bool(notebook_path) if learner is None else learner
+        self.timeout = timeout               # seconds; long, because "max" effort can think for minutes
         self.system_prompt = (PROMPTS / "move_system.txt").read_text(encoding="utf-8")
         self.turn_template = (PROMPTS / "move_turn.txt").read_text(encoding="utf-8")
+        # The move protocol: Hans's is Magnus's without the notebook step.
+        protocol = "protocol_learner.txt" if self.learner else "protocol_control.txt"
+        self.protocol = (PROMPTS / protocol).read_text(encoding="utf-8").strip()
+        self.expected_model = None           # the experiment's model; stop if Claude Code switches to another
         self.last_usage = None
         self.game_id = None                  # set by the arbiter, for the call log
         self.on_text = None                  # called with the answer so far while Claude writes
@@ -80,19 +87,25 @@ class ClaudeAgent(Player):
 
     def info(self) -> dict:
         return {"name": self.name, "type": self.kind, "model": self.model,
-                "effort": self.effort, "notebook": bool(self.notebook_path)}
+                "effort": self.effort, "notebook": bool(self.notebook_path),
+                "mistake_library": bool(self.mistakes)}
 
     # ---------- Building the message ----------
 
     def turn_message(self, turn: Turn) -> str:
         board = turn.board
         white = turn.color == "white"
-        notebook = ""
-        if self.notebook_path and self.notebook_path.exists():
-            lines = self.notebook_path.read_text(encoding="utf-8").splitlines()
-            text = "\n".join(line for line in lines if not line.startswith("#")).strip()  # no heading
-            if text:
-                notebook = f"\nYour notebook (lessons from your earlier games):\n{text}\n"
+        notebook = mistakes = ""
+        if self.learner:
+            text = ""
+            if self.notebook_path and self.notebook_path.exists():
+                lines = self.notebook_path.read_text(encoding="utf-8").splitlines()
+                text = "\n".join(line for line in lines if not line.startswith("#")).strip()  # no heading
+            notebook = (f"\nYour notebook (rules you wrote after your earlier games):\n{text}\n" if text
+                        else "\nYour notebook: (empty so far: you have not studied any games yet)\n")
+            past = self.mistakes.text(board, turn.color) if self.mistakes else ""
+            if past:
+                mistakes = f"\nYour own past mistakes in positions like this one (from your mistake library):\n{past}\n"
         feedback = ""
         if turn.feedback:
             notes = "\n".join(f"- {f}" for f in turn.feedback)
@@ -109,7 +122,9 @@ class ClaudeAgent(Player):
             history=move_history(board),
             legal_moves=", ".join(sorted(board.san(m) for m in board.legal_moves)),
             notebook=notebook,
+            mistakes=mistakes,
             feedback=feedback,
+            protocol=self.protocol,
         )
 
     # ---------- Asking Claude ----------
@@ -160,6 +175,11 @@ class ClaudeAgent(Player):
         if data.get("is_error"):
             raise AgentUnavailable("Claude Code reported a problem: " + str(data.get("result"))[:300])
 
+        models = list((data.get("modelUsage") or {}).keys())
+        if self.expected_model and models and self.expected_model not in models:
+            raise AgentUnavailable(
+                f"Claude Code answered with a different model ({', '.join(models)}) than the experiment's "
+                f"{self.expected_model}. The game is saved; check the model before continuing.")
         usage = data.get("usage") or {}
         self.last_usage = {
             "input_tokens": usage.get("input_tokens", 0)
@@ -212,13 +232,16 @@ class ClaudeAgent(Player):
         # "MOVE:" in capitals first, so a thought like "a good move: develop" is not read as a move.
         pattern = r"\bMOVE\b[\s*_`]*:[\s*_`]*([^\s*`\"']+)"
         move = re.search(pattern, answer) or re.search(pattern, answer, re.I)
-        # The thought runs until "MOVE:" in capitals, on its own line or at the end
-        # of the thought's line (Claude now writes its thought first).
-        thought = re.search(r"\bTHOUGHT\b[\s*_`]*:[\s*_`]*(.+?)(?=(?-i:[\s*_`]*\bMOVE\b[\s*_`]*:)|\Z)",
+        # The thought runs until "MOVE:" (or "RULES:") in capitals, on its own line or at
+        # the end of the thought's line (Claude writes its thought first).
+        thought = re.search(r"\bTHOUGHT\b[\s*_`]*:[\s*_`]*(.+?)(?=(?-i:[\s*_`]*\b(?:MOVE|RULES)\b[\s*_`]*:)|\Z)",
                             answer, re.I | re.S)
+        # Magnus's RULES line: the notebook rules he checked ("none" = an empty list).
+        rules = re.search(r"\bRULES\b[\s*_`]*:[\s*_`]*([^\n]*)", answer)
+        extra = {"rules": [int(n) for n in re.findall(r"\d+", rules.group(1))]} if rules else {}
         move_text = move.group(1).rstrip(".,;") if move else ""
         if thought:
             thought_text = " ".join(thought.group(1).replace("*", "").split())
         else:
             thought_text = " ".join(answer.split())[:300]
-        return Suggestion(move_text, thought_text or "(no thought given)", "claude", raw=answer)
+        return Suggestion(move_text, thought_text or "(no thought given)", "claude", raw=answer, extra=extra)

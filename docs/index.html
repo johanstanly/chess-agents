@@ -281,6 +281,10 @@
       return;
     }
     const { games } = await (await fetch("games/index.json")).json();
+    if (!games.length) {
+      $("players").textContent = "No games yet: the experiment's first game will appear here once it is played.";
+      return;
+    }
 
     if (new URLSearchParams(location.search).has("check")) {
       const out = $("selftest");

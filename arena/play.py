@@ -10,14 +10,15 @@ Runs games with the Claude agent. Uses your Claude Pro plan (never the paid API)
   python arena/play.py dry-run             shows exactly what Magnus and Hans are sent (no Claude requests)
   python arena/play.py demo-live           a free practice game (random moves) to test the live view
 
-The experiment (see experiment.py) is 20 Magnus vs Hans games plus Stockfish
-checkpoints, with settings locked by reset_experiment.py. A stopped game (e.g.
-usage limit reached) continues automatically the next time you run "experiment".
-Every finished game is graded by Stockfish; after each Magnus vs Hans game Magnus
-does not win, he writes lessons in his notebook. While the experiment runs,
-"game" and "yardstick" are switched off, so no extra games mix into its results.
+The experiment (see experiment.py) is 20 Magnus vs Hans games plus checkpoints
+(a puzzle test and Stockfish games), with settings locked by reset_experiment.py.
+A stopped step (e.g. usage limit reached) continues automatically the next time
+you run "experiment". Every finished game is graded by Stockfish; after every
+Magnus vs Hans game, Magnus studies it: his mistakes go into his mistake library
+and he rewrites his notebook. While the experiment runs, "game" and "yardstick"
+are switched off, so no extra games mix into its results.
 
-Options:  --model sonnet|haiku  --effort low|medium|high  --limit N (0 = none, the default)
+Options:  --model sonnet|opus|...  --effort low|medium|high|xhigh|max  --limit N (0 = none, the default)
 """
 
 import argparse
@@ -34,11 +35,14 @@ import chess
 import arbiter
 import diary
 import experiment as exp
-from claude_agent import AgentUnavailable, ClaudeAgent, check_no_paid_api
+import puzzles
+from claude_agent import CALL_LOG, AgentUnavailable, ClaudeAgent, check_no_paid_api
 from live import LiveStatus, demo_players, viewing_seconds
-from notebook import NOTEBOOK, Notebook, lessons_message, write_lessons
-from stockfish import StockfishPlayer
+from notebook import (MISTAKES, NOTEBOOK, MistakeLibrary, Notebook, add_refutations, lessons_message,
+                      write_lessons)
+from openings import OpeningBook, by_name
 from players import Turn
+from stockfish import StockfishPlayer, open_engine
 
 # Positions for the single-move test: (description, position, what a good answer looks like)
 TEST_POSITIONS = [
@@ -81,11 +85,16 @@ def test_moves(args) -> int:
     return 0
 
 
-def make_agent(who: str, args, notebook_path=NOTEBOOK) -> ClaudeAgent:
-    """Magnus (the learner) reads his notebook before every move; Hans never has one."""
+def make_agent(who: str, args, notebook_path=NOTEBOOK, mistakes_path=MISTAKES) -> ClaudeAgent:
+    """Magnus (the learner) reads his notebook and similar past mistakes before every
+    move; Hans (the control) has neither, and his move protocol has no notebook step."""
     if who == "magnus":
-        return ClaudeAgent("Magnus", model=args.model, effort=args.effort, notebook_path=notebook_path)
-    return ClaudeAgent("Hans", model=args.model, effort=args.effort)
+        agent = ClaudeAgent("Magnus", model=args.model, effort=args.effort, notebook_path=notebook_path,
+                            mistakes=MistakeLibrary(mistakes_path), learner=True)
+    else:
+        agent = ClaudeAgent("Hans", model=args.model, effort=args.effort, learner=False)
+    agent.expected_model = getattr(args, "model_id", None)
+    return agent
 
 
 def grade(d: dict) -> None:
@@ -114,7 +123,7 @@ def run_game(white, black, game_id: str, title: str, kind: str, notes: str,
 
     def show(m: dict) -> None:
         live.moved(m)
-        if args.pause and m["thought_source"] != "move_description":
+        if args.pause and m["thought_source"] not in ("move_description", "book"):
             time.sleep(viewing_seconds(m["thought"]))   # time to read it on the live page
         u = m.get("usage") or {}
         for key in totals:
@@ -206,65 +215,118 @@ def magnus_color(d: dict) -> str:
 
 
 def needs_lessons(d: dict) -> bool:
-    """A finished Magnus vs Hans game Magnus did not win, whose lessons are not written yet."""
-    return (d.get("kind") == "match" and d["result"] != "*" and d["winner"] != magnus_color(d)
-            and "lessons" not in d)
+    """A finished Magnus vs Hans game that Magnus has not studied yet (wins included)."""
+    return d.get("kind") == "match" and d["result"] != "*" and "lessons" not in d
 
 
 def lessons_step(d: dict, args) -> bool:
-    """Magnus studies his worst moves and updates his notebook (1 or 2 Claude requests)."""
-    if "review" not in d:
-        grade(d)
-    print(f"\nMagnus did not win game {game_number(d)}: he studies his worst moves...")
+    """Magnus studies the game: his mistakes go into the mistake library (free), and
+    he rewrites his notebook (1 Claude request)."""
+    color = magnus_color(d)
+    engine = open_engine()
     try:
-        record = write_lessons(d, magnus_color(d), make_agent("magnus", args))
+        if "review" not in d:
+            from review import review_diary
+            review_diary(d, engine)
+        add_refutations(d, color, engine)   # how each mistake was punished
+    finally:
+        engine.quit()
+    diary.save_diary(d)
+    added = MistakeLibrary().add_game(d, color)
+    print(f"\nMagnus studies game {game_number(d)}: {added} mistakes added to his mistake library.")
+    try:
+        record = write_lessons(d, color, make_agent("magnus", args))
     except AgentUnavailable as err:
         print(f"Stopped: {err}\nTo continue later, run:   python arena/play.py experiment")
         return False
+    record["library_added"] = added
     d["lessons"] = record
     diary.save_diary(d)
     for lesson in record["new_lessons"]:
-        print(f"   New lesson: {lesson}")
+        print(f"   New or changed rule: {lesson}")
+    if record["dropped"]:
+        print(f"   {record['dropped']} earlier rules were merged, rewritten or replaced.")
     if record.get("problem"):
         print(f"   Note: {record['problem']}")
-    if record["merged"]:
-        print(f"   The notebook was full, so Magnus merged it down to {record['notebook_size']} lessons.")
+    print(f"   His notebook now has {record['notebook_size']} rules.")
     return True
 
 
 def play_step(step: dict, resume_id: str | None, args) -> dict | None:
     """Plays (or continues) one game of the experiment."""
     game_id = resume_id or f"{datetime.now():%Y-%m-%d-%H%M}-{step['key']}"
+    opening = by_name(step["opening"])
     engine_player = None
     if step["kind"] == "match":
         magnus, hans = make_agent("magnus", args), make_agent("hans", args)
         white, black = (magnus, hans) if step["magnus_white"] else (hans, magnus)
         title = f"Game {step['number']}: {white.name} vs {black.name}"
-        notes = (f"Game {step['number']} of {exp.MATCH_GAMES} in the experiment. Magnus (the learner) reads "
-                 "his notebook before every move; Hans (the control) has no notebook.")
+        notes = (f"Game {step['number']} of {exp.MATCH_GAMES} in the experiment, from the {opening['name']}. "
+                 "Magnus (the learner) reads his notebook and similar past mistakes before every move; "
+                 "Hans (the control) has neither.")
     else:
         agent = make_agent(step["agent"], args)
         engine_player = StockfishPlayer(skill=exp.YARDSTICK_SKILL, think_seconds=exp.YARDSTICK_THINK_SECONDS)
         white, black = (agent, engine_player) if step["color"] == "white" else (engine_player, agent)
         title = f"Checkpoint {step['checkpoint']}: {white.name} vs {black.name}"
-        notes = (f"Checkpoint after game {step['checkpoint']}: {agent.name} plays the yardstick, Stockfish at "
-                 f"skill {exp.YARDSTICK_SKILL}. No lessons are written.")
+        notes = (f"Checkpoint after game {step['checkpoint']}, from the {opening['name']}: {agent.name} plays "
+                 f"the yardstick, Stockfish at skill {exp.YARDSTICK_SKILL}. Nothing is studied afterwards.")
     kind = "match" if step["kind"] == "match" else "yardstick"
     lessons_read = len(Notebook().lessons())   # the notebook does not change during a game
     try:
-        d = run_game(white, black, game_id, title, kind, notes, args, bool(resume_id),
-                     "python arena/play.py experiment")
+        d = run_game(OpeningBook(white, opening), OpeningBook(black, opening), game_id, title, kind, notes,
+                     args, bool(resume_id), "python arena/play.py experiment")
     finally:
         if engine_player:
             engine_player.close()
     if d:
+        d["opening"] = opening["name"]
         d["notebook_lessons"] = lessons_read
         diary.save_diary(d)
     return d
 
 
+def puzzle_step(step: dict, args) -> bool:
+    """The puzzle test for one player (about 30 Claude requests). Continues where it stopped."""
+    agent = make_agent(step["agent"], args)
+    print(f"{len(puzzles.load_set())} puzzles; answers are saved after each one.")
+    engine = open_engine()
+    try:
+        finished = puzzles.run(step, agent, engine)
+    finally:
+        engine.quit()
+    if finished and (s := puzzles.summary(step)):
+        print(f"{s['agent']}: puzzle score {s['score']}%, Stockfish's best move found {s['best_found']} "
+              f"times, {s['blunders']} blunders, {s['mistakes']} mistakes.")
+    return finished
+
+
+def pin_model(settings: dict) -> None:
+    """After the first request, remembers which exact model the shortcut (e.g. "opus")
+    stood for. From then on every answer must come from that model."""
+    if settings.get("model_id") or not CALL_LOG.exists():
+        return
+    for line in reversed(CALL_LOG.read_text(encoding="utf-8").splitlines()):
+        model = exp.main_model(json.loads(line).get("model") or [], settings["model"])
+        if model:
+            settings["model_id"] = model
+            exp.save_settings(settings)
+            print(f"The experiment's model is now pinned: {model}")
+            return
+
+
+def keep_awake() -> None:
+    """Asks Windows not to fall asleep while this program runs (locking the screen is fine).
+    Ends by itself when the program ends. Closing the lid can still send the laptop to sleep."""
+    if sys.platform == "win32":
+        import ctypes
+        ES_CONTINUOUS, ES_SYSTEM_REQUIRED = 0x80000000, 0x00000001
+        ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)
+
+
 def run_experiment(args) -> int:
     """Plays the experiment's next --games games, in order, continuing a stopped one first."""
+    keep_awake()
     settings = exp.load()
     if not settings:
         print("The experiment has not been set up yet. Run first:   python arena/reset_experiment.py")
@@ -278,6 +340,7 @@ def run_experiment(args) -> int:
         print("Undo the change (git can show it), or start again with reset_experiment.py.")
         return 1
     args.model, args.effort = settings["model"], settings["effort"]
+    args.model_id = settings.get("model_id")
     played = 0
     while True:
         games = experiment_games()
@@ -289,14 +352,20 @@ def run_experiment(args) -> int:
         exp.save_results(games, settings)
         step, unfinished = exp.next_step(games)
         if step is None:
-            print("\nThe experiment is complete! Every game is in docs/data/results.json.")
+            print("\nThe experiment is complete! Every result is in docs/data/results.json.")
             return 0
         if played == args.games:
             print(f"\nNext time: {exp.step_title(step)}.   Run:   python arena/play.py experiment")
             return 0
         print(f"\n=== Experiment: {exp.step_title(step)}"
               f"{' (continuing where it stopped)' if unfinished else ''} ===")
-        if not play_step(step, unfinished["id"] if unfinished else None, args):
+        if step["kind"] == "puzzles":
+            ok = puzzle_step(step, args)
+        else:
+            ok = play_step(step, unfinished["id"] if unfinished else None, args)
+        pin_model(settings)
+        args.model_id = settings.get("model_id")
+        if not ok:
             return 1
         played += 1
 
@@ -304,24 +373,35 @@ def run_experiment(args) -> int:
 # ---------- Dry run: see the messages without asking Claude ----------
 
 SAMPLE_LESSONS = [
-    "SAMPLE LESSON (the real notebook is still empty): before moving a piece, check whether it can be taken for free.",
-    "SAMPLE LESSON: when my bishop retreats, check that the opponent cannot trap it with pawn moves.",
+    "[opening] SAMPLE RULE (the real notebook is still empty): before taking a centre pawn with a knight, check "
+    "whether the queen can then attack two of my pieces at once. Example: Nxe5 allowed Qg5.",
+    "[middlegame] SAMPLE RULE: before capturing a pawn with my queen, count every enemy piece defending that pawn. "
+    "Example: Qxd6 lost the queen to Bxd6.",
 ]
+SAMPLE_MISTAKE = {   # the Blackburne trap: 4. Nxe5? Qg5!
+    "game": "sample", "game_title": "SAMPLE GAME (the real library is still empty)", "ply": 7, "move": "4. Nxe5",
+    "color": "white", "fen": "r1bqkbnr/pppp1ppp/8/4p3/2BnP3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+    "san": "Nxe5", "thought": "I win a free pawn in the centre.", "best": "Nxd4",
+    "refutation": "4... Qg5 5. Nxf7 Qxg2 6. Rf1 Qxe4+ 7. Be2 Nf3#", "win_before": 55.0, "win_after": 20.0,
+    "label": "blunder", "phase": "opening", "material": [8, 2, 2, 2, 1, 8, 2, 2, 2, 1]}
 
 
 def dry_run(args) -> int:
-    notebook = Notebook()
+    notebook, library = Notebook(), MistakeLibrary()
     with tempfile.TemporaryDirectory() as tmp:
         if not notebook.lessons():
             notebook = Notebook(Path(tmp))
             notebook.save(SAMPLE_LESSONS, "sample")
-        magnus = make_agent("magnus", args, notebook_path=notebook.path)
+        if not library.entries():
+            library = MistakeLibrary(Path(tmp) / "mistakes.jsonl")
+            library.path.write_text(json.dumps(SAMPLE_MISTAKE) + "\n", encoding="utf-8")
+        magnus = make_agent("magnus", args, notebook_path=notebook.path, mistakes_path=library.path)
         hans = make_agent("hans", args)
         board = chess.Board()
         line = "=" * 70
         print(f"{line}\nWHAT MAGNUS IS SENT FOR HIS FIRST MOVE (as White)\n{line}")
         print(magnus.turn_message(Turn(board, "white")))
-        print(f"{line}\nWHAT HANS IS SENT FOR THE SAME MOVE (no notebook)\n{line}")
+        print(f"{line}\nWHAT HANS IS SENT FOR THE SAME MOVE (no notebook, no mistake library)\n{line}")
         print(hans.turn_message(Turn(board, "white")))
 
         # The lesson-writing message, for the latest graded game with a Claude player.
@@ -346,7 +426,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Play chess with the Claude agents.")
     parser.add_argument("what", choices=["test-moves", "game", "yardstick", "experiment", "dry-run", "demo-live"])
     parser.add_argument("--model", default="sonnet")
-    parser.add_argument("--effort", default="low", choices=["low", "medium", "high"])
+    parser.add_argument("--effort", default="low", choices=["low", "medium", "high", "xhigh", "max"])
     parser.add_argument("--limit", type=int, default=0,
                         help="moves per side before a draw is declared (0 = no limit)")
     parser.add_argument("--resume", help="game/yardstick: id of an unfinished game to continue")
@@ -357,7 +437,8 @@ def main() -> int:
     parser.add_argument("--agent-color", default="white", choices=["white", "black"],
                         help="yardstick: which colour the agent plays")
     parser.add_argument("--skill", type=int, default=0, help="yardstick: Stockfish skill level (0-20)")
-    parser.add_argument("--games", type=int, default=1, help="experiment: how many games to play")
+    parser.add_argument("--games", type=int, default=1,
+                        help="experiment: how many steps to play (a game, or one player's puzzle test)")
     parser.add_argument("--no-pause", dest="pause", action="store_false",
                         help="do not wait after each move for the live page (faster, for unattended runs)")
     args = parser.parse_args()

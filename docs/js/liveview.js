@@ -11,7 +11,9 @@
  */
 
 const POLL_MS = 1000;
-const STALE_MINUTES = 15;      // a status file this old without "finished" is from a crashed run
+const STALE_MINUTES = 100;     // a status file this old without "finished" is from a crashed run
+                               // (at "max" effort one move may take up to 3 x 30 minutes)
+const THINK_CAP = 6;           // replays: long thinking is shortened to this many seconds (at 1x)
 // How long each move stays on screen: about 5 seconds in all (typing the thought,
 // reading it, moving the piece), a little more only for long thoughts. The game
 // runner uses the same rule (arena/live.py, viewing_seconds).
@@ -188,7 +190,7 @@ export class LiveView {
     }
     const who = s.player || "";
     if (s.state === "thinking") {
-      this.room.think(s.color);
+      this.room.think(s.color, { since: Math.max(0, (Date.now() - new Date(s.updated).getTime()) / 1000) });
       this.p.el.status.textContent = `● LIVE · ${who} is thinking…`;
     } else if (s.state === "writing") {
       this.room.say(s.color, s.thought);
@@ -207,7 +209,7 @@ export class LiveView {
   /* Types the move's thought, leaves it up long enough to read, then plays the move. */
   async thinkAloudThenMove(m) {
     const run = this.run;
-    if (m.thought_source !== "move_description") {
+    if (!["move_description", "book"].includes(m.thought_source)) {   // book: "Opening: ..." is not typed
       this.room.say(m.color, m.thought);
       await this.room.whenTyped(m.color);
       await sleep(readingSeconds(m.thought) * 1000 / this.room.speed);
@@ -245,9 +247,11 @@ export class LiveView {
     const m = d.moves[this.shown];
     const name = d[m.color].name;
     this.onReplayState?.(true);
-    this.room.think(m.color);
-    this.p.el.status.textContent = `▶ ${name} is thinking… (real speed${this.room.speed > 1 ? ` ×${this.room.speed}` : ""})`;
-    wait(this.thinkingTime(m, this.shown), () => {
+    const thought = this.thinkingTime(m, this.shown);
+    this.room.think(m.color, { total: thought });
+    this.p.el.status.textContent = `▶ ${name} is thinking… (real speed${this.room.speed > 1 ? ` ×${this.room.speed}` : ""}` +
+      `${thought > THINK_CAP ? `; he thought for ${Math.round(thought / 60 * 10) / 10} min, shortened here` : ""})`;
+    wait(Math.min(thought, THINK_CAP), () => {
       this.thinkAloudThenMove(m).then((played) => {
         if (!played || run !== this.run) return;
         this.p.el.status.textContent = `▶ ${name} played ${m.san}`;

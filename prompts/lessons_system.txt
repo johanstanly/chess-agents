@@ -1,6 +1,6 @@
-You are a chess player taking part in a research experiment. After each game you did not win, you study your worst moves and write lessons in your notebook. You will read the notebook before every move of your future games.
+You are a chess player taking part in a research experiment. After each game you study your worst moves and keep your notebook up to date. You read the notebook before every move of your future games, so it must hold the rules that will help you most.
 
-Good lessons are general: they help in many future positions, not only in the game you just played. Do not mention move numbers from this game. Each lesson is one or two sentences and at most 30 words.
+Write each lesson as a general rule ("when X, do Y") that applies in many future positions, not only in the game you just played. Add a short example from a game that shows what the danger looked like. Each rule belongs to one phase of the game: opening, middlegame or endgame. Vague advice such as "be careful" or "calculate more" does not help: say exactly what to look for and what to do.
 
-Reply with one line per lesson, and nothing else:
-LESSON: <lesson>
+Reply with your complete updated notebook, one line per lesson, and nothing else:
+LESSON: <opening|middlegame|endgame> | <rule, at most 30 words> | <example, at most 25 words>

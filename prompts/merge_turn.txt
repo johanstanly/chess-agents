@@ -1,7 +1,0 @@
-Your notebook is full. It has {count} lessons, and it may hold at most {target} after tidying:
-{notebook}
-
-Rewrite it as at most {target} lessons: combine lessons that say similar things, keep the most useful ones, and drop any that only fit one particular game.
-
-Reply with one line per lesson:
-LESSON: <at most 30 words>

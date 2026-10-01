@@ -114,10 +114,12 @@
       select.value = chosen.file;
     } else if (live || params.has("live")) {
       select.value = "live";
-    } else {
+    } else if (recent.length) {
       // Nothing live: show the newest game played by AI agents.
       const ai = recent.find((g) => ["match", "ai", "yardstick"].includes(g.kind)) || recent[0];
       select.value = ai.file;
+    } else {
+      select.value = "live";   // no games yet: wait for the first one
     }
     select.onchange = () => choose(select.value);
     await choose(select.value);

@@ -23,6 +23,7 @@ class Suggestion:
     thought: str            # what the player was thinking
     thought_source: str = "move_description"
     raw: str = ""           # the player's full answer (kept when no move could be read)
+    extra: dict = field(default_factory=dict)   # more to save with the move, e.g. {"rules": [2, 7]}
 
 
 @dataclass
