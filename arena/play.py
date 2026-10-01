@@ -22,7 +22,9 @@ Options:  --model sonnet|opus|...  --effort low|medium|high|xhigh|max  --limit N
 """
 
 import argparse
+import atexit
 import json
+import os
 import re
 import sys
 import tempfile
@@ -324,8 +326,47 @@ def keep_awake() -> None:
         ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)
 
 
+LOCK_FILE = diary.ROOT / "logs" / "experiment.lock"   # the process id of the runner playing right now
+
+
+def process_running(pid: int) -> bool:
+    if sys.platform == "win32":
+        import ctypes
+        handle = ctypes.windll.kernel32.OpenProcess(0x1000, False, pid)   # "query limited information"
+        if not handle:
+            return False
+        code = ctypes.c_ulong()
+        ctypes.windll.kernel32.GetExitCodeProcess(handle, ctypes.byref(code))
+        ctypes.windll.kernel32.CloseHandle(handle)
+        return code.value == 259   # STILL_ACTIVE
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def take_lock() -> bool:
+    """Only one runner at a time: two would play the same game and overwrite each other's moves."""
+    if LOCK_FILE.exists():
+        try:
+            pid = int(LOCK_FILE.read_text().strip())
+        except ValueError:
+            pid = 0
+        if pid and pid != os.getpid() and process_running(pid):
+            print(f"Stopped: the experiment is already being played by another runner (process {pid}).")
+            print("Only one may run at a time. Wait for it to finish, or stop it first.")
+            return False
+    LOCK_FILE.parent.mkdir(parents=True, exist_ok=True)
+    LOCK_FILE.write_text(str(os.getpid()))
+    atexit.register(lambda: LOCK_FILE.unlink(missing_ok=True))
+    return True
+
+
 def run_experiment(args) -> int:
     """Plays the experiment's next --games games, in order, continuing a stopped one first."""
+    if not take_lock():
+        return 1
     keep_awake()
     settings = exp.load()
     if not settings:

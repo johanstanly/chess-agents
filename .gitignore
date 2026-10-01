@@ -17,3 +17,6 @@ logs/*.txt
 
 # The live view's status file (only meaningful on this computer)
 docs/live/
+
+# Which runner is playing the experiment right now (only on this computer)
+logs/experiment.lock
