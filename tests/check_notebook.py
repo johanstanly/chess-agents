@@ -27,7 +27,8 @@ import chess  # noqa: E402
 import notebook as nb  # noqa: E402
 from arbiter import play_game  # noqa: E402
 from check_agent import PretendClaude  # noqa: E402
-from play import needs_lessons, next_game  # noqa: E402
+import experiment as exp  # noqa: E402
+from play import needs_lessons  # noqa: E402
 from players import RandomPlayer, Turn  # noqa: E402
 
 failures = 0
@@ -41,9 +42,13 @@ def check(ok: bool, text: str) -> None:
 
 def fake_game(number: int, magnus_white: bool, result: str) -> dict:
     names = ("Magnus", "Hans") if magnus_white else ("Hans", "Magnus")
-    return {"id": f"2026-10-01-1200-match-{number:02d}", "result": result,
+    return {"id": f"2026-10-01-1200-match-{number:02d}", "kind": "match", "result": result,
             "winner": {"1-0": "white", "0-1": "black"}.get(result),
             "white": {"name": names[0]}, "black": {"name": names[1]}}
+
+
+def fake_checkpoint(key: str, result: str = "0-1") -> dict:
+    return {"id": f"2026-10-01-1200-{key}", "kind": "yardstick", "result": result}
 
 
 def main() -> int:
@@ -73,14 +78,25 @@ def main() -> int:
         check(m_msg.replace(m_msg[m_msg.index("\nYour notebook"):m_msg.index("\nReply")], "") == h_msg,
               "apart from the notebook, both messages are identical")
 
-        print("\n3. Colours swap; a stopped game is continued")
-        check(next_game([]) == (1, True, None), "game 1: Magnus is White")
-        check(next_game([fake_game(1, True, "1-0")]) == (2, False, None), "game 2: Magnus is Black")
-        check(next_game([fake_game(1, True, "1-0"), fake_game(2, False, "0-1")]) == (3, True, None),
-              "game 3: Magnus is White again")
+        print("\n3. The experiment's schedule; colours swap; a stopped game is continued")
+        steps = exp.schedule()
+        keys = [s["key"] for s in steps]
+        check(len(steps) == 32 and keys[:4] == ["checkpoint-00-magnus-white", "checkpoint-00-magnus-black",
+                                                "checkpoint-00-hans-white", "checkpoint-00-hans-black"],
+              "32 games, starting with the 4 Stockfish games of checkpoint 0")
+        check(keys[4] == "match-01" and keys[14:18] == [f"checkpoint-10-{a}-{c}" for a in ("magnus", "hans")
+                                                        for c in ("white", "black")]
+              and keys[-5] == "match-20", "checkpoint 10 comes after game 10, checkpoint 20 after game 20")
+        check([s["magnus_white"] for s in steps if s["kind"] == "match"][:3] == [True, False, True],
+              "Magnus is White in odd games, Black in even games")
+        checkpoint0 = [fake_checkpoint(k) for k in keys[:4]]
+        check(exp.next_step([]) == (steps[0], None), "nothing played yet: checkpoint 0 comes first")
+        check(exp.next_step(checkpoint0)[0]["key"] == "match-01", "after checkpoint 0: game 1")
         stopped = fake_game(2, False, "*")
-        check(next_game([fake_game(1, True, "1-0"), stopped]) == (2, False, stopped["id"]),
-              "a stopped game 2 is continued with the same colours")
+        check(exp.next_step(checkpoint0 + [fake_game(1, True, "1-0"), stopped]) == (steps[5], stopped),
+              "a stopped game 2 is continued")
+        check(exp.score({"winner": None}, "white") == 0.5 and exp.score({"winner": "black"}, "black") == 1,
+              "scores: draw = 1/2, win = 1")
         check(not needs_lessons(fake_game(1, True, "1-0")), "no lessons after Magnus wins")
         check(needs_lessons(fake_game(1, True, "0-1")) and needs_lessons(fake_game(1, False, "1/2-1/2")),
               "lessons after Magnus loses or draws")

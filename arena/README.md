@@ -14,10 +14,11 @@ The arbiter, the players (random, Claude, weak engine) and the game runner. Writ
 
 Commands:
 - `python arena/play.py game`: one Claude vs Claude game.
-- `python arena/play.py match`: the next Magnus vs Hans game (`--games 5` plays five). A stopped game continues automatically.
+- `python arena/reset_experiment.py`: clean slate for the experiment. It lists what it will delete, asks you to type YES, then locks the settings in `experiment.json`.
+- `python arena/play.py experiment`: the experiment's next game (`--games 5` plays five). That is 32 games in order: Stockfish checkpoint 0 (4 games), Magnus vs Hans games 1–10, checkpoint 10, games 11–20, checkpoint 20. A stopped game continues automatically. Results go to `docs/data/results.json`. While the experiment runs, `game` and `yardstick` are switched off.
 - `python arena/play.py yardstick`: Magnus vs the yardstick (`--agent hans` for Hans, `--agent-color black` for Black). No lessons are written.
 - `python arena/play.py demo-live`: a free practice game (random moves) to try the live page.
 - `python arena/play.py dry-run`: shows exactly what Magnus and Hans are sent, with no Claude requests.
 - `python arena/review.py`: grade every game again (free; about 15 seconds per game).
 
-To watch a game live: double-click `serve.bat`, open http://localhost:8000/live.html, then start a game (e.g. `python arena/play.py match`).
+To watch a game live: double-click `serve.bat`, open http://localhost:8000/live.html, then start a game (e.g. `python arena/play.py experiment`).

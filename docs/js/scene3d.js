@@ -214,6 +214,8 @@ export class ChessRoom {
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
     this.labels.render(this.scene, this.camera);
+    const box = this.container.getBoundingClientRect();
+    for (const c of Object.values(this.players)) c.keepInView(box);
   }
 
   // ---------- What the live page uses ----------
@@ -488,6 +490,22 @@ class Character {
       this.head.getWorldPosition(this.anchor.position);
       this.anchor.position.y += LABEL_HEIGHT;
     }
+  }
+
+  /* Slides the thought bubble back inside the 3D window if it would stick out of it
+     (on a narrow phone screen the players sit close to the edges). The little tail
+     moves the other way, so it still points at the player. */
+  keepInView(box) {
+    if (this.bubble.hidden) return;
+    const label = this.label.getBoundingClientRect();   // not moved by the bubble's own shift
+    const half = this.bubble.offsetWidth / 2, centre = label.left + label.width / 2, gap = 6;
+    let dx = 0;
+    if (centre - half < box.left + gap) dx = box.left + gap - (centre - half);
+    else if (centre + half > box.right - gap) dx = box.right - gap - (centre + half);
+    const dy = Math.max(0, box.top + gap - label.top);
+    const tail = Math.max(-(half - 14), Math.min(half - 14, -dx));
+    this.bubble.style.transform = dx || dy ? `translate(${dx}px, ${dy}px)` : "";
+    this.bubble.style.setProperty("--tail", `${tail}px`);
   }
 }
 

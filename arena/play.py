@@ -6,13 +6,16 @@ Runs games with the Claude agent. Uses your Claude Pro plan (never the paid API)
   python arena/play.py game --resume ID    continue a game that stopped
   python arena/play.py yardstick           Magnus (or --agent hans) vs Stockfish at its weakest
                                            (--agent-color white|black, --skill N)
-  python arena/play.py match               the next game of the Magnus vs Hans series (--games N)
+  python arena/play.py experiment          THE EXPERIMENT: plays its next game (--games N for more)
   python arena/play.py dry-run             shows exactly what Magnus and Hans are sent (no Claude requests)
   python arena/play.py demo-live           a free practice game (random moves) to test the live view
 
-A stopped match game (e.g. usage limit reached) continues automatically the
-next time you run "match". Every finished game is graded by Stockfish; after
-each match game Magnus does not win, he writes lessons in his notebook.
+The experiment (see experiment.py) is 20 Magnus vs Hans games plus Stockfish
+checkpoints, with settings locked by reset_experiment.py. A stopped game (e.g.
+usage limit reached) continues automatically the next time you run "experiment".
+Every finished game is graded by Stockfish; after each Magnus vs Hans game Magnus
+does not win, he writes lessons in his notebook. While the experiment runs,
+"game" and "yardstick" are switched off, so no extra games mix into its results.
 
 Options:  --model sonnet|haiku  --effort low|medium|high  --limit N (0 = none, the default)
 """
@@ -30,9 +33,11 @@ import chess
 
 import arbiter
 import diary
+import experiment as exp
 from claude_agent import AgentUnavailable, ClaudeAgent, check_no_paid_api
 from live import LiveStatus, demo_players, viewing_seconds
 from notebook import NOTEBOOK, Notebook, lessons_message, write_lessons
+from stockfish import StockfishPlayer
 from players import Turn
 
 # Positions for the single-move test: (description, position, what a good answer looks like)
@@ -157,9 +162,12 @@ def demo_live(args) -> int:
 
 def play(args) -> int:
     """A Claude vs Claude test game, or a yardstick game against Stockfish."""
+    if exp.load():
+        print("Stopped: the experiment is running, and an extra game would appear among its games.")
+        print("Use:   python arena/play.py experiment")
+        return 1
     engine_player = None
     if args.what == "yardstick":
-        from stockfish import StockfishPlayer
         engine_player = StockfishPlayer(skill=args.skill)
         agent = make_agent(args.agent, args)
         white, black = (agent, engine_player) if args.agent_color == "white" else (engine_player, agent)
@@ -181,17 +189,12 @@ def play(args) -> int:
     return 0 if d else 1
 
 
-# ---------- The Magnus vs Hans series ----------
+# ---------- The experiment: Magnus vs Hans plus Stockfish checkpoints ----------
 
-def match_games(games_dir: Path = diary.GAMES_DIR) -> list[dict]:
-    """All games of the series so far, in order."""
-    games = []
-    for path in games_dir.glob("*.json"):
-        if path.name != "index.json":
-            d = json.loads(path.read_text(encoding="utf-8"))
-            if d.get("kind") == "match":
-                games.append(d)
-    return sorted(games, key=game_number)
+def experiment_games(games_dir: Path = diary.GAMES_DIR) -> list[dict]:
+    """All games played so far (the experiment's are found by their ids)."""
+    return [json.loads(p.read_text(encoding="utf-8")) for p in sorted(games_dir.glob("*.json"))
+            if p.name != "index.json"]
 
 
 def game_number(d: dict) -> int:
@@ -203,8 +206,9 @@ def magnus_color(d: dict) -> str:
 
 
 def needs_lessons(d: dict) -> bool:
-    """A finished game Magnus did not win, whose lessons are not written yet."""
-    return d["result"] != "*" and d["winner"] != magnus_color(d) and "lessons" not in d
+    """A finished Magnus vs Hans game Magnus did not win, whose lessons are not written yet."""
+    return (d.get("kind") == "match" and d["result"] != "*" and d["winner"] != magnus_color(d)
+            and "lessons" not in d)
 
 
 def lessons_step(d: dict, args) -> bool:
@@ -215,7 +219,7 @@ def lessons_step(d: dict, args) -> bool:
     try:
         record = write_lessons(d, magnus_color(d), make_agent("magnus", args))
     except AgentUnavailable as err:
-        print(f"Stopped: {err}\nTo continue later, run:   python arena/play.py match")
+        print(f"Stopped: {err}\nTo continue later, run:   python arena/play.py experiment")
         return False
     d["lessons"] = record
     diary.save_diary(d)
@@ -228,39 +232,71 @@ def lessons_step(d: dict, args) -> bool:
     return True
 
 
-def next_game(games: list[dict]) -> tuple[int, bool, str | None]:
-    """(game number, is Magnus White?, id of a stopped game to continue or None).
-    The colours swap every game: Magnus is White in odd-numbered games."""
-    last = games[-1] if games else None
-    if last and last["result"] == "*":
-        return game_number(last), magnus_color(last) == "white", last["id"]
-    number = len(games) + 1
-    return number, number % 2 == 1, None
+def play_step(step: dict, resume_id: str | None, args) -> dict | None:
+    """Plays (or continues) one game of the experiment."""
+    game_id = resume_id or f"{datetime.now():%Y-%m-%d-%H%M}-{step['key']}"
+    engine_player = None
+    if step["kind"] == "match":
+        magnus, hans = make_agent("magnus", args), make_agent("hans", args)
+        white, black = (magnus, hans) if step["magnus_white"] else (hans, magnus)
+        title = f"Game {step['number']}: {white.name} vs {black.name}"
+        notes = (f"Game {step['number']} of {exp.MATCH_GAMES} in the experiment. Magnus (the learner) reads "
+                 "his notebook before every move; Hans (the control) has no notebook.")
+    else:
+        agent = make_agent(step["agent"], args)
+        engine_player = StockfishPlayer(skill=exp.YARDSTICK_SKILL, think_seconds=exp.YARDSTICK_THINK_SECONDS)
+        white, black = (agent, engine_player) if step["color"] == "white" else (engine_player, agent)
+        title = f"Checkpoint {step['checkpoint']}: {white.name} vs {black.name}"
+        notes = (f"Checkpoint after game {step['checkpoint']}: {agent.name} plays the yardstick, Stockfish at "
+                 f"skill {exp.YARDSTICK_SKILL}. No lessons are written.")
+    kind = "match" if step["kind"] == "match" else "yardstick"
+    lessons_read = len(Notebook().lessons())   # the notebook does not change during a game
+    try:
+        d = run_game(white, black, game_id, title, kind, notes, args, bool(resume_id),
+                     "python arena/play.py experiment")
+    finally:
+        if engine_player:
+            engine_player.close()
+    if d:
+        d["notebook_lessons"] = lessons_read
+        diary.save_diary(d)
+    return d
 
 
-def match(args) -> int:
-    """Plays the next --games games of the series. Magnus is White in odd-numbered games."""
+def run_experiment(args) -> int:
+    """Plays the experiment's next --games games, in order, continuing a stopped one first."""
+    settings = exp.load()
+    if not settings:
+        print("The experiment has not been set up yet. Run first:   python arena/reset_experiment.py")
+        return 1
+    changes = exp.changes_since_lock(settings)
+    if changes:
+        print("Stopped: the settings changed since the experiment was locked, so new games")
+        print("would not be comparable with earlier ones:")
+        for change in changes:
+            print(f"   {change}")
+        print("Undo the change (git can show it), or start again with reset_experiment.py.")
+        return 1
+    args.model, args.effort = settings["model"], settings["effort"]
     played = 0
     while True:
-        games = match_games()
-        last = games[-1] if games else None
-        if last and needs_lessons(last):
-            if not lessons_step(last, args):
-                return 1
-            continue
-        if played == args.games:
+        games = experiment_games()
+        for d in games:
+            if needs_lessons(d):
+                if not lessons_step(d, args):
+                    return 1
+                games = experiment_games()
+        exp.save_results(games, settings)
+        step, unfinished = exp.next_step(games)
+        if step is None:
+            print("\nThe experiment is complete! Every game is in docs/data/results.json.")
             return 0
-        number, magnus_white, resume_id = next_game(games)
-        game_id = resume_id or f"{datetime.now():%Y-%m-%d-%H%M}-match-{number:02d}"
-        if resume_id:
-            print(f"Continuing game {number}, which stopped earlier.")
-        magnus, hans = make_agent("magnus", args), make_agent("hans", args)
-        white, black = (magnus, hans) if magnus_white else (hans, magnus)
-        notes = (f"Game {number} of the series. Magnus (the learner) reads his notebook before "
-                 "every move; Hans (the control) has no notebook.")
-        d = run_game(white, black, game_id, f"Game {number}: {white.name} vs {black.name}",
-                     "match", notes, args, bool(resume_id), "python arena/play.py match")
-        if d is None:
+        if played == args.games:
+            print(f"\nNext time: {exp.step_title(step)}.   Run:   python arena/play.py experiment")
+            return 0
+        print(f"\n=== Experiment: {exp.step_title(step)}"
+              f"{' (continuing where it stopped)' if unfinished else ''} ===")
+        if not play_step(step, unfinished["id"] if unfinished else None, args):
             return 1
         played += 1
 
@@ -308,7 +344,7 @@ def main() -> int:
         sys.stdout.reconfigure(encoding="utf-8")
     check_no_paid_api()
     parser = argparse.ArgumentParser(description="Play chess with the Claude agents.")
-    parser.add_argument("what", choices=["test-moves", "game", "yardstick", "match", "dry-run", "demo-live"])
+    parser.add_argument("what", choices=["test-moves", "game", "yardstick", "experiment", "dry-run", "demo-live"])
     parser.add_argument("--model", default="sonnet")
     parser.add_argument("--effort", default="low", choices=["low", "medium", "high"])
     parser.add_argument("--limit", type=int, default=0,
@@ -321,11 +357,11 @@ def main() -> int:
     parser.add_argument("--agent-color", default="white", choices=["white", "black"],
                         help="yardstick: which colour the agent plays")
     parser.add_argument("--skill", type=int, default=0, help="yardstick: Stockfish skill level (0-20)")
-    parser.add_argument("--games", type=int, default=1, help="match: how many games to play")
+    parser.add_argument("--games", type=int, default=1, help="experiment: how many games to play")
     parser.add_argument("--no-pause", dest="pause", action="store_false",
                         help="do not wait after each move for the live page (faster, for unattended runs)")
     args = parser.parse_args()
-    actions = {"test-moves": test_moves, "match": match, "dry-run": dry_run, "demo-live": demo_live}
+    actions = {"test-moves": test_moves, "experiment": run_experiment, "dry-run": dry_run, "demo-live": demo_live}
     return actions.get(args.what, play)(args)
 
 
