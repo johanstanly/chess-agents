@@ -51,7 +51,13 @@
       </div>
       <div class="player-bar" id="bar-bottom"></div>
 
-      <div class="counter live-counter" id="counter"></div>
+      <div class="live-nav">
+        <button id="nav-first" title="Start of the game (Home)">⏮</button>
+        <button id="nav-back" title="One move back (←)">◀</button>
+        <div class="counter live-counter" id="counter"></div>
+        <button id="nav-next" title="One move forward (→)">▶</button>
+        <button id="nav-last" title="End of the game (End)">⏭</button>
+      </div>
       <div class="move-list" id="move-list" aria-label="Moves"></div>
 
       <div class="review-card" id="review-card" hidden>
@@ -89,8 +95,31 @@
 
   const room = new ChessRoom($("room"));
   const view = new LiveView(room, panel);
-  // Clicking a move jumps there (a real-speed replay pauses; press ▶ to carry on from there).
-  panel.moveList = new MoveList($("move-list"), (ply) => { view.pause(); view.goTo(ply); room.reset(); });
+  // Jumping through the game: the buttons, the arrow keys, or clicking a move in the list.
+  // A real-speed replay pauses (press ⏸/▶ at the top to carry on from there). A game still
+  // being played live follows the live feed, so it can be browsed once it has ended.
+  function jump(ply) {
+    const d = view.diary;
+    if (!d || (view.mode === "live" && d.result === "*")) return;
+    ply = Math.max(0, Math.min(d.moves.length, ply));
+    if (view.mode === "replay") view.pause();
+    room.reset();
+    panel.resultCard.reset();
+    view.goTo(ply);
+    const m = d.moves[ply - 1];
+    if (m && !["move_description", "book"].includes(m.thought_source)) room.say(m.color, m.thought, true);
+    if (ply === d.moves.length) view.showEnd();
+  }
+  panel.moveList = new MoveList($("move-list"), jump);
+  $("nav-first").onclick = () => jump(0);
+  $("nav-back").onclick = () => jump(view.shown - 1);
+  $("nav-next").onclick = () => jump(view.shown + 1);
+  $("nav-last").onclick = () => jump(Infinity);
+  document.addEventListener("keydown", (e) => {
+    if (e.target.closest("select, input, textarea")) return;
+    const to = { ArrowLeft: view.shown - 1, ArrowRight: view.shown + 1, Home: 0, End: Infinity }[e.key];
+    if (to !== undefined) { e.preventDefault(); jump(to); }
+  });
   view.onReplayState = (playing) => { $("play").textContent = playing ? "⏸" : "▶"; };
 
   const params = new URLSearchParams(location.search);

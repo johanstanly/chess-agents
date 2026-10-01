@@ -22,6 +22,9 @@
 .live-panel .board-wrap { width: 100%; }
 .board-frame.small { width: auto; flex: 1 1 auto; min-width: 0; }
 .live-counter { font-size: 13px; color: var(--text-dim); }
+.live-nav { display: flex; gap: 6px; align-items: center; }
+.live-nav .live-counter { flex: 1 1 auto; text-align: center; }
+.live-nav button { min-width: 38px; }
 .live-panel .move-list { margin-top: 0; flex: 1 1 120px; max-height: none; min-height: 90px; }
 .live-panel .review-card { margin-top: 0; }
 
