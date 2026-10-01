@@ -4,11 +4,11 @@ The experiment (version 2): its locked settings, its schedule and its results ta
 Schedule:
   checkpoint 0    (the puzzle test if PUZZLE_TEST), then each plays Stockfish twice
                   (once as White, once as Black)
-  games 1-10      Magnus vs Hans, each from an opening of the book (openings.py);
+  games 1-6       Magnus vs Hans, each from an opening of the book (openings.py);
                   after every game Magnus studies it and rewrites his notebook
-  checkpoint 10   the 4 Stockfish games again
-  games 11-20     Magnus vs Hans
-  checkpoint 20   the 4 Stockfish games again
+  checkpoint 6    the 4 Stockfish games again
+  games 7-12      Magnus vs Hans
+  checkpoint 12   the 4 Stockfish games again
 
 The settings are locked in experiment.json (written by reset_experiment.py) and
 must not change until the experiment is over; otherwise later games could not be
@@ -32,8 +32,8 @@ RESULTS_FILE = ROOT / "docs" / "data" / "results.json"
 PROMPTS_DIR = ROOT / "prompts"
 
 VERSION = 2
-MATCH_GAMES = 20
-CHECKPOINTS = (0, 10, 20)               # tested before game 1, after game 10 and after game 20
+MATCH_GAMES = 12                        # 20 at first; cut to 12 on 1 Oct (about one game per 5-hour window)
+CHECKPOINTS = (0, 6, 12)                # tested before game 1, after game 6 and after game 12
 YARDSTICK_SKILL = 0
 YARDSTICK_THINK_SECONDS = 0.05
 # The puzzle test (puzzles.py) at each checkpoint. Switched off on 1 Oct: at Opus's
