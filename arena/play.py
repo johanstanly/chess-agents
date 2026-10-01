@@ -292,7 +292,7 @@ def puzzle_step(step: dict, args) -> bool:
     print(f"{len(puzzles.load_set())} puzzles; answers are saved after each one.")
     engine = open_engine()
     try:
-        finished = puzzles.run(step, agent, engine)
+        finished = puzzles.run(step, agent, engine, pause=args.pause)
     finally:
         engine.quit()
     if finished and (s := puzzles.summary(step)):

@@ -45,7 +45,7 @@ export class LiveView {
   /* Shows a game from its start (or up to `upto` moves), ready to play on. */
   async loadGame(d, upto = 0) {
     this.diary = d;
-    const title = `${d.white.name} vs ${d.black.name}`;
+    const title = d.kind === "puzzle" ? d.title : `${d.white.name} vs ${d.black.name}`;
     this.p.el.title.textContent = title;
     document.title = `${title} · Live`;
     await this.room.setPlayers(d.white.name, d.black.name);
@@ -197,7 +197,9 @@ export class LiveView {
       this.p.el.status.textContent = `● LIVE · ${who} is writing his thought…`;
     } else if (s.state === "moved") {
       this.room.say(s.color, s.thought);
-      this.p.el.status.textContent = `● LIVE · ${who} played ${s.san}`;
+      const puzzle = s.puzzle ? ` · score ${Math.round(s.puzzle.score)}/100` +
+        `${s.puzzle.best && s.puzzle.best !== s.san ? ` (Stockfish's best: ${s.puzzle.best})` : " (Stockfish's best move!)"}` : "";
+      this.p.el.status.textContent = `● LIVE · ${who} played ${s.san}${puzzle}`;
     } else if (s.state === "finished") {
       this.showEnd();
       this.p.el.status.textContent = `${s.result_text}${s.graded ? "" : " · Stockfish is grading the game…"}`;

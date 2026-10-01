@@ -2,13 +2,13 @@
 The experiment (version 2): its locked settings, its schedule and its results table.
 
 Schedule:
-  checkpoint 0    the puzzle test (Magnus, Hans), then each plays Stockfish twice
+  checkpoint 0    (the puzzle test if PUZZLE_TEST), then each plays Stockfish twice
                   (once as White, once as Black)
   games 1-10      Magnus vs Hans, each from an opening of the book (openings.py);
                   after every game Magnus studies it and rewrites his notebook
-  checkpoint 10   the puzzle test and the 4 Stockfish games again
+  checkpoint 10   the 4 Stockfish games again
   games 11-20     Magnus vs Hans
-  checkpoint 20   the puzzle test and the 4 Stockfish games again
+  checkpoint 20   the 4 Stockfish games again
 
 The settings are locked in experiment.json (written by reset_experiment.py) and
 must not change until the experiment is over; otherwise later games could not be
@@ -36,6 +36,9 @@ MATCH_GAMES = 20
 CHECKPOINTS = (0, 10, 20)               # tested before game 1, after game 10 and after game 20
 YARDSTICK_SKILL = 0
 YARDSTICK_THINK_SECONDS = 0.05
+# The puzzle test (puzzles.py) at each checkpoint. Switched off on 1 Oct: at Opus's
+# thinking speed, 30 puzzles took about 5 minutes each (some 15 hours in all).
+PUZZLE_TEST = False
 
 
 def fingerprint(text: str) -> str:
@@ -65,7 +68,8 @@ def current_settings(model: str, effort: str) -> dict:
         "mistakes_shown": notebook.MISTAKES_SHOWN,
         "library_labels": list(notebook.LIBRARY_LABELS),
         "openings": fingerprint(json.dumps([openings.OPENINGS, openings.CHECKPOINT_OPENINGS])),
-        "puzzle_set": puzzles.fingerprint(),
+        "puzzle_test": PUZZLE_TEST,
+        "puzzle_set": puzzles.fingerprint() if PUZZLE_TEST else None,
         "prompts": prompt_fingerprints(),
     }
 
@@ -105,7 +109,7 @@ def schedule() -> list[dict]:
     steps = []
 
     def checkpoint(n: int) -> None:
-        for agent in ("magnus", "hans"):
+        for agent in ("magnus", "hans") if PUZZLE_TEST else ():
             steps.append({"key": f"puzzles-{n:02d}-{agent}", "kind": "puzzles", "checkpoint": n, "agent": agent})
         for agent in ("magnus", "hans"):
             for color in ("white", "black"):

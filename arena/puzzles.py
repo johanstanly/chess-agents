@@ -17,6 +17,8 @@ import hashlib
 import json
 import statistics
 import sys
+import time
+from datetime import date
 from pathlib import Path
 
 import chess
@@ -26,6 +28,7 @@ import arbiter
 import diary
 import review
 from claude_agent import AgentUnavailable
+from live import LIVE_FILE, LiveStatus, viewing_seconds
 from players import Turn
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -124,15 +127,62 @@ def mover_win(engine, board: chess.Board, mover: chess.Color, game) -> tuple[flo
     return review.win_percent(cp if mover == chess.WHITE else -cp), best
 
 
-def run(step: dict, agent, engine: chess.engine.SimpleEngine, log=print) -> bool:
-    """Gives the player every puzzle not yet answered. False if Claude stopped answering."""
+class PuzzleLive:
+    """Shows the puzzle test on the live page (docs/live.html). Each puzzle is written
+    to docs/live/puzzle.json as a one-move "game", and the usual live status follows
+    the player: thinking, writing his thought, his move and its score."""
+    FILE = LIVE_FILE.parent / "puzzle.json"
+
+    def __init__(self, step: dict, pause: bool):
+        self.step, self.pause, self.live, self.d = step, pause, None, None
+
+    def write(self) -> None:
+        self.FILE.parent.mkdir(parents=True, exist_ok=True)
+        self.FILE.write_text(json.dumps(self.d, ensure_ascii=False), encoding="utf-8")
+
+    def start(self, p: dict, number: int, total: int, board: chess.Board, agent) -> None:
+        names = {p["color"]: agent.name, ("black" if p["color"] == "white" else "white"): "Puzzle"}
+        self.d = {"id": f"puzzles-{self.step['checkpoint']:02d}-{self.step['agent']}-{p['id']}", "kind": "puzzle",
+                  "title": f"Checkpoint {self.step['checkpoint']} puzzle test: {agent.name}, puzzle {number} of {total}",
+                  "date": date.today().isoformat(), "white": {"name": names["white"]}, "black": {"name": names["black"]},
+                  "start_fen": board.fen(), "moves": [], "result": "*", "result_text": "Puzzle in progress"}
+        self.write()
+        self.live = LiveStatus(self.d["id"], names["white"], names["black"])
+        self.live.state["file"] = "../live/puzzle.json"   # the page looks in games/ by default
+        self.live.turn(p["color"], agent)
+
+    def answered(self, board: chess.Board, move, suggestion, answer: dict) -> None:
+        if not move:
+            return
+        record = diary.move_record(board, move, suggestion.thought, "claude", answer["illegal_attempts"])
+        record["review"] = {k: answer[k] for k in ("label", "accuracy", "best", "win_before", "win_after")}
+        self.d["moves"].append(record)
+        self.write()
+        self.live.moved(record)
+        self.live.write(puzzle={"score": answer["accuracy"], "best": answer["best"], "label": answer["label"]})
+        if self.pause:
+            time.sleep(viewing_seconds(record["thought"]) + 2)   # time to read it, and to see the score
+
+    def finished(self, s: dict | None) -> None:
+        if self.live and s:
+            self.live.write(state="finished", graded=True,
+                            result_text=f"Puzzle test finished: {s['agent']} scored {s['score']}% "
+                                        f"(Stockfish's best move {s['best_found']} of {s['answered']} times)")
+
+
+def run(step: dict, agent, engine: chess.engine.SimpleEngine, log=print, pause: bool = False) -> bool:
+    """Gives the player every puzzle not yet answered. False if Claude stopped answering.
+    The live page can follow it; with `pause`, each answer stays up long enough to read."""
     results = load_results(step)
     agent.game_id = f"puzzles-{step['checkpoint']:02d}"
     engine.configure({"Threads": 1})
-    for p in load_set():
+    show = PuzzleLive(step, pause)
+    puzzle_set = load_set()
+    for number, p in enumerate(puzzle_set, start=1):
         if p["id"] in results["answers"]:
             continue
         board = board_for(p)
+        show.start(p, number, len(puzzle_set), board, agent)
         feedback, move, suggestion = [], None, None
         try:
             for _ in range(arbiter.MAX_ATTEMPTS):
@@ -143,6 +193,7 @@ def run(step: dict, agent, engine: chess.engine.SimpleEngine, log=print) -> bool
                 feedback.append(problem)
         except AgentUnavailable as err:
             log(f"Stopped: {err}")
+            show.live.stopped(str(err))
             return False
         game = object()   # a fresh start for Stockfish: the same scores every time
         mover = board.turn
@@ -164,6 +215,8 @@ def run(step: dict, agent, engine: chess.engine.SimpleEngine, log=print) -> bool
         RESULTS_DIR.mkdir(parents=True, exist_ok=True)
         result_path(step).write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
         log(f"  {p['id']}  {san:<8} best {best or '-':<8} score {accuracy:5.1f}  {label or ''}")
+        show.answered(board, move, suggestion, results["answers"][p["id"]])
+    show.finished(summary(step))
     return True
 
 

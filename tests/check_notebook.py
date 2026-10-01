@@ -144,24 +144,25 @@ def main() -> int:
             print("\n5. The experiment's schedule")
             steps = exp.schedule()
             keys = [s["key"] for s in steps]
-            check(len(steps) == 38 and keys[:6] == ["puzzles-00-magnus", "puzzles-00-hans",
-                                                    "checkpoint-00-magnus-white", "checkpoint-00-magnus-black",
-                                                    "checkpoint-00-hans-white", "checkpoint-00-hans-black"],
-                  "38 steps, starting with checkpoint 0: two puzzle tests, then 4 Stockfish games")
+            check(not exp.PUZZLE_TEST and len(steps) == 32
+                  and keys[:4] == ["checkpoint-00-magnus-white", "checkpoint-00-magnus-black",
+                                   "checkpoint-00-hans-white", "checkpoint-00-hans-black"],
+                  "32 games (the puzzle test is switched off), starting with checkpoint 0: 4 Stockfish games")
             match = [s for s in steps if s["kind"] == "match"]
-            check(keys[6] == "match-01" and keys[15] == "match-10" and keys[16] == "puzzles-10-magnus"
-                  and keys[-7] == "match-20", "checkpoint 10 comes after game 10, checkpoint 20 after game 20")
+            check(keys[4] == "match-01" and keys[13] == "match-10" and keys[14] == "checkpoint-10-magnus-white"
+                  and keys[-5] == "match-20", "checkpoint 10 comes after game 10, checkpoint 20 after game 20")
             check([s["magnus_white"] for s in match[:4]] == [True, False, True, False]
                   and match[0]["opening"] == match[1]["opening"] != match[2]["opening"]
                   and len({s["opening"] for s in match}) == 10,
                   "each opening is played twice, with the colours swapped; all 10 are used")
             nothing_done = lambda step: False  # noqa: E731
             all_done = lambda step: True  # noqa: E731
-            check(exp.next_step([], nothing_done)[0]["key"] == "puzzles-00-magnus", "nothing played: puzzles first")
-            checkpoint0 = [fake_checkpoint(k) for k in keys[2:6]]
+            check(exp.next_step([], nothing_done)[0]["key"] == "checkpoint-00-magnus-white",
+                  "nothing played: checkpoint 0 first")
+            checkpoint0 = [fake_checkpoint(k) for k in keys[:4]]
             check(exp.next_step(checkpoint0, all_done)[0]["key"] == "match-01", "after checkpoint 0: game 1")
             stopped = fake_game(2, False, "*")
-            check(exp.next_step(checkpoint0 + [fake_game(1, True, "1-0"), stopped], all_done) == (steps[7], stopped),
+            check(exp.next_step(checkpoint0 + [fake_game(1, True, "1-0"), stopped], all_done) == (steps[5], stopped),
                   "a stopped game 2 is continued")
             check(needs_lessons(fake_game(1, True, "1-0")) and needs_lessons(fake_game(1, False, "1/2-1/2"))
                   and not needs_lessons(stopped), "Magnus studies every finished game, wins included")

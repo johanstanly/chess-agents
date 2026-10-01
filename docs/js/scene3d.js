@@ -43,6 +43,8 @@ const CAST = {
   "Veselin Topalov": { model: "Rogue" },
   "Edward Lasker": { model: "Rogue_Hooded" },
   "George Alan Thomas": { model: "Knight", helmet: true, cape: 0x2f7a4a },   // green cape: not Hans
+  "Stockfish (skill 0)": { model: "Rogue" },   // the yardstick: must not look like Magnus or Hans
+  "Puzzle": { model: "Rogue_Hooded" },         // the puzzle test's quizmaster (sits opposite the player)
 };
 const STAND_INS = { white: { model: "Mage" }, black: { model: "Knight", helmet: false } };
 
