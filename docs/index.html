@@ -15,6 +15,7 @@
   <header class="page-head">
     <h1>Self-Improving AI Chess Agents</h1>
     <span class="subtitle">Game replay</span>
+    <a class="head-link" id="live-link" href="live.html">Watch in 3D ↗</a>
   </header>
 
   <div class="stage">
@@ -266,6 +267,9 @@
     await replay.load(file);
     moveList.build(replay.diary);
     showReview(replay.diary);
+    const d = replay.diary;
+    $("live-link").textContent = `Watch ${d.white.name} vs ${d.black.name} in 3D ↗`;
+    $("live-link").href = `live.html?game=${encodeURIComponent(d.id)}`;
     positionChanged();
   }
 

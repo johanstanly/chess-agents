@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnus vs Hans Live</title>
+<meta name="description" content="Watch two AI chess agents, Magnus (who learns from his mistakes) and Hans (who doesn't), play a full game in a little 3D tavern, with their thoughts appearing above their heads.">
+<link rel="icon" href="pieces/wN.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/live.css">
+<script type="importmap">
+  { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+  } }
+</script>
+</head>
+<body>
+<main class="live-page">
+  <header class="page-head">
+    <h1 id="title">Magnus vs Hans</h1>
+    <span class="subtitle live-status" id="status">Setting up the room…</span>
+    <a class="head-link" href="index.html">Classic replay ↗</a>
+  </header>
+
+  <div class="live-stage">
+    <div class="room" id="room">
+      <div class="room-loading" id="room-loading">Loading the tavern…</div>
+    </div>
+
+    <aside class="live-panel">
+      <div class="live-controls">
+        <select id="game-select" aria-label="Game"></select>
+        <button id="play" class="play" title="Play / pause">⏸</button>
+        <select id="speed" aria-label="Speed" title="Replay speed (1× = the real pace of the game)">
+          <option value="1">1× real</option><option value="2">2×</option>
+          <option value="4">4×</option><option value="8">8×</option>
+        </select>
+      </div>
+      <p class="players" id="players"></p>
+
+      <div class="player-bar" id="bar-top"></div>
+      <div class="board-wrap">
+        <div class="eval-bar" id="eval-bar" title="Evaluation by Stockfish">
+          <div class="eval-fill"></div>
+          <span class="eval-label"></span>
+        </div>
+        <div class="board-frame small" id="board-frame">
+          <div class="board"></div>
+        </div>
+      </div>
+      <div class="player-bar" id="bar-bottom"></div>
+
+      <div class="counter live-counter" id="counter"></div>
+      <div class="move-list" id="move-list" aria-label="Moves"></div>
+
+      <div class="review-card" id="review-card" hidden>
+        <div class="review-title">Game review</div>
+        <div class="review-rows" id="review-rows"></div>
+        <div class="review-note">Graded by Stockfish, using Lichess's accuracy formula.</div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script src="js/board.js"></script>
+<script src="js/replay.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/overlays.js"></script>
+<script src="js/material.js"></script>
+<script type="module">
+  import { ChessRoom } from "./js/scene3d.js";
+  import { LiveView } from "./js/liveview.js";
+
+  const $ = (id) => document.getElementById(id);
+  const board = new ChessBoard($("board-frame"));
+  board.setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+  const panel = {
+    board,
+    evalBar: new EvalBar($("eval-bar")),
+    bars: new PlayerBars($("bar-top"), $("bar-bottom")),
+    resultCard: new ResultCard(board),
+    moveList: null,
+    engine: null,
+    el: { title: $("title"), status: $("status"), players: $("players"), counter: $("counter"),
+          reviewCard: $("review-card"), reviewRows: $("review-rows") },
+  };
+  try { panel.engine = new Engine(); } catch { /* the bar just stays in the middle */ }
+
+  const room = new ChessRoom($("room"));
+  const view = new LiveView(room, panel);
+  // Clicking a move jumps there (a real-speed replay pauses; press ▶ to carry on from there).
+  panel.moveList = new MoveList($("move-list"), (ply) => { view.pause(); view.goTo(ply); room.reset(); });
+  view.onReplayState = (playing) => { $("play").textContent = playing ? "⏸" : "▶"; };
+
+  const params = new URLSearchParams(location.search);
+
+  async function start() {
+    await room.load();
+    $("room-loading").remove();
+    if (location.protocol === "file:") {
+      $("status").textContent = "Open this page through serve.bat to load games.";
+      return;
+    }
+    const { games } = await (await fetch(`games/index.json?t=${Date.now()}`, { cache: "no-store" })).json();
+    const select = $("game-select");
+    select.add(new Option("● Live game (on this computer)", "live"));
+    const recent = [...games].reverse();   // newest first
+    for (const g of recent) select.add(new Option(g.title, g.file));
+
+    const live = await LiveView.readStatus();
+    const chosen = games.find((g) => g.id === params.get("game"));
+    if (chosen) {
+      select.value = chosen.file;
+    } else if (live || params.has("live")) {
+      select.value = "live";
+    } else {
+      // Nothing live: show the newest game played by AI agents.
+      const ai = recent.find((g) => ["match", "ai", "yardstick"].includes(g.kind)) || recent[0];
+      select.value = ai.file;
+    }
+    select.onchange = () => choose(select.value);
+    await choose(select.value);
+  }
+
+  async function choose(value) {
+    $("play").disabled = value === "live";
+    $("speed").disabled = value === "live";
+    if (value === "live") return view.startLive();
+    room.speed = Number($("speed").value);
+    view.startReplay(await view.fetchDiary(value));
+  }
+
+  $("play").onclick = () => {
+    if (view.mode !== "replay") return;
+    const atEnd = view.shown >= view.diary.moves.length;
+    if (!view.paused && !atEnd) return view.pause();
+    if (atEnd) view.startReplay(view.diary, 0);   // watch again from the start
+    else view.resume();
+  };
+  $("speed").onchange = () => { room.speed = Number($("speed").value); };
+
+  start().catch((err) => { $("status").textContent = "Something went wrong: " + err.message; });
+  window.app = { room, board, view };   // lets automatic checks reach the page's parts
+</script>
+</body>
+</html>

@@ -14,3 +14,6 @@ Thumbs.db
 
 # Progress printouts from game runs (the usage record logs/claude_calls.jsonl IS kept)
 logs/*.txt
+
+# The live view's status file (only meaningful on this computer)
+docs/live/

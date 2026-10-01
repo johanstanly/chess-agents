@@ -8,6 +8,7 @@ Runs games with the Claude agent. Uses your Claude Pro plan (never the paid API)
                                            (--agent-color white|black, --skill N)
   python arena/play.py match               the next game of the Magnus vs Hans series (--games N)
   python arena/play.py dry-run             shows exactly what Magnus and Hans are sent (no Claude requests)
+  python arena/play.py demo-live           a free practice game (random moves) to test the live view
 
 A stopped match game (e.g. usage limit reached) continues automatically the
 next time you run "match". Every finished game is graded by Stockfish; after
@@ -30,6 +31,7 @@ import chess
 import arbiter
 import diary
 from claude_agent import AgentUnavailable, ClaudeAgent, check_no_paid_api
+from live import LiveStatus, demo_players, viewing_seconds
 from notebook import NOTEBOOK, Notebook, lessons_message, write_lessons
 from players import Turn
 
@@ -99,11 +101,16 @@ def grade(d: dict) -> None:
 
 def run_game(white, black, game_id: str, title: str, kind: str, notes: str,
              args, resume: bool, how_to_continue: str) -> dict | None:
-    """Plays (or continues) one game, then grades it. None if Claude stopped answering."""
+    """Plays (or continues) one game, then grades it. None if Claude stopped answering.
+    While it runs, the live view (docs/live.html) can follow it."""
     totals = {"requests": 0, "input_tokens": 0, "output_tokens": 0}
     started = time.time()
+    live = LiveStatus(game_id, white.name, black.name)
 
     def show(m: dict) -> None:
+        live.moved(m)
+        if args.pause and m["thought_source"] != "move_description":
+            time.sleep(viewing_seconds(m["thought"]))   # time to read it on the live page
         u = m.get("usage") or {}
         for key in totals:
             totals[key] += u.get(key, 0)
@@ -118,9 +125,10 @@ def run_game(white, black, game_id: str, title: str, kind: str, notes: str,
           f"move limit: {args.limit or 'none (only the chess draw rules)'}\n")
     try:
         d = arbiter.play_game(white, black, game_id, title, kind=kind, move_limit=args.limit,
-                              resume=resume, on_move=show, notes=notes)
+                              resume=resume, on_move=show, on_turn=live.turn, notes=notes)
     except AgentUnavailable as err:
         diary.rebuild_index()
+        live.stopped(str(err))
         print(f"\nThe game stopped: {err}")
         print(f"Everything so far is saved. To continue later, run:\n   {how_to_continue}")
         return None
@@ -129,8 +137,22 @@ def run_game(white, black, game_id: str, title: str, kind: str, notes: str,
     print(f"Claude requests: {totals['requests']}, text in: {totals['input_tokens']} tokens, "
           f"text out: {totals['output_tokens']} tokens, time: {minutes:.0f} minutes")
     print(f"Saved: docs/games/{game_id}.json")
+    live.finished(d)
     grade(d)
+    live.write(graded=True)
     return d
+
+
+def demo_live(args) -> int:
+    """A free practice game for the live view: random moves with pauses and made-up thoughts."""
+    white, black = demo_players()
+    args.limit = args.limit or 20
+    print("Demo game for the live view: random moves, made-up thoughts, no Claude requests.")
+    print("Open http://localhost:8000/live.html (start serve.bat first) to watch.\n")
+    d = run_game(white, black, f"{datetime.now():%Y-%m-%d-%H%M}-demo-live", "Demo: Magnus vs Hans (random moves)",
+                 "test", "Demo game for testing the live view: random moves and made-up thoughts, no AI.",
+                 args, False, "python arena/play.py demo-live")
+    return 0 if d else 1
 
 
 def play(args) -> int:
@@ -286,7 +308,7 @@ def main() -> int:
         sys.stdout.reconfigure(encoding="utf-8")
     check_no_paid_api()
     parser = argparse.ArgumentParser(description="Play chess with the Claude agents.")
-    parser.add_argument("what", choices=["test-moves", "game", "yardstick", "match", "dry-run"])
+    parser.add_argument("what", choices=["test-moves", "game", "yardstick", "match", "dry-run", "demo-live"])
     parser.add_argument("--model", default="sonnet")
     parser.add_argument("--effort", default="low", choices=["low", "medium", "high"])
     parser.add_argument("--limit", type=int, default=0,
@@ -300,8 +322,10 @@ def main() -> int:
                         help="yardstick: which colour the agent plays")
     parser.add_argument("--skill", type=int, default=0, help="yardstick: Stockfish skill level (0-20)")
     parser.add_argument("--games", type=int, default=1, help="match: how many games to play")
+    parser.add_argument("--no-pause", dest="pause", action="store_false",
+                        help="do not wait after each move for the live page (faster, for unattended runs)")
     args = parser.parse_args()
-    actions = {"test-moves": test_moves, "match": match, "dry-run": dry_run}
+    actions = {"test-moves": test_moves, "match": match, "dry-run": dry_run, "demo-live": demo_live}
     return actions.get(args.what, play)(args)
 
 

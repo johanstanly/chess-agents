@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Live page check</title></head>
+<body>
+<img src="/__hold" hidden alt="">
+<iframe id="f" style="width:1400px;height:850px"></iframe>
+<script>
+/* Drives the live page (live.html) inside a frame and reports PASS/FAIL lines. */
+const results = [];
+const check = (ok, text) => results.push(`${ok ? "PASS" : "FAIL"}  ${text}`);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const frame = document.getElementById("f");
+async function until(fn, ms = 30000) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms) { const v = fn(); if (v) return v; await sleep(100); }
+  return null;
+}
+const app = () => frame.contentWindow.app;
+const doc = () => frame.contentDocument;
+
+async function run() {
+  frame.src = "/live.html?game=2026-09-30-1222-vs-stockfish";
+  const seated = () => app().room.seated === `${app().view.diary.white.name}|${app().view.diary.black.name}`;
+  const ready = await until(() => app() && app().view.diary && app().room.characters && seated());
+  check(ready, "the live page loads the 3D room and a game");
+  if (!ready) return;
+  const { view, room, board } = app();
+  view.pause();
+  const d = view.diary;
+  check(view.shown === 0 && board.matchesFen(d.start_fen), "a real-speed replay starts from the first move");
+
+  // Play every move the way the replay does, checking both boards each time.
+  view.goTo(0);
+  let bad = null;
+  for (let i = 0; i < d.moves.length && !bad; i++) {
+    view.playNext();
+    const fen = d.moves[i].fen_after;
+    if (!board.matchesFen(fen)) bad = `2D board wrong after ${d.moves[i].san} (half-move ${i + 1})`;
+    else if (room.chessSet.fen !== fen) bad = `3D board wrong after ${d.moves[i].san}`;
+  }
+  check(!bad, bad || `both boards match the game after all ${d.moves.length} half-moves`);
+  const listed = doc().querySelectorAll("#move-list .ml-move:not(:disabled)").length;
+  check(listed === d.moves.length, `the move list shows every move (${listed})`);
+
+  view.showEnd();
+  const card = doc().getElementById("review-card");
+  check(!card.hidden && card.textContent.includes("%"), "the game review card appears at the end");
+  check(room.players.black.badge.textContent === "✓" && room.players.white.badge.textContent === "✗",
+        "the winner gets ✓ and the loser ✗ over their heads");
+
+  // Jumping back through the move list puts both boards at that move.
+  view.goTo(10);
+  check(board.matchesFen(d.moves[9].fen_after) && room.chessSet.fen === d.moves[9].fen_after,
+        "jumping to a move shows the right position on both boards");
+
+  // The real-speed replay itself: after a few seconds at 8x, some moves have been played.
+  room.speed = 8;
+  view.startReplay(d, 0);
+  await sleep(6000);
+  check(view.shown >= 2 && board.matchesFen(d.moves[view.shown - 1].fen_after),
+        `the real-speed replay plays on by itself (${view.shown} half-moves after 6 s at 8x)`);
+  view.pause();
+  const failed = results.filter((r) => r.startsWith("FAIL")).length;
+  results.push(failed ? `${failed} CHECK(S) FAILED` : "ALL CHECKS PASSED");
+}
+
+setTimeout(() => fetch("/__done", { method: "POST", body: [...results, "FAIL  timed out"].join("\n") }), 100000);
+run()
+  .catch((err) => results.push("FAIL  test crashed: " + err.message))
+  .finally(() => fetch("/__done", { method: "POST", body: results.join("\n") }));
+</script>
+</body>
+</html>

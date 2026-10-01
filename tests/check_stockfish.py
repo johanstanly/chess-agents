@@ -37,7 +37,10 @@ def check(ok: bool, text: str) -> None:
 
 
 def load(name: str) -> dict:
-    return json.loads((diary.GAMES_DIR / name).read_text(encoding="utf-8"))
+    path = diary.GAMES_DIR / name
+    if not path.exists():
+        path = diary.FIXTURES_DIR / name   # older test games live with the tests
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def find(d: dict, number: int, color: str) -> dict:
@@ -103,7 +106,8 @@ def main() -> int:
 
     print("\n5. Saved grades in docs/games")
     labels = {None, "inaccuracy", "mistake", "blunder"}
-    for path in sorted(p for p in diary.GAMES_DIR.glob("*.json") if p.name != "index.json"):
+    games = list(diary.GAMES_DIR.glob("*.json")) + list(diary.FIXTURES_DIR.glob("*.json"))
+    for path in sorted(p for p in games if p.name != "index.json"):
         d = json.loads(path.read_text(encoding="utf-8"))
         if not d["moves"]:
             continue

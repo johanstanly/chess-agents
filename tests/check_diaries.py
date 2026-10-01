@@ -66,7 +66,8 @@ def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     failures = 0
-    for path in sorted(diary.GAMES_DIR.glob("*.json")):
+    games = list(diary.GAMES_DIR.glob("*.json")) + list(diary.FIXTURES_DIR.glob("*.json"))
+    for path in sorted(games):
         if path.name == "index.json":
             continue
         problems = check_diary(path)

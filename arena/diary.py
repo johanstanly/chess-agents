@@ -18,7 +18,9 @@ import chess
 DIARY_FORMAT_VERSION = 1
 
 # The website folder where diaries are saved (docs/games).
-GAMES_DIR = Path(__file__).resolve().parent.parent / "docs" / "games"
+ROOT = Path(__file__).resolve().parent.parent
+GAMES_DIR = ROOT / "docs" / "games"            # the games the website shows
+FIXTURES_DIR = ROOT / "tests" / "fixtures"     # older test games, kept only for the automatic checks
 
 PIECE_NAMES = {
     chess.PAWN: "Pawn",

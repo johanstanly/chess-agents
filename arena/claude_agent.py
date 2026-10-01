@@ -3,6 +3,7 @@ The Claude agent: a player whose moves come from Claude, run through
 Claude Code on your Claude Pro plan (never the paid API).
 
 Each move is one short, separate request:  claude -p ... --tools ""
+(its answer is streamed, so the live view can show the thought as it is written)
 - No tools: the agent can only think and answer (no files, no web, no engine).
 - Our own short instructions replace Claude Code's long default ones, and
   extras (connected apps, skills, plugins) are switched off. This keeps every
@@ -15,6 +16,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import threading
 import time
 from pathlib import Path
 
@@ -73,6 +75,7 @@ class ClaudeAgent(Player):
         self.turn_template = (PROMPTS / "move_turn.txt").read_text(encoding="utf-8")
         self.last_usage = None
         self.game_id = None                  # set by the arbiter, for the call log
+        self.on_text = None                  # called with the answer so far while Claude writes
         check_no_paid_api()
 
     def info(self) -> dict:
@@ -119,7 +122,8 @@ class ClaudeAgent(Player):
             raise SystemExit("Stopped: Claude Code ('claude') was not found on this computer.")
         command = [
             program, "-p",   # the message itself is sent through the input (below)
-            "--output-format", "json",
+            # The answer arrives piece by piece, so the live view can show it growing.
+            "--output-format", "stream-json", "--verbose", "--include-partial-messages",
             "--model", self.model,
             "--effort", self.effort,
             "--tools", "",
@@ -127,22 +131,32 @@ class ClaudeAgent(Player):
             "--safe-mode", "--strict-mcp-config", "--no-session-persistence",
         ]
         started = time.time()
+        timed_out = threading.Event()
+        # The message is sent through the input, from a file that is complete before
+        # Claude Code starts. (On the command line, or written in while it was
+        # already starting, the message was sometimes lost and Claude replied
+        # "What would you like to work on today?".)
         # Run from an empty folder so no project files are picked up.
-        with tempfile.TemporaryDirectory() as empty:
+        with tempfile.TemporaryDirectory() as empty, tempfile.TemporaryDirectory() as box, \
+                tempfile.TemporaryFile("w+", encoding="utf-8") as errors:
+            message_file = Path(box) / "message.txt"
+            message_file.write_text(message, encoding="utf-8")
+            with open(message_file, encoding="utf-8") as stdin:
+                process = subprocess.Popen(command, cwd=empty, env=env, stdin=stdin,
+                                           stdout=subprocess.PIPE, stderr=errors, text=True, encoding="utf-8")
+            timer = threading.Timer(self.timeout, lambda: (timed_out.set(), process.kill()))
+            timer.start()
             try:
-                # Sending the message through the input is more reliable than the
-                # command line: on the command line it was occasionally lost, and
-                # Claude replied "What would you like to work on today?".
-                done = subprocess.run(command, cwd=empty, env=env, input=message,
-                                      capture_output=True, text=True, encoding="utf-8",
-                                      timeout=self.timeout)
-            except subprocess.TimeoutExpired:
-                raise AgentUnavailable(f"Claude did not answer within {self.timeout} seconds.")
-        try:
-            data = json.loads(done.stdout)
-        except json.JSONDecodeError:
-            raise AgentUnavailable("Claude Code gave an unreadable answer: "
-                                   + (done.stdout or done.stderr).strip()[:300])
+                data = self.read_stream(process.stdout)
+                process.wait()
+            finally:
+                timer.cancel()
+            errors.seek(0)
+            error_text = errors.read()
+        if timed_out.is_set():
+            raise AgentUnavailable(f"Claude did not answer within {self.timeout} seconds.")
+        if data is None:
+            raise AgentUnavailable("Claude Code gave an unreadable answer: " + error_text.strip()[:300])
         if data.get("is_error"):
             raise AgentUnavailable("Claude Code reported a problem: " + str(data.get("result"))[:300])
 
@@ -155,6 +169,26 @@ class ClaudeAgent(Player):
         }
         self.log_call(data)
         return data.get("result") or ""
+
+    def read_stream(self, lines) -> dict | None:
+        """Reads Claude Code's output line by line. Each new piece of the answer is
+        passed to on_text (the whole answer so far); returns the final summary
+        (answer, usage), or None if there was none."""
+        text, result = "", None
+        for line in lines:
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if event.get("type") == "stream_event":
+                delta = (event.get("event") or {}).get("delta") or {}
+                if delta.get("type") == "text_delta":
+                    text += delta.get("text", "")
+                    if self.on_text:
+                        self.on_text(text)
+            elif event.get("type") == "result":
+                result = event
+        return result
 
     def log_call(self, data: dict) -> None:
         """Keeps a record of every request, to measure how much allowance games use."""
@@ -175,8 +209,13 @@ class ClaudeAgent(Player):
         """Finds the MOVE and THOUGHT lines, tolerating extra decoration such as
         **MOVE:** Nf3, `Nf3`, "Move: Nf3." or a thought spread over lines."""
         # The word MOVE, then a colon (decorations allowed around it), then the move.
-        move = re.search(r"\bMOVE\b[\s*_`]*:[\s*_`]*([^\s*`\"']+)", answer, re.I)
-        thought = re.search(r"\bTHOUGHT\b[\s*_`]*:[\s*_`]*(.+)", answer, re.I | re.S)
+        # "MOVE:" in capitals first, so a thought like "a good move: develop" is not read as a move.
+        pattern = r"\bMOVE\b[\s*_`]*:[\s*_`]*([^\s*`\"']+)"
+        move = re.search(pattern, answer) or re.search(pattern, answer, re.I)
+        # The thought runs until "MOVE:" in capitals, on its own line or at the end
+        # of the thought's line (Claude now writes its thought first).
+        thought = re.search(r"\bTHOUGHT\b[\s*_`]*:[\s*_`]*(.+?)(?=(?-i:[\s*_`]*\bMOVE\b[\s*_`]*:)|\Z)",
+                            answer, re.I | re.S)
         move_text = move.group(1).rstrip(".,;") if move else ""
         if thought:
             thought_text = " ".join(thought.group(1).replace("*", "").split())

@@ -83,6 +83,21 @@ class _QuietServer(http.server.ThreadingHTTPServer):
         pass  # the browser closing a connection early is not a problem
 
 
+def games_with_fixtures() -> tempfile.TemporaryDirectory:
+    """A temporary games folder: the website's games plus the test-only games in
+    tests/fixtures (older test games the checks rely on). Use it as games_dir."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "arena"))
+    import diary
+    folder = tempfile.TemporaryDirectory(prefix="chess-agents-games-")
+    for source in (diary.GAMES_DIR, diary.FIXTURES_DIR):
+        for f in source.glob("*.json"):
+            if f.name != "index.json":
+                shutil.copy(f, folder.name)
+    diary.rebuild_index(Path(folder.name))
+    return folder
+
+
 def run_page(path: str, timeout: int = 120, screenshot: str | None = None,
              size: str = "1366,768", games_dir: Path | None = None) -> str:
     """Opens `path` in a hidden browser; returns the text the page reported.

@@ -10,5 +10,5 @@ Moves so far: {history}
 Legal moves: {legal_moves}
 {notebook}{feedback}
 Reply with exactly two lines:
-MOVE: <move>
 THOUGHT: <at most 30 words>
+MOVE: <move>

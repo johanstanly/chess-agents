@@ -84,7 +84,9 @@ def convert(pgn_path: Path) -> bool:
             print(f"REFUSED  {pgn_path.name}: says {result} but the final position is {real}.")
             return False
     diary.finish_diary(d, result, termination)
-    path = diary.save_diary(d)
+    # Test games (e.g. special moves) are kept for the automatic checks, not shown on the website.
+    games_dir = diary.FIXTURES_DIR if d["kind"] == "test" else diary.GAMES_DIR
+    path = diary.save_diary(d, games_dir)
 
     moves = d["moves"]
     castled = {c: next((m["castling"] for m in moves if m["color"] == c and m["castling"]), None)
@@ -100,7 +102,7 @@ def convert(pgn_path: Path) -> bool:
     print(f"         Ending: {d['result_text']}  [{result}]")
     print(f"         Thoughts: {sum(1 for m in moves if m['thought_source'] == 'sample_note')}"
           f" sample notes, the rest are move descriptions")
-    print(f"         Saved: docs/games/{path.name}")
+    print(f"         Saved: {path.relative_to(diary.ROOT)}")
     return True
 
 

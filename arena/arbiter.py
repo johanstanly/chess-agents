@@ -13,6 +13,7 @@ The arbiter: ordinary code (no AI) that runs a game between two players.
 import json
 import random
 import re
+from datetime import datetime
 from pathlib import Path
 
 import chess
@@ -77,10 +78,12 @@ def play_game(white: Player, black: Player, game_id: str, title: str,
               kind: str = "test", games_dir: Path = diary.GAMES_DIR,
               start_fen: str = chess.STARTING_FEN, move_limit: int = MOVE_LIMIT,
               seed: int | None = None, notes: str = "", log=print,
-              resume: bool = False, on_move=None) -> dict:
+              resume: bool = False, on_move=None, on_turn=None) -> dict:
     """Plays one full game and returns its diary (also saved to games_dir).
     With resume=True, an unfinished game with the same id is continued from
-    where it stopped (e.g. after the Pro plan usage limit resets)."""
+    where it stopped (e.g. after the Pro plan usage limit resets).
+    on_turn(color, player) is called when a player starts thinking, and
+    on_move(record) after each move (both used by the live view)."""
     saved = games_dir / f"{game_id}.json"
     if resume and saved.exists():
         d = json.loads(saved.read_text(encoding="utf-8"))
@@ -106,6 +109,8 @@ def play_game(white: Player, black: Player, game_id: str, title: str,
         feedback, illegal = [], []
         move, suggestion = None, None
 
+        if on_turn:
+            on_turn(color, player)
         usage = {"requests": 0, "input_tokens": 0, "output_tokens": 0, "seconds": 0.0}
         for _ in range(MAX_ATTEMPTS):
             suggestion = player.suggest(Turn(board.copy(), color, list(feedback)))
@@ -137,6 +142,7 @@ def play_game(white: Player, black: Player, game_id: str, title: str,
             usage["seconds"] = round(usage["seconds"], 1)
             record["usage"] = usage  # how much of the Pro allowance this move used
 
+        record["time"] = datetime.now().isoformat(timespec="seconds")  # for real-speed replays
         d["moves"].append(record)
         board.push(move)
         diary.save_diary(d, games_dir, update_index=False)

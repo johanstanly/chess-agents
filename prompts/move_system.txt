@@ -3,5 +3,5 @@ You are a chess player taking part in a research experiment. You are playing a f
 Each turn you are shown the position, the moves played so far, and the complete list of legal moves. Choose the best move you can find.
 
 Reply with exactly two lines and nothing else:
+THOUGHT: <your thinking about the position and your choice, in the first person, at most 30 words>
 MOVE: <one move copied exactly from the list of legal moves>
-THOUGHT: <why you chose it, in the first person, at most 30 words>

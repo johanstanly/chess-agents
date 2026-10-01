@@ -1,37 +1,15 @@
 {
   "games": [
     {
-      "id": "2026-09-29-1706-claude-vs-claude",
-      "file": "2026-09-29-1706-claude-vs-claude.json",
-      "title": "Claude A vs Claude B (sonnet, 29 Sep 2026)",
-      "kind": "ai",
-      "date": "2026-09-29",
-      "white": "Claude A",
-      "black": "Claude B",
-      "result_text": "Draw: move limit reached",
-      "moves": 120
-    },
-    {
-      "id": "2026-09-29-1732-claude-vs-claude",
-      "file": "2026-09-29-1732-claude-vs-claude.json",
-      "title": "Claude A vs Claude B (sonnet, 29 Sep 2026)",
-      "kind": "ai",
-      "date": "2026-09-29",
-      "white": "Claude A",
-      "black": "Claude B",
-      "result_text": "Draw: not enough pieces left to checkmate",
-      "moves": 114
-    },
-    {
-      "id": "2026-09-30-1222-vs-stockfish",
-      "file": "2026-09-30-1222-vs-stockfish.json",
-      "title": "Claude A vs Stockfish (skill 0) (sonnet, 30 Sep 2026)",
-      "kind": "ai",
+      "id": "2026-09-30-1804-match-01",
+      "file": "2026-09-30-1804-match-01.json",
+      "title": "Game 1: Magnus vs Hans",
+      "kind": "match",
       "date": "2026-09-30",
-      "white": "Claude A",
-      "black": "Stockfish (skill 0)",
-      "result_text": "Black wins by checkmate",
-      "moves": 48
+      "white": "Magnus",
+      "black": "Hans",
+      "result_text": "Draw by stalemate",
+      "moves": 98
     },
     {
       "id": "sample-kasparov-topalov-1999",
@@ -54,17 +32,6 @@
       "black": "George Alan Thomas",
       "result_text": "White wins by checkmate",
       "moves": 35
-    },
-    {
-      "id": "test-special-moves",
-      "file": "test-special-moves.json",
-      "title": "Test: en passant and promotion",
-      "kind": "test",
-      "date": "2026-09-29",
-      "white": "Test White",
-      "black": "Test Black",
-      "result_text": "Game not finished",
-      "moves": 18
     }
   ]
 }

@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Live mode check</title></head>
+<body>
+<img src="/__hold" hidden alt="">
+<iframe id="f" style="width:1400px;height:850px"></iframe>
+<script>
+/* Follows a demo game that is being played right now (started by tests/check_live.py). */
+const results = [];
+const check = (ok, text) => results.push(`${ok ? "PASS" : "FAIL"}  ${text}`);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const frame = document.getElementById("f");
+async function until(fn, ms = 30000) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms) { const v = fn(); if (v) return v; await sleep(100); }
+  return null;
+}
+const app = () => frame.contentWindow.app;
+
+async function run() {
+  frame.src = "/live.html?live";
+  const ready = await until(() => app() && app().view.mode === "live" && app().view.diary &&
+    app().room.seated === `${app().view.diary.white.name}|${app().view.diary.black.name}`, 40000);
+  check(ready, "the live page finds the game being played");
+  if (!ready) return;
+  const { view, room, board } = app();
+
+  // Watch the characters while the game goes on.
+  let sawThinking = false, sawThought = false;
+  const finished = await until(() => {
+    for (const p of Object.values(room.players)) {
+      if (p.state === "thinking") sawThinking = true;
+      if (p.bubble.textContent.includes("(demo)")) sawThought = true;
+    }
+    return view.diary.result !== "*" && view.diary.review;
+  }, 200000);
+  check(sawThinking, "a character was seen thinking");
+  check(sawThought, "a thought was typed into a bubble while the game went on");
+  check(finished, "the page saw the game finish and get graded");
+  if (!finished) return;
+  const d = view.diary, last = d.moves[d.moves.length - 1];
+  await sleep(1500);
+  check(view.shown === d.moves.length && board.matchesFen(last.fen_after) && room.chessSet.fen === last.fen_after,
+        `both boards show the final position (${d.moves.length} half-moves)`);
+  check(!frame.contentDocument.getElementById("review-card").hidden, "the game review card appears");
+  const failed = results.filter((r) => r.startsWith("FAIL")).length;
+  results.push(failed ? `${failed} CHECK(S) FAILED` : "ALL CHECKS PASSED");
+}
+
+setTimeout(() => fetch("/__done", { method: "POST", body: [...results, "FAIL  timed out"].join("\n") }), 260000);
+run()
+  .catch((err) => results.push("FAIL  test crashed: " + err.message))
+  .finally(() => fetch("/__done", { method: "POST", body: results.join("\n") }));
+</script>
+</body>
+</html>
