@@ -43,8 +43,10 @@ def fingerprint(text: str) -> str:
 
 
 def prompt_fingerprints() -> dict:
-    """A short fingerprint of every prompt file: it changes if even one letter changes."""
-    return {p.name: hashlib.sha256(p.read_bytes()).hexdigest()[:16] for p in sorted(PROMPTS_DIR.glob("*.txt"))}
+    """A short fingerprint of every prompt file: it changes if even one letter changes
+    (but not if only the line endings change, which Git may do on Windows)."""
+    return {p.name: fingerprint(p.read_text(encoding="utf-8").replace("\r\n", "\n"))
+            for p in sorted(PROMPTS_DIR.glob("*.txt"))}
 
 
 def current_settings(model: str, effort: str) -> dict:

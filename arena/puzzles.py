@@ -68,7 +68,10 @@ def load_set() -> list[dict]:
 
 
 def fingerprint() -> str | None:
-    return hashlib.sha256(PUZZLE_SET.read_bytes()).hexdigest()[:16] if PUZZLE_SET.exists() else None
+    if not PUZZLE_SET.exists():
+        return None
+    text = PUZZLE_SET.read_text(encoding="utf-8").replace("\r\n", "\n")   # line endings may differ
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
 
 def board_for(p: dict) -> chess.Board:
