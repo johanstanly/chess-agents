@@ -1,37 +1,268 @@
 {
   "games": [
     {
-      "id": "2026-09-30-1804-match-01",
-      "file": "2026-09-30-1804-match-01.json",
+      "id": "2026-10-01-1736-checkpoint-00-magnus-white",
+      "file": "2026-10-01-1736-checkpoint-00-magnus-white.json",
+      "title": "Checkpoint 0: Magnus vs Stockfish (skill 0)",
+      "kind": "yardstick",
+      "date": "2026-10-01",
+      "white": "Magnus",
+      "black": "Stockfish (skill 0)",
+      "result_text": "Black wins by checkmate",
+      "moves": 176
+    },
+    {
+      "id": "2026-10-01-2253-checkpoint-00-magnus-black",
+      "file": "2026-10-01-2253-checkpoint-00-magnus-black.json",
+      "title": "Checkpoint 0: Stockfish (skill 0) vs Magnus",
+      "kind": "yardstick",
+      "date": "2026-10-01",
+      "white": "Stockfish (skill 0)",
+      "black": "Magnus",
+      "result_text": "Black wins by checkmate",
+      "moves": 82
+    },
+    {
+      "id": "2026-10-01-2319-checkpoint-00-hans-white",
+      "file": "2026-10-01-2319-checkpoint-00-hans-white.json",
+      "title": "Checkpoint 0: Hans vs Stockfish (skill 0)",
+      "kind": "yardstick",
+      "date": "2026-10-01",
+      "white": "Hans",
+      "black": "Stockfish (skill 0)",
+      "result_text": "Black wins by checkmate",
+      "moves": 120
+    },
+    {
+      "id": "2026-10-02-0036-checkpoint-00-hans-black",
+      "file": "2026-10-02-0036-checkpoint-00-hans-black.json",
+      "title": "Checkpoint 0: Stockfish (skill 0) vs Hans",
+      "kind": "yardstick",
+      "date": "2026-10-02",
+      "white": "Stockfish (skill 0)",
+      "black": "Hans",
+      "result_text": "Black wins by checkmate",
+      "moves": 70
+    },
+    {
+      "id": "2026-10-02-0350-match-01",
+      "file": "2026-10-02-0350-match-01.json",
       "title": "Game 1: Magnus vs Hans",
       "kind": "match",
-      "date": "2026-09-30",
+      "date": "2026-10-02",
       "white": "Magnus",
       "black": "Hans",
-      "result_text": "Draw by stalemate",
-      "moves": 98
-    },
-    {
-      "id": "sample-kasparov-topalov-1999",
-      "file": "sample-kasparov-topalov-1999.json",
-      "title": "Kasparov vs Topalov, 1999 - Kasparov's Immortal",
-      "kind": "sample",
-      "date": "1999-01-20",
-      "white": "Garry Kasparov",
-      "black": "Veselin Topalov",
-      "result_text": "White wins (Black resigned)",
-      "moves": 87
-    },
-    {
-      "id": "sample-lasker-thomas-1912",
-      "file": "sample-lasker-thomas-1912.json",
-      "title": "Lasker vs Thomas, 1912 - The King Hunt",
-      "kind": "sample",
-      "date": "1912",
-      "white": "Edward Lasker",
-      "black": "George Alan Thomas",
       "result_text": "White wins by checkmate",
-      "moves": 35
+      "moves": 49
+    },
+    {
+      "id": "2026-10-02-0500-match-02",
+      "file": "2026-10-02-0500-match-02.json",
+      "title": "Game 2: Hans vs Magnus",
+      "kind": "match",
+      "date": "2026-10-02",
+      "white": "Hans",
+      "black": "Magnus",
+      "result_text": "White wins by checkmate",
+      "moves": 123
+    },
+    {
+      "id": "2026-10-02-0650-match-03",
+      "file": "2026-10-02-0650-match-03.json",
+      "title": "Game 3: Magnus vs Hans",
+      "kind": "match",
+      "date": "2026-10-02",
+      "white": "Magnus",
+      "black": "Hans",
+      "result_text": "White wins by checkmate",
+      "moves": 161
+    },
+    {
+      "id": "2026-10-02-1037-match-04",
+      "file": "2026-10-02-1037-match-04.json",
+      "title": "Game 4: Hans vs Magnus",
+      "kind": "match",
+      "date": "2026-10-02",
+      "white": "Hans",
+      "black": "Magnus",
+      "result_text": "Draw: not enough pieces left to checkmate",
+      "moves": 133
+    },
+    {
+      "id": "2026-10-02-1351-match-05",
+      "file": "2026-10-02-1351-match-05.json",
+      "title": "Game 5: Magnus vs Hans",
+      "kind": "match",
+      "date": "2026-10-02",
+      "white": "Magnus",
+      "black": "Hans",
+      "result_text": "White wins by checkmate",
+      "moves": 67
+    },
+    {
+      "id": "2026-10-02-1450-match-06",
+      "file": "2026-10-02-1450-match-06.json",
+      "title": "Game 6: Hans vs Magnus",
+      "kind": "match",
+      "date": "2026-10-02",
+      "white": "Hans",
+      "black": "Magnus",
+      "result_text": "Black wins by checkmate",
+      "moves": 160
+    },
+    {
+      "id": "2026-10-02-1555-checkpoint-06-magnus-white",
+      "file": "2026-10-02-1555-checkpoint-06-magnus-white.json",
+      "title": "Checkpoint 6: Magnus vs Stockfish (skill 0)",
+      "kind": "yardstick",
+      "date": "2026-10-02",
+      "white": "Magnus",
+      "black": "Stockfish (skill 0)",
+      "result_text": "White wins by checkmate",
+      "moves": 75
+    },
+    {
+      "id": "2026-10-02-1624-checkpoint-06-magnus-black",
+      "file": "2026-10-02-1624-checkpoint-06-magnus-black.json",
+      "title": "Checkpoint 6: Stockfish (skill 0) vs Magnus",
+      "kind": "yardstick",
+      "date": "2026-10-02",
+      "white": "Stockfish (skill 0)",
+      "black": "Magnus",
+      "result_text": "White wins by checkmate",
+      "moves": 85
+    },
+    {
+      "id": "2026-10-02-1916-checkpoint-06-hans-white",
+      "file": "2026-10-02-1916-checkpoint-06-hans-white.json",
+      "title": "Checkpoint 6: Hans vs Stockfish (skill 0)",
+      "kind": "yardstick",
+      "date": "2026-10-02",
+      "white": "Hans",
+      "black": "Stockfish (skill 0)",
+      "result_text": "Black wins by checkmate",
+      "moves": 132
+    },
+    {
+      "id": "2026-10-02-2030-checkpoint-06-hans-black",
+      "file": "2026-10-02-2030-checkpoint-06-hans-black.json",
+      "title": "Checkpoint 6: Stockfish (skill 0) vs Hans",
+      "kind": "yardstick",
+      "date": "2026-10-02",
+      "white": "Stockfish (skill 0)",
+      "black": "Hans",
+      "result_text": "White wins by checkmate",
+      "moves": 45
+    },
+    {
+      "id": "2026-10-02-2054-match-07",
+      "file": "2026-10-02-2054-match-07.json",
+      "title": "Game 7: Magnus vs Hans",
+      "kind": "match",
+      "date": "2026-10-02",
+      "white": "Magnus",
+      "black": "Hans",
+      "result_text": "White wins by checkmate",
+      "moves": 61
+    },
+    {
+      "id": "2026-10-02-2139-match-08",
+      "file": "2026-10-02-2139-match-08.json",
+      "title": "Game 8: Hans vs Magnus",
+      "kind": "match",
+      "date": "2026-10-02",
+      "white": "Hans",
+      "black": "Magnus",
+      "result_text": "Black wins by checkmate",
+      "moves": 118
+    },
+    {
+      "id": "2026-10-02-2358-match-09",
+      "file": "2026-10-02-2358-match-09.json",
+      "title": "Game 9: Magnus vs Hans",
+      "kind": "match",
+      "date": "2026-10-02",
+      "white": "Magnus",
+      "black": "Hans",
+      "result_text": "White wins by checkmate",
+      "moves": 53
+    },
+    {
+      "id": "2026-10-03-0016-match-10",
+      "file": "2026-10-03-0016-match-10.json",
+      "title": "Game 10: Hans vs Magnus",
+      "kind": "match",
+      "date": "2026-10-03",
+      "white": "Hans",
+      "black": "Magnus",
+      "result_text": "Black wins by checkmate",
+      "moves": 136
+    },
+    {
+      "id": "2026-10-04-1453-match-11",
+      "file": "2026-10-04-1453-match-11.json",
+      "title": "Game 11: Magnus vs Hans",
+      "kind": "match",
+      "date": "2026-10-04",
+      "white": "Magnus",
+      "black": "Hans",
+      "result_text": "Black wins by checkmate",
+      "moves": 60
+    },
+    {
+      "id": "2026-10-04-1528-match-12",
+      "file": "2026-10-04-1528-match-12.json",
+      "title": "Game 12: Hans vs Magnus",
+      "kind": "match",
+      "date": "2026-10-04",
+      "white": "Hans",
+      "black": "Magnus",
+      "result_text": "White wins by checkmate",
+      "moves": 105
+    },
+    {
+      "id": "2026-10-04-1707-checkpoint-12-magnus-white",
+      "file": "2026-10-04-1707-checkpoint-12-magnus-white.json",
+      "title": "Checkpoint 12: Magnus vs Stockfish (skill 0)",
+      "kind": "yardstick",
+      "date": "2026-10-04",
+      "white": "Magnus",
+      "black": "Stockfish (skill 0)",
+      "result_text": "White wins by checkmate",
+      "moves": 89
+    },
+    {
+      "id": "2026-10-05-0931-checkpoint-12-magnus-black",
+      "file": "2026-10-05-0931-checkpoint-12-magnus-black.json",
+      "title": "Checkpoint 12: Stockfish (skill 0) vs Magnus",
+      "kind": "yardstick",
+      "date": "2026-10-05",
+      "white": "Stockfish (skill 0)",
+      "black": "Magnus",
+      "result_text": "White wins by checkmate",
+      "moves": 157
+    },
+    {
+      "id": "2026-10-05-1155-checkpoint-12-hans-white",
+      "file": "2026-10-05-1155-checkpoint-12-hans-white.json",
+      "title": "Checkpoint 12: Hans vs Stockfish (skill 0)",
+      "kind": "yardstick",
+      "date": "2026-10-05",
+      "white": "Hans",
+      "black": "Stockfish (skill 0)",
+      "result_text": "Black wins by checkmate",
+      "moves": 76
+    },
+    {
+      "id": "2026-10-05-1228-checkpoint-12-hans-black",
+      "file": "2026-10-05-1228-checkpoint-12-hans-black.json",
+      "title": "Checkpoint 12: Stockfish (skill 0) vs Hans",
+      "kind": "yardstick",
+      "date": "2026-10-05",
+      "white": "Stockfish (skill 0)",
+      "black": "Hans",
+      "result_text": "White wins by checkmate",
+      "moves": 167
     }
   ]
 }

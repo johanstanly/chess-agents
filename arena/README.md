@@ -27,4 +27,4 @@ Commands:
 - `python arena/puzzles.py build`: makes the puzzle set from the games in `docs/games` (done once, before version 2).
 - `python arena/review.py`: grade every game again (free; about 15 seconds per game).
 
-To watch a game live: double-click `serve.bat`, open http://localhost:8000/live.html, then start a game (e.g. `python arena/play.py experiment`).
+To watch a game live: double-click `serve.bat`, open http://localhost:8765/live.html, then start a game (e.g. `python arena/play.py experiment`).

@@ -1,0 +1,35 @@
+{
+  "started": "2026-10-01T17:35:56",
+  "version": 2,
+  "model": "opus",
+  "effort": "high",
+  "match_games": 12,
+  "checkpoints": [
+    0,
+    6,
+    12
+  ],
+  "yardstick_skill": 0,
+  "yardstick_think_seconds": 0.05,
+  "review_depth": 16,
+  "notebook_cap": 15,
+  "worst_moves": 3,
+  "mistakes_shown": 2,
+  "library_labels": [
+    "mistake",
+    "blunder"
+  ],
+  "openings": "f1667899ab56b3c2",
+  "puzzle_test": false,
+  "puzzle_set": null,
+  "prompts": {
+    "lessons_system.txt": "1701ba5468359905",
+    "lessons_turn.txt": "dc3d43af6f4c6461",
+    "move_system.txt": "ce37626adb29eec4",
+    "move_turn.txt": "7638c401c34dd426",
+    "protocol_control.txt": "822dae69fc106e46",
+    "protocol_learner.txt": "6ce15b1e705640f3"
+  },
+  "model_id": "claude-opus-5",
+  "changed": "1 Oct 22:30: 20 games cut to 12 (checkpoints 0, 6, 12)"
+}

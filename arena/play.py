@@ -164,7 +164,7 @@ def demo_live(args) -> int:
     white, black = demo_players()
     args.limit = args.limit or 20
     print("Demo game for the live view: random moves, made-up thoughts, no Claude requests.")
-    print("Open http://localhost:8000/live.html (start serve.bat first) to watch.\n")
+    print("Open http://localhost:8765/live.html (start serve.bat first) to watch.\n")
     d = run_game(white, black, f"{datetime.now():%Y-%m-%d-%H%M}-demo-live", "Demo: Magnus vs Hans (random moves)",
                  "test", "Demo game for testing the live view: random moves and made-up thoughts, no AI.",
                  args, False, "python arena/play.py demo-live")
