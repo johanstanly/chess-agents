@@ -1,0 +1,15 @@
+# Magnus's notebook: lessons from my earlier games
+
+1. Before capturing or trading, list every enemy piece attacking the destination/recapture square and verify you don't lose material to forks, discoveries, or favorable recaptures.
+2. Before moving/placing a piece, check opponent's immediate replies (pawn pushes, captures, checks) that could trap, fork, or win it next move.
+3. In king-and-pawn and rook endgames, calculate key squares, opposition, and concrete plans precisely instead of relying on general intuition or aimless king moves.
+4. In rook endgames, keep rooks active and cut off the opponent's king; avoid simplifying trades when behind or when activity favors you.
+5. When ahead with a passed pawn or winning position, prioritize the simplest safe plan (often pushing the pawn) over tactical detours that risk the advantage.
+6. Before simplifying, trading, or recapturing automatically, scan for stronger alternatives that win more material or keep the initiative.
+7. When repositioning a piece, prefer squares safest from enemy pawn advances and that don't abandon key defended squares.
+8. When a piece is attacked, check all legal responses (captures, counter-attacks) before defaulting to retreat, since a counter-capture may win material outright.
+9. Before giving a check or sending a piece deep into enemy territory, verify the target/retreat squares aren't guarded by another enemy piece, risking a losing exchange or entrapment.
+10. Double-check candidate moves with concrete calculation rather than assuming "safe-looking" or intuitive moves are correct.
+11. In king-and-pawn endgames with a near-queening pawn, check if your own king's advance blocks the pawn or creates stalemate risk.
+12. In won endgames, verify that pushing your pawn or advancing your king doesn't remove your opponent's only legal moves, causing stalemate.
+13. In symmetrical pawn structures, calculate concrete piece trades (e.g., dxe4) rather than mirroring opponent's central pawn pushes by default.

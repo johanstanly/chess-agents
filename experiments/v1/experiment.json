@@ -1,0 +1,25 @@
+{
+  "started": "2026-10-01T12:09:22",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "match_games": 20,
+  "checkpoints": [
+    0,
+    10,
+    20
+  ],
+  "yardstick_skill": 0,
+  "yardstick_think_seconds": 0.05,
+  "review_depth": 16,
+  "notebook_cap": 15,
+  "merge_target": 10,
+  "lessons_per_game": 3,
+  "worst_moves": 3,
+  "prompts": {
+    "lessons_system.txt": "e08b97a818faf998",
+    "lessons_turn.txt": "e2c70908624669e2",
+    "merge_turn.txt": "6d521d4c84f578e1",
+    "move_system.txt": "2f8b212eb783723d",
+    "move_turn.txt": "a30cdffd12ce0cc8"
+  }
+}
