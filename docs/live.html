@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Magnus vs Hans Live</title>
+<title>Chess Agents in 3D</title>
 <meta name="description" content="Watch two AI chess agents, Magnus (who learns from his mistakes) and Hans (who doesn't), play a full game in a little 3D tavern, with their thoughts appearing above their heads.">
 <link rel="icon" href="pieces/wN.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/style.css">
@@ -21,6 +21,7 @@
     <h1 id="title">Magnus vs Hans</h1>
     <span class="subtitle live-status" id="status">Setting up the room…</span>
     <a class="head-link" href="index.html">Classic replay ↗</a>
+    <a class="head-link" href="results.html">Results ↗</a>
   </header>
 
   <div class="live-stage">
@@ -133,15 +134,18 @@
     }
     const { games } = await (await fetch(`games/index.json?t=${Date.now()}`, { cache: "no-store" })).json();
     const select = $("game-select");
-    select.add(new Option("● Live game (on this computer)", "live"));
+    // "Live" is only offered while a game is really being played on this computer
+    // (a finished game is just a replay), or when asked for with ?live.
+    const live = await LiveView.readStatus();
+    const running = (live && live.state !== "finished") || params.has("live") || !games.length;
+    if (running) select.add(new Option("● Live game (on this computer)", "live"));
     const recent = [...games].reverse();   // newest first
     for (const g of recent) select.add(new Option(g.title, g.file));
 
-    const live = await LiveView.readStatus();
     const chosen = games.find((g) => g.id === params.get("game"));
     if (chosen) {
       select.value = chosen.file;
-    } else if (live || params.has("live")) {
+    } else if (running) {
       select.value = "live";
     } else if (recent.length) {
       // Nothing live: show the newest game played by AI agents.

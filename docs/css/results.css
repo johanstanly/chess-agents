@@ -1,0 +1,94 @@
+/* The results page: headline numbers, charts and the write-up. */
+
+.results-page {
+  /* Chart colours. Violet and orange pass the colour-blind checks on this dark
+     panel (CVD separation 26, normal vision 27); the site's older purple and
+     blue were too close. */
+  --magnus: #9085e9;
+  --hans: #d95926;
+  --surface: var(--panel-bg);
+  --grid: rgba(255, 255, 255, 0.07);
+  --axis: rgba(255, 255, 255, 0.2);
+  --muted: #8d877f;
+  max-width: 1180px; margin: 0 auto; padding: 12px 16px 40px;
+}
+
+.head-nav { margin-left: auto; display: flex; gap: 16px; }
+.head-nav a { color: var(--accent); font-size: 13px; text-decoration: none; }
+.head-nav a:hover { text-decoration: underline; }
+
+.intro { max-width: 820px; margin: 18px 0 8px; line-height: 1.55; color: var(--text); }
+.intro h2 { font-size: 24px; font-weight: 650; line-height: 1.25; margin: 0 0 12px; }
+.intro p { margin: 0 0 10px; color: #d9d4cc; }
+.who { font-weight: 700; }
+.who::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+               margin: 0 5px 1px 0; vertical-align: middle; }
+.who.magnus::before { background: var(--magnus); }
+.who.hans::before { background: var(--hans); }
+
+/* ---------- Headline numbers ---------- */
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+.tile { background: var(--surface); border-radius: 10px; padding: 14px 16px; }
+.tile .label { font-size: 13px; color: var(--text-dim); }
+.tile .value { font-size: 30px; font-weight: 700; margin: 4px 0 2px; letter-spacing: -0.01em; }
+.tile .sub { font-size: 12.5px; color: var(--text-dim); }
+@media (max-width: 860px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- Cards and charts ---------- */
+.card { background: var(--surface); border-radius: 10px; padding: 16px 18px; margin: 14px 0; min-width: 0; }
+.card h3 { font-size: 16px; font-weight: 650; margin: 0 0 4px; }
+.note { color: var(--text-dim); font-size: 13px; margin: 0 0 8px; line-height: 1.45; }
+.two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.two-up .card { margin: 0; }
+.two-up + .card, .card + .two-up { margin-top: 14px; }
+@media (max-width: 900px) { .two-up { grid-template-columns: 1fr; } }
+
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--text); margin: 2px 0 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { fill: var(--muted); font-size: 12px; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+              font-variant-numeric: tabular-nums; }
+.chart .label-strong { fill: var(--text); font-weight: 600; }
+.chart .grid { stroke: var(--grid); stroke-width: 1; }
+.chart .axis { stroke: var(--axis); stroke-width: 1; }
+.chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .dot { stroke: var(--surface); stroke-width: 2; }
+.chart .hit { fill: transparent; cursor: pointer; }
+.chart .hit:hover + .dot, .chart .dot.on { r: 6; }
+.chart .band { fill: rgba(255, 255, 255, 0.025); }
+
+.tooltip { position: fixed; z-index: 10; pointer-events: none; max-width: 280px; padding: 8px 10px;
+           border-radius: 8px; background: #1d1b19; color: var(--text); font-size: 12.5px; line-height: 1.45;
+           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); }
+.tooltip b { font-weight: 650; }
+.tooltip .row { display: flex; align-items: center; gap: 6px; }
+.tooltip i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.tooltip .dim { color: var(--text-dim); }
+
+/* ---------- Write-up ---------- */
+.findings ol { margin: 8px 0 0; padding-left: 22px; line-height: 1.55; }
+.findings li { margin-bottom: 8px; color: #d9d4cc; }
+.findings li b { color: var(--text); }
+.verdict { margin: 12px 0 0; padding: 10px 12px; border-radius: 8px; background: rgba(129, 182, 76, 0.1);
+           border-left: 3px solid var(--accent); line-height: 1.5; }
+.plain { margin: 6px 0 0; padding-left: 18px; line-height: 1.5; font-size: 14px; color: #d9d4cc; }
+.plain li { margin-bottom: 6px; }
+.notebook { margin: 6px 0 0; padding-left: 24px; font-size: 13px; line-height: 1.45; color: #d9d4cc; }
+.notebook li { margin-bottom: 7px; }
+.notebook .phase { display: inline-block; font-size: 11px; padding: 0 6px; border-radius: 999px; margin-right: 4px;
+                   background: rgba(255, 255, 255, 0.08); color: var(--text-dim); }
+.notebook .example { display: block; color: var(--text-dim); font-size: 12px; margin-top: 2px; }
+
+/* ---------- The table of games ---------- */
+.table-wrap { overflow-x: auto; }
+.games { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.games th { text-align: left; font-weight: 600; color: var(--text-dim); padding: 6px 8px;
+            border-bottom: 1px solid var(--axis); white-space: nowrap; }
+.games td { padding: 6px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+.games td.num, .games th.num { text-align: right; }
+.games tr.group td { color: var(--text); font-weight: 650; padding-top: 14px; border-bottom: none; }
+.games a { color: var(--accent); text-decoration: none; }
+.games a:hover { text-decoration: underline; }
+.games .win { color: var(--text); font-weight: 600; }

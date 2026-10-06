@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chess Agents Results</title>
+<meta name="description" content="Results of the experiment: Magnus, a Claude chess agent that keeps a notebook of lessons from his own mistakes, against Hans, an identical agent without one.">
+<meta property="og:title" content="Does an AI chess agent learn from its own mistakes?">
+<meta property="og:description" content="Magnus (with a notebook) beat Hans (without one) 8½–3½ over 12 games. The results, charts and honest caveats.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://johanstanly.github.io/chess-agents/results.html">
+<meta property="og:image" content="https://johanstanly.github.io/chess-agents/og-results.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="pieces/wN.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/results.css">
+</head>
+<body>
+<main class="results-page">
+  <header class="page-head">
+    <h1>Self-Improving AI Chess Agents</h1>
+    <span class="subtitle">Results of the experiment (version 2)</span>
+    <nav class="head-nav">
+      <a href="index.html">Game replay</a>
+      <a href="live.html">Watch in 3D</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <h2>Can an AI chess player learn from its own mistakes, without being retrained?</h2>
+    <p>Two chess agents, <b class="who magnus">Magnus</b> and <b class="who hans">Hans</b>, are the
+      <em>same</em> AI (Claude Opus, thinking effort "high") with the same instructions. The only difference:
+      after every game, Magnus studies his three worst moves (pointed out by the Stockfish chess engine), writes
+      rules into a <b>notebook</b>, and keeps a <b>library of his past mistakes</b>. Before every move he
+      re-reads the notebook and two similar past mistakes. Hans has no memory at all: every move, and every
+      game, starts from zero.</p>
+    <p>An arbiter program checks that every move is legal. They played 12 games against each other
+      (6 openings, each played twice with the colours swapped), and both played the weak Stockfish level 0 at
+      three <b>checkpoints</b>: before any games, after 6, and after 12.</p>
+  </section>
+
+  <section class="tiles" id="tiles" aria-label="Headline numbers"></section>
+
+  <section class="card">
+    <h3>Running score, Magnus vs Hans</h3>
+    <p class="note">A win is 1 point, a draw ½. Hover a point for the game.</p>
+    <div class="legend" data-series="magnus,hans"></div>
+    <div class="chart" id="chart-score"></div>
+  </section>
+
+  <section class="card">
+    <h3>Accuracy in each game, Magnus vs Hans</h3>
+    <p class="note">Accuracy is how close each move was to Stockfish's best move (the chess.com and Lichess
+      method, 0–100%). Every move of every game was graded afterwards by full-strength Stockfish.</p>
+    <div class="legend" data-series="magnus,hans"></div>
+    <div class="chart" id="chart-accuracy"></div>
+  </section>
+
+  <div class="two-up">
+    <section class="card">
+      <h3>The checkpoints: accuracy against Stockfish level 0</h3>
+      <p class="note">Average of two games (one as White, one as Black) at each checkpoint. Points out of 2 are
+        in the tooltip.</p>
+      <div class="legend" data-series="magnus,hans"></div>
+      <div class="chart" id="chart-checkpoints"></div>
+    </section>
+    <section class="card">
+      <h3>Accuracy by opening, Magnus vs Hans games</h3>
+      <p class="note">Each opening was played twice. The Queen's Gambit Declined is the only one that starts 1.d4.</p>
+      <div class="legend" data-series="magnus,hans"></div>
+      <div class="chart" id="chart-openings"></div>
+    </section>
+  </div>
+
+  <section class="card findings">
+    <h3>What we found</h3>
+    <ol>
+      <li><b>The notebook made a clear difference head to head.</b> Magnus beat an identical player without a
+        notebook <span data-fill="score"></span>, and had the higher accuracy in
+        <span data-fill="higher"></span> games. In version 1 (Claude Sonnet at low thinking effort, a simpler
+        notebook) the same matchup was even: <span data-fill="v1score"></span>.</li>
+      <li><b>But Magnus did not keep getting better.</b> His average accuracy was
+        <span data-fill="half1"></span> in games 1–6 and <span data-fill="half2"></span> in games 7–12. The
+        notebook looks like a one-off boost, not steady improvement. He even outplayed Hans in game 1, before he
+        had written a single rule, so part of the gap is luck.</li>
+      <li><b>He really used it.</b> Magnus said a notebook rule applied on <span data-fill="rules"></span> of his
+        moves. His final rules are mostly safety checks ("list every enemy check and capture before you move",
+        "play each capture sequence to the end") that target the exact blunders that cost him games.</li>
+      <li><b>The Stockfish checkpoints cannot prove anything on their own.</b> Magnus stayed level
+        (<span data-fill="cpM"></span>) while Hans dropped (<span data-fill="cpH"></span>). But Hans has no memory,
+        so he cannot have changed: his drop is pure chance. That shows how much two games can swing, and Magnus's
+        changes are smaller than that swing.</li>
+      <li><b>The notebook did not transfer to an unfamiliar kind of position.</b> Every opening before the Queen's
+        Gambit Declined began 1.e4, so his rules were written from open, tactical games. In the slower 1.d4
+        positions, Magnus played no better than Hans (about 76% vs 75% accuracy), and he lost 4 of his 5 games with it,
+        counting the checkpoints.</li>
+    </ol>
+    <p class="verdict"><b>Bottom line:</b> memory-based learning (a notebook the agent writes and reads itself,
+      with no retraining) gave a real edge in this experiment, but the evidence is suggestive, not proven: with
+      12 games, a result like this would happen by luck roughly 1 time in 10. Proving it would take around 30–40
+      games.</p>
+  </section>
+
+  <div class="two-up">
+    <section class="card">
+      <h3>How it was run</h3>
+      <ul class="plain">
+        <li><b>Model:</b> <span data-fill="model"></span>, run through Claude Code on a Pro plan (no paid API).
+          Tools were switched off, so the agents could only read the position and answer.</li>
+        <li><b>Each move:</b> the agent got the board, the position code (FEN), the moves so far and the list of
+          legal moves. No hints about attacks or best moves. Magnus also got his notebook and two similar past
+          mistakes.</li>
+        <li><b>Move protocol:</b> read the notebook (Magnus only); calculate at least two candidate moves and the
+          opponent's best reply to each; play the move.</li>
+        <li><b>After each game:</b> Stockfish found Magnus's three worst moves and how they were punished. Magnus
+          rewrote his whole notebook (at most 15 rules) and his mistakes and blunders went into the library.</li>
+        <li><b>Locked settings:</b> the model, effort and instruction files were fingerprinted before game 1, so
+          nothing could change mid-experiment.</li>
+        <li><b>Scale:</b> 24 games over 5 days, about <span data-fill="requests"></span> requests to Claude. Opus at
+          high effort used a whole week of the Pro plan in about 3 days.</li>
+      </ul>
+    </section>
+    <section class="card">
+      <h3>Magnus's notebook after the last game</h3>
+      <p class="note">Written entirely by Magnus. Rewritten after every game; this is the final version.</p>
+      <ol class="notebook" id="notebook"></ol>
+    </section>
+  </div>
+
+  <section class="card">
+    <h3>Every game</h3>
+    <p class="note">Open any game in the replay (with each move's thought and grade) or in the 3D tavern.</p>
+    <div class="table-wrap"><table class="games" id="games"></table></div>
+  </section>
+
+  <div class="tooltip" id="tooltip" role="status" hidden></div>
+</main>
+<script src="js/results.js"></script>
+</body>
+</html>

@@ -31,6 +31,7 @@ h1 { font-size: 20px; font-weight: 650; margin: 0; }
 .subtitle { color: var(--text-dim); margin: 0; font-size: 14px; }
 .head-link { margin-left: auto; color: var(--accent); font-size: 13px; text-decoration: none; }
 .head-link:hover { text-decoration: underline; }
+.head-link + .head-link { margin-left: 16px; }
 
 /* ---------- Board ---------- */
 
