@@ -38,7 +38,7 @@ const pawnsIn = (text) => {
 
 async function run() {
   // 1. Self-test of all diaries (the Phase 3 check).
-  await load("/index.html?check");
+  await load("/replay.html?check");
   const selftest = await until(() => {
     const t = doc().getElementById("selftest").textContent;
     return /PASSED|FAILED/.test(t) ? t : null;
@@ -46,7 +46,7 @@ async function run() {
   check(selftest && selftest.includes("ALL GAMES PASSED"), "replay self-test: every move of every diary matches");
 
   // 2. Evaluation bar at the start and end of the Kasparov game.
-  await load("/index.html?game=sample-kasparov-topalov-1999");
+  await load("/replay.html?game=sample-kasparov-topalov-1999");
   await until(() => app() && app().replay.diary);
   let line = await evaluation();
   const startPawns = line && pawnsIn(line);
@@ -61,13 +61,13 @@ async function run() {
   check(fillHeight > 70, `eval bar is mostly white at the end (${fillHeight}%)`);
 
   // 3. Checkmate position in Lasker vs Thomas.
-  await load("/index.html?game=sample-lasker-thomas-1912&move=35");
+  await load("/replay.html?game=sample-lasker-thomas-1912&move=35");
   await until(() => app() && app().replay.current === 35);
   line = await evaluation(0);
   check(line && line.includes("1-0"), `checkmate position shows 1-0 (${line})`);
 
   // 4. Analysis mode from move 47 of the Kasparov game.
-  await load("/index.html?game=sample-kasparov-topalov-1999&move=47");
+  await load("/replay.html?game=sample-kasparov-topalov-1999&move=47");
   await until(() => app() && app().replay.current === 47);
   const a = app().analysis;
   // Black to move; a white move must be refused.
@@ -98,7 +98,7 @@ async function run() {
   check(!a.active && app().replay.current === 0, "Back takes moves back, then returns to the game");
 
   // 6. Phase 4: autoplay, move list, highlights, speech bubble, result card.
-  await load("/index.html?game=sample-kasparov-topalov-1999");
+  await load("/replay.html?game=sample-kasparov-topalov-1999");
   await until(() => app() && app().replay.diary && doc().querySelectorAll(".ml-move").length);
   const d = doc();
   d.getElementById("speed").value = "4";
@@ -146,19 +146,19 @@ async function run() {
   app().replay.goTo(10);
   check(!card.classList.contains("visible"), "result card hidden before the end");
 
-  await load("/index.html?game=sample-lasker-thomas-1912&move=21");  // 11. Qxh7+
+  await load("/replay.html?game=sample-lasker-thomas-1912&move=21");  // 11. Qxh7+
   await until(() => app() && app().replay.current === 21);
   const chk = doc().querySelector(".hl-check");
   check(chk && chk.style.left + "," + chk.style.top === (() => { const p = app().board.squarePosition("g8"); return p.left + "," + p.top; })(),
         "king in check (g8) is highlighted red after 11. Qxh7+");
 
-  await load("/index.html?game=test-special-moves&move=18");
+  await load("/replay.html?game=test-special-moves&move=18");
   await until(() => app() && app().replay.current === 18);
   check(!doc().querySelector(".result-card").classList.contains("visible"),
         "no result card for an unfinished game");
 
   // 7. Captured pieces and points ahead (Lasker vs Thomas after 11... Kxh7).
-  await load("/index.html?game=sample-lasker-thomas-1912&move=22");
+  await load("/replay.html?game=sample-lasker-thomas-1912&move=22");
   await until(() => app() && app().replay.current === 22);
   const pieceList = (el) => [...el.querySelectorAll(".captured img")].map((i) => i.getAttribute("src").slice(7, 9)).sort().join(" ");
   const topBar = doc().getElementById("bar-top"), bottomBar = doc().getElementById("bar-bottom");
@@ -170,7 +170,7 @@ async function run() {
   doc().getElementById("flip").click();
   check(doc().getElementById("bar-top").textContent.includes("Edward Lasker"), "flipping moves White's bar to the top");
   doc().getElementById("flip").click();
-  await load("/index.html?game=test-special-moves&move=18");  // both sides promoted
+  await load("/replay.html?game=test-special-moves&move=18");  // both sides promoted
   await until(() => app() && app().replay.current === 18);
   const whiteBar = doc().getElementById("bar-bottom"), blackBar = doc().getElementById("bar-top");
   check(pieceList(whiteBar) === "bP bP bQ" && whiteBar.querySelector(".lead")?.textContent === "+1",
@@ -179,7 +179,7 @@ async function run() {
         `after promotions: Black captured ${pieceList(blackBar)} (promoted knight not counted as extra)`);
 
   // 8. Arrows and circles with the right mouse button.
-  await load("/index.html?game=sample-kasparov-topalov-1999");
+  await load("/replay.html?game=sample-kasparov-topalov-1999");
   await until(() => app() && app().replay.diary);
   const b = doc().querySelector(".board");
   const rect = b.getBoundingClientRect();

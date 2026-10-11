@@ -285,7 +285,7 @@
         `<td class="${w === g.white ? "win" : ""}">${g.white}</td><td class="${w === g.black ? "win" : ""}">${g.black}</td>` +
         `<td>${resultWords(g)}</td><td class="num">${a("Magnus")}</td><td class="num">${a("Hans")}</td>` +
         `<td class="num">${b("Magnus")} / ${b("Hans")}</td><td class="num">${g.moves}</td>` +
-        `<td><a href="index.html?game=${g.id}">Replay</a> · <a href="live.html?game=${g.id}">3D</a></td></tr>`;
+        `<td><a href="replay.html?game=${g.id}">Replay</a> · <a href="live.html?game=${g.id}">3D</a></td></tr>`;
     }
     $("games").innerHTML = html;
   }

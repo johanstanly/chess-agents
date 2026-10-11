@@ -5,7 +5,7 @@
 <img src="/__hold" hidden alt="">
 <iframe id="f"></iframe>
 <script>
-  // Opens /index.html with the same ?game=&move= options, waits for it to
+  // Opens /replay.html with the same ?game=&move= options, waits for it to
   // settle (animations, engine), then tells the harness to take the picture.
   const f = document.getElementById("f");
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -20,6 +20,6 @@
     await sleep(3000);
     fetch("/__done", { method: "POST", body: "ok" });
   };
-  f.src = "/index.html" + location.search;
+  f.src = "/replay.html" + location.search;
 </script>
 </body></html>

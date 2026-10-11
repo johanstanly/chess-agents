@@ -1,7 +1,7 @@
 # Self-Improving AI Chess Agents
 
-**Results:** https://johanstanly.github.io/chess-agents/results.html
-**Game replays:** https://johanstanly.github.io/chess-agents/ · **3D tavern view:** https://johanstanly.github.io/chess-agents/live.html
+**Website:** https://johanstanly.github.io/chess-agents/ · **Results:** https://johanstanly.github.io/chess-agents/results.html
+**Game replays:** https://johanstanly.github.io/chess-agents/replay.html · **3D tavern view:** https://johanstanly.github.io/chess-agents/live.html
 
 Can an AI chess player learn from its own mistakes without being retrained?
 
@@ -56,6 +56,7 @@ This is memory-based (in-context) learning: the model itself never changes, only
 
 ## Try it
 Double-click `serve.bat` to open the site locally at http://localhost:8765/ (keep its window open).
+The front page is a small React app in `landing/` (see `landing/README.md`); everything else is plain HTML.
 
 ```
 python arena/play.py dry-run          # shows exactly what Magnus and Hans are sent (no AI requests)
@@ -79,7 +80,8 @@ python tests/check_website.py         # the website in a hidden browser
 ## Folders
 | Folder | What it is for |
 |---|---|
-| docs/ | The public website (GitHub Pages): replays, 3D view, results |
+| docs/ | The public website (GitHub Pages): front page, replays, 3D view, results |
+| landing/ | Source of the front page (React, TypeScript, Vite, Tailwind), built into docs/ |
 | arena/ | The arbiter, the agents, the experiment runner |
 | prompts/ | Instructions given to the agents |
 | notebook/ | Magnus's notebook, its history and his mistake library |
