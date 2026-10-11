@@ -60,12 +60,53 @@
   const hideTip = () => { tooltip.hidden = true; };
   const tipRow = (key, text) => `<div class="row"><i style="background:${COLOR[key]}"></i>${text}</div>`;
 
-  // A dot with a bigger invisible circle around it, so it is easy to hover.
-  function dot(g, x, y, color, html) {
-    const hit = el("circle", { cx: x, cy: y, r: 12, class: "hit" }, g);
-    const d = el("circle", { cx: x, cy: y, r: 4.5, fill: color, class: "dot" }, g);
+  // A dot with a bigger invisible circle around it, so it is easy to hover. `delay` is when
+  // it appears while its chart draws itself in (seconds).
+  function dot(g, x, y, color, html, delay = 0) {
+    const wrap = el("g", { class: "dot-wrap" }, g);
+    const hit = el("circle", { cx: x, cy: y, r: 12, class: "hit" }, wrap);
+    const d = el("circle", { cx: x, cy: y, r: 4.5, fill: color, class: "dot" }, wrap);
+    d.style.transition = `opacity 0.3s ease ${delay}s`;
     hit.addEventListener("mousemove", (e) => { d.classList.add("on"); showTip(e, html); });
     hit.addEventListener("mouseleave", () => { d.classList.remove("on"); hideTip(); });
+    return wrap;
+  }
+
+  // ---------- Drawing in ----------
+  // Each chart draws itself whenever it scrolls into view: the lines are drawn from left to
+  // right like a pen, each dot appears as its line reaches it, and the end labels fade in
+  // last. Once a chart has scrolled completely off screen it resets (out of sight, with no
+  // animation), so it draws again next time it comes into view, scrolling down or back up.
+  // With reduced motion the charts are simply shown.
+  const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const DRAW_SECONDS = 1.4;
+  const ANIMATE = !REDUCED_MOTION && "IntersectionObserver" in window;
+  const watched = new WeakSet();
+
+  function hide(svg) {   // back to undrawn, instantly
+    svg.classList.add("instant", "pending");
+    svg.getBoundingClientRect();   // apply it before transitions come back
+    svg.classList.remove("instant");
+  }
+  function drawInOnView(box, svg) {
+    if (!ANIMATE) return;
+    // Redrawn (after a resize) while on screen: show it finished, no replay.
+    if (box.dataset.visible !== "1") hide(svg);
+    if (watched.has(box)) return;
+    watched.add(box);
+    new IntersectionObserver((entries) => {
+      const e = entries[entries.length - 1];
+      const current = box.querySelector("svg");
+      if (!current) return;
+      if (e.intersectionRatio >= 0.35 && box.dataset.visible !== "1") {
+        box.dataset.visible = "1";
+        // Two frames, so the browser has painted the hidden state before it starts moving.
+        requestAnimationFrame(() => requestAnimationFrame(() => current.classList.remove("pending")));
+      } else if (!e.isIntersecting && box.dataset.visible === "1") {
+        box.dataset.visible = "";
+        hide(current);
+      }
+    }, { threshold: [0, 0.35] }).observe(box);
   }
 
   // A line chart over named steps (games or checkpoints), one line per player, with
@@ -95,18 +136,26 @@
 
     for (const s of series) {
       const pts = s.values.map((v, i) => `${x(i)},${y(v)}`).join(" ");
-      el("polyline", { points: pts, class: "line", stroke: COLOR[s.key] }, svg);
+      const line = el("polyline", { points: pts, class: "line", stroke: COLOR[s.key], pathLength: 1 }, svg);
+      line.style.transition = `stroke-dashoffset ${DRAW_SECONDS}s linear`;
     }
     for (const s of series) {
+      // How far along its line each point is, so its dot appears just as the pen reaches it.
+      const pts = s.values.map((v, i) => [x(i), y(v)]);
+      const along = [0];
+      for (let i = 1; i < pts.length; i++) along.push(along[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+      const total = along[along.length - 1] || 1;
       const g = el("g", {}, svg);
-      s.values.forEach((v, i) => dot(g, x(i), y(v), COLOR[s.key], tip(i, s.key)));
+      s.values.forEach((v, i) => dot(g, pts[i][0], pts[i][1], COLOR[s.key], tip(i, s.key), (along[i] / total) * DRAW_SECONDS));
     }
     for (const { s, y: ly } of ends) {
       const last = s.values[s.values.length - 1];
-      el("text", { x: W - m.right + 14, y: ly + 4, class: "label-strong" }, svg)
-        .textContent = `${NAME[s.key]} ${endFmt(last)}`;
+      const label = el("text", { x: W - m.right + 14, y: ly + 4, class: "label-strong end-label" }, svg);
+      label.textContent = `${NAME[s.key]} ${endFmt(last)}`;
+      label.style.transition = `opacity 0.4s ease ${DRAW_SECONDS}s`;
     }
     box.replaceChildren(svg);
+    drawInOnView(box, svg);
   }
 
   // A dumbbell chart: one row per opening, a dot for each player, joined by a line.
@@ -126,16 +175,24 @@
       if (r.highlight) el("rect", { x: 0, y: cy - rowH / 2 + 2, width: W, height: rowH - 4, rx: 6, class: "band" }, svg);
       el("text", { x: m.left - 10, y: cy + 4, "text-anchor": "end", class: r.highlight ? "label-strong" : "" }, svg)
         .textContent = r.label;
-      el("line", { x1: x(Math.min(r.magnus, r.hans)), x2: x(Math.max(r.magnus, r.hans)), y1: cy, y2: cy,
-                   stroke: "rgba(0,0,0,0.2)", "stroke-width": 2 }, svg);
+      // Drawing in: both dots slide in from the left axis to their values, row by row, then
+      // the line between them is drawn.
+      const start = i * 0.09;
+      const link = el("line", { x1: x(Math.min(r.magnus, r.hans)), x2: x(Math.max(r.magnus, r.hans)), y1: cy, y2: cy,
+                                stroke: "rgba(0,0,0,0.2)", "stroke-width": 2, class: "line", pathLength: 1 }, svg);
+      link.style.transition = `stroke-dashoffset 0.35s ease ${start + 0.6}s`;
       const g = el("g", {}, svg);
       for (const key of ["hans", "magnus"]) {
-        dot(g, x(r[key]), cy, COLOR[key],
+        const wrap = dot(g, x(r[key]), cy, COLOR[key],
             `<b>${r.name}</b><br>${tipRow(key, `${NAME[key]}: ${pct(r[key])} average`)}` +
-            `<div class="dim">${r.games.map((t) => t[key]).join("<br>")}</div>`);
+            `<div class="dim">${r.games.map((t) => t[key]).join("<br>")}</div>`, start);
+        wrap.classList.add("slide");
+        wrap.style.setProperty("--from", `${x(xMin) - x(r[key])}px`);
+        wrap.style.transition = `transform 0.75s var(--arrive) ${start}s`;
       }
     });
     box.replaceChildren(svg);
+    drawInOnView(box, svg);
   }
 
   // ---------- The page ----------

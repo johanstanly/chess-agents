@@ -56,6 +56,13 @@
 .chart .hit { fill: transparent; cursor: pointer; }
 .chart .hit:hover + .dot, .chart .dot.on { r: 6; }
 .chart .band { fill: rgba(0, 0, 0, 0.035); }
+/* Drawing in (results.js): while a chart waits to scroll into view, its lines are undrawn,
+   its dots and end labels hidden, and the opening chart's dots wait at the left axis. */
+.chart .line { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.chart svg.pending .line { stroke-dashoffset: 1; stroke-linecap: butt; }
+.chart svg.pending .dot, .chart svg.pending .end-label { opacity: 0; }
+.chart svg.pending .slide { transform: translateX(var(--from)); }
+.chart svg.instant, .chart svg.instant * { transition: none !important; }
 
 .tooltip { position: fixed; z-index: 10; pointer-events: none; max-width: 280px; padding: 8px 10px;
            border-radius: 10px; background: #fff; color: var(--text); font-size: 12.5px; line-height: 1.45;
