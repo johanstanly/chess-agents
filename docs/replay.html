@@ -10,16 +10,21 @@
 <meta property="og:image" content="https://johanstanly.github.io/chess-agents/og-results.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="pieces/wN.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/5ac3fe7c6abd2f62067f266d89671492?family=HelveticaNowDisplay-Medium">
+<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/1aa3377e489837a26d019bba501e779d?family=HelveticaNowDisplayW01-Rg">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <main class="page">
-  <header class="page-head">
-    <h1>Self-Improving AI Chess Agents</h1>
-    <span class="subtitle">Game replay</span>
-    <a class="head-link" href="./">Home</a>
-    <a class="head-link" id="live-link" href="live.html">Watch in 3D ↗</a>
-    <a class="head-link" href="results.html">Results ↗</a>
+  <header class="site-nav">
+    <a class="brand" href="./" title="Home">Chess Agents<span aria-hidden="true">♞</span></a>
+    <span class="page-name">Game replay</span>
+    <nav class="site-links" aria-label="Pages">
+      <a href="results.html">Results</a>
+      <a href="replay.html" aria-current="page">Replays</a>
+      <a href="live.html" id="live-link">3D Tavern</a>
+      <a href="https://github.com/johanstanly/chess-agents">Code</a>
+    </nav>
   </header>
 
   <div class="stage">
@@ -272,7 +277,7 @@
     moveList.build(replay.diary);
     showReview(replay.diary);
     const d = replay.diary;
-    $("live-link").textContent = `Watch ${d.white.name} vs ${d.black.name} in 3D ↗`;
+    $("live-link").title = `Watch ${d.white.name} vs ${d.black.name} in the 3D tavern`;
     $("live-link").href = `live.html?game=${encodeURIComponent(d.id)}`;
     positionChanged();
   }

@@ -127,7 +127,7 @@
       el("text", { x: m.left - 10, y: cy + 4, "text-anchor": "end", class: r.highlight ? "label-strong" : "" }, svg)
         .textContent = r.label;
       el("line", { x1: x(Math.min(r.magnus, r.hans)), x2: x(Math.max(r.magnus, r.hans)), y1: cy, y2: cy,
-                   stroke: "rgba(255,255,255,0.18)", "stroke-width": 2 }, svg);
+                   stroke: "rgba(0,0,0,0.2)", "stroke-width": 2 }, svg);
       const g = el("g", {}, svg);
       for (const key of ["hans", "magnus"]) {
         dot(g, x(r[key]), cy, COLOR[key],

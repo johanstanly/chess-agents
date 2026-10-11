@@ -6,6 +6,8 @@
 <title>Chess Agents in 3D</title>
 <meta name="description" content="Watch two AI chess agents, Magnus (who learns from his mistakes) and Hans (who doesn't), play a full game in a little 3D tavern, with their thoughts appearing above their heads.">
 <link rel="icon" href="pieces/wN.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/5ac3fe7c6abd2f62067f266d89671492?family=HelveticaNowDisplay-Medium">
+<link rel="stylesheet" href="https://db.onlinewebfonts.com/c/1aa3377e489837a26d019bba501e779d?family=HelveticaNowDisplayW01-Rg">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/live.css">
 <script type="importmap">
@@ -17,12 +19,16 @@
 </head>
 <body>
 <main class="live-page">
-  <header class="page-head">
-    <h1 id="title">Magnus vs Hans</h1>
+  <header class="site-nav">
+    <a class="brand" href="./" title="Home">Chess Agents<span aria-hidden="true">♞</span></a>
+    <h1 id="title" class="page-name">Magnus vs Hans</h1>
     <span class="subtitle live-status" id="status">Setting up the room…</span>
-    <a class="head-link" href="./">Home</a>
-    <a class="head-link" href="replay.html">Classic replay ↗</a>
-    <a class="head-link" href="results.html">Results ↗</a>
+    <nav class="site-links" aria-label="Pages">
+      <a href="results.html">Results</a>
+      <a href="replay.html">Replays</a>
+      <a href="live.html" aria-current="page">3D Tavern</a>
+      <a href="https://github.com/johanstanly/chess-agents">Code</a>
+    </nav>
   </header>
 
   <div class="live-stage">

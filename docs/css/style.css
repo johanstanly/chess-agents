@@ -1,13 +1,23 @@
-/* Colours used across the site, kept in one place. */
+/* Colours and type used across the site, kept in one place.
+   The look matches the front page: a light warm-grey page (the colour of the wall in its
+   video), white panels, near-black text, black-and-white pill buttons, Helvetica Now.
+   The wood-and-marble board keeps its own colours. */
 :root {
-  --page-bg: #262421;
-  --panel-bg: #312e2b;
-  --text: #eeeae4;
-  --text-dim: #a9a49c;
-  --accent: #81b64c;
+  --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
+  --page-bg: #e6e5e1;
+  --panel-bg: #f7f6f3;
+  --panel-2: #eceae6;        /* hover, alternate rows */
+  --line: rgba(0, 0, 0, 0.1);
+  --text: #111111;
+  --text-2: #3a3936;         /* body copy in long text */
+  --text-dim: #66635d;
+  --accent: #111111;
   --frame-wood: #5a3620;
   --frame-wood-dark: #3c2314;
   --frame-text: #e7cfa9;
+  /* Apple's ease-out for things arriving on screen (fast start, soft landing). */
+  --arrive: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * { box-sizing: border-box; }
@@ -17,7 +27,8 @@ body {
   margin: 0;
   background: var(--page-bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
 }
 
 .page {
@@ -26,12 +37,21 @@ body {
   padding: 10px 16px 24px;
 }
 
-.page-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
-h1 { font-size: 20px; font-weight: 650; margin: 0; }
+/* ---------- The top bar, the same on every page ---------- */
+
+.site-nav { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 8px; min-width: 0; }
+.brand { font-family: var(--font-heading); font-size: 22px; letter-spacing: -0.02em; color: var(--text);
+         text-decoration: none; white-space: nowrap; }
+.brand span { margin-left: 6px; }
+.page-name { font-size: 15px; color: var(--text-dim); margin: 0; font-weight: 400; letter-spacing: -0.005em;
+             min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.site-links { margin-left: auto; display: flex; gap: 18px; font-size: 15px; letter-spacing: -0.005em; }
+.site-links a { color: var(--text); text-decoration: none; transition: opacity 0.15s ease; }
+.site-links a:hover { opacity: 0.6; }
+.site-links a:active { opacity: 0.4; }
+.site-links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 3px; }
+h1 { font-family: var(--font-heading); font-weight: 400; font-size: 20px; letter-spacing: -0.015em; margin: 0; }
 .subtitle { color: var(--text-dim); margin: 0; font-size: 14px; }
-.head-link { margin-left: auto; color: var(--accent); font-size: 13px; text-decoration: none; }
-.head-link:hover { text-decoration: underline; }
-.head-link + .head-link { margin-left: 16px; }
 
 /* ---------- Board ---------- */
 
@@ -59,7 +79,7 @@ h1 { font-size: 20px; font-weight: 650; margin: 0; }
   padding: 1.6%;
   border-radius: 8px;
   background: linear-gradient(145deg, #6b4128 0%, var(--frame-wood) 45%, var(--frame-wood-dark) 100%);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.45),
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 14px 34px rgba(0,0,0,0.22),
               inset 0 1px 0 rgba(255,255,255,0.18),
               inset 0 0 0 2px rgba(0,0,0,0.35);
   position: relative;
@@ -82,7 +102,7 @@ h1 { font-size: 20px; font-weight: 650; margin: 0; }
 .coords { position: absolute; inset: 0; pointer-events: none; z-index: 0;
           container-type: size; }
 .coords span { position: absolute; font-weight: 700; line-height: 1;
-               font-size: 2.6cqw; }
+               font-size: 2.6cqw; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
 .coords .on-light { color: #6f817a; }
 .coords .on-dark { color: #eceae4; }
 
@@ -94,7 +114,7 @@ h1 { font-size: 20px; font-weight: 650; margin: 0; }
   pointer-events: none;
   z-index: 1;
   filter: drop-shadow(0 2px 2px rgba(0,0,0,0.35));
-  transition: left 0.25s ease, top 0.25s ease, opacity 0.2s ease;
+  transition: left 0.25s var(--arrive), top 0.25s var(--arrive), opacity 0.2s ease;
 }
 .piece.moving { z-index: 2; }            /* a sliding piece passes over others */
 .piece.captured { opacity: 0; }          /* captured pieces fade away */
@@ -105,40 +125,49 @@ h1 { font-size: 20px; font-weight: 650; margin: 0; }
 
 .controls { display: flex; gap: 8px; flex-wrap: wrap; }
 
+/* Pill buttons, as on the front page: white, black on hover, and they give way the
+   instant they are pressed (not on release). */
 button {
-  background: var(--panel-bg);
+  background: #fff;
   color: var(--text);
-  border: 1px solid #4a4642;
-  border-radius: 6px;
-  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 15px;
+  font: inherit;
   font-size: 14px;
   cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
-button:hover { background: #3d3935; }
+button:hover { background: #111; color: #fff; }
+button:active { transform: scale(0.97); transition-duration: 75ms; }
+button:disabled { opacity: 0.4; cursor: default; }
+button:disabled:hover { background: #fff; color: var(--text); }
+button:disabled:active { transform: none; }
 
 /* ---------- Side panel ---------- */
 
 .field { display: flex; flex-direction: column; gap: 4px; font-size: 13px;
          color: var(--text-dim); margin-bottom: 8px; }
-select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4642;
-         border-radius: 6px; padding: 8px; font-size: 14px; max-width: 100%; }
+select { background: #fff; color: var(--text); border: 1px solid var(--line);
+         border-radius: 10px; padding: 8px 10px; font: inherit; font-size: 14px; max-width: 100%; }
 .players { font-size: 14px; color: var(--text-dim); margin: 0 0 14px; }
 
-.move-info { margin-top: 16px; background: var(--panel-bg); border-radius: 8px;
-             padding: 14px; min-height: 120px; }
-.counter { font-size: 12px; color: var(--text-dim); }
-.move { font-size: 26px; font-weight: 700; margin: 4px 0 2px; }
+.move-info { margin-top: 16px; background: var(--panel-bg); border-radius: 12px;
+             padding: 14px; min-height: 120px; border: 1px solid var(--line); }
+.counter { font-size: 12px; color: var(--text-dim); letter-spacing: 0.01em; }
+.move { font-family: var(--font-heading); font-size: 28px; font-weight: 400; letter-spacing: -0.02em; margin: 4px 0 2px; }
 .who { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
-.thought { font-size: 15px; line-height: 1.45; }
-/* Stockfish's move grades, coloured as on chess.com. */
-:root { --inaccuracy: #f7c631; --mistake: #e58f2a; --blunder: #ca3431; }
+.thought { font-size: 15px; line-height: 1.45; color: var(--text-2); }
+/* Stockfish's move grades, coloured as on chess.com (darker steps, readable on light panels). */
+:root { --inaccuracy: #b98a00; --mistake: #d06a10; --blunder: #c62f2c; }
 .grade { font-size: 13px; font-weight: 600; min-height: 0; }
 .grade:empty { display: none; }
 .grade.inaccuracy, .review-counts .inaccuracy, .ml-mark.inaccuracy { color: var(--inaccuracy); }
 .grade.mistake, .review-counts .mistake, .ml-mark.mistake { color: var(--mistake); }
 .grade.blunder, .review-counts .blunder, .ml-mark.blunder { color: var(--blunder); }
 .ml-mark { margin-left: 3px; font-weight: 800; }
-.review-card { margin-top: 12px; background: var(--panel-bg); border-radius: 8px; padding: 10px 14px; }
+.review-card { margin-top: 12px; background: var(--panel-bg); border-radius: 12px; padding: 10px 14px;
+               border: 1px solid var(--line); }
 .review-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); }
 .review-row { display: grid; grid-template-columns: 22px 1fr auto auto; gap: 8px; align-items: center;
               margin-top: 6px; font-size: 14px; }
@@ -150,8 +179,8 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
 .result { margin-top: 10px; font-weight: 700; color: var(--accent); }
 
 .check { margin-top: 12px; font-size: 13px; font-weight: 600; }
-.check.ok { color: var(--accent); }
-.check.bad { color: #e05d44; }
+.check.ok { color: #1f7a1f; }
+.check.bad { color: #c62f2c; }
 .selftest { background: var(--panel-bg); padding: 12px; border-radius: 8px;
             font-size: 13px; white-space: pre-wrap; }
 
@@ -168,7 +197,7 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
 .eval-fill {
   position: absolute; left: 0; right: 0; bottom: 0;
   background: #f1efe9;                    /* White's share */
-  transition: height 0.4s ease;
+  transition: height 0.4s var(--arrive);
 }
 .eval-bar.flipped .eval-fill { bottom: auto; top: 0; }
 .eval-label {
@@ -205,8 +234,8 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
 }
 
 .analysis-banner {
-  margin-top: 16px; padding: 12px 14px; border-radius: 8px;
-  background: #2c3a52; border: 1px solid #6e96d7;
+  margin-top: 16px; padding: 12px 14px; border-radius: 12px;
+  background: #e9eef8; border: 1px solid #6e96d7; color: var(--text);
 }
 .analysis-title { font-weight: 700; margin-bottom: 4px; }
 .analysis-line { font-size: 15px; margin-bottom: 10px; word-spacing: 2px; }
@@ -231,7 +260,7 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
   font-size: clamp(12px, 1.35vw, 16px); line-height: 1.4;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   opacity: 0; transform: translateY(6px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 0.25s var(--arrive), transform 0.25s var(--arrive);
 }
 .bubble.visible { opacity: 1; transform: none; }
 .bubble[data-side="black"] { background: #2f2c29; color: #f3efe8; }
@@ -248,9 +277,10 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
   position: absolute; z-index: 5; left: 50%; top: 50%;
   transform: translate(-50%, -50%) scale(0.95);
   min-width: 46%; padding: 1.2em 1.6em; text-align: center;
-  background: rgba(38, 36, 33, 0.94); color: var(--text);
-  border-radius: 14px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-  opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease;
+  background: rgba(255, 255, 255, 0.96); color: var(--text);
+  border-radius: 16px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 16px 44px rgba(0, 0, 0, 0.3);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s var(--arrive), transform 0.3s var(--arrive);
   cursor: pointer;
 }
 .result-card.visible { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
@@ -258,36 +288,38 @@ select { background: var(--panel-bg); color: var(--text); border: 1px solid #4a4
 .result-card.at-top.visible { transform: translate(-50%, 0); }
 .result-card.at-bottom { top: auto; bottom: 4%; transform: translate(-50%, 0) scale(0.95); }
 .result-card.at-bottom.visible { transform: translate(-50%, 0); }
-.result-title { font-size: clamp(18px, 2.4vw, 28px); font-weight: 750; color: var(--accent); }
+.result-title { font-family: var(--font-heading); font-size: clamp(18px, 2.4vw, 28px); font-weight: 400;
+                letter-spacing: -0.02em; color: var(--text); }
 .result-sub { font-size: 14px; color: var(--text-dim); margin-top: 4px; }
-.result-hint { font-size: 11px; color: var(--text-dim); margin-top: 10px; opacity: 0.7; }
+.result-hint { font-size: 11px; color: var(--text-dim); margin-top: 10px; opacity: 0.8; }
 
 /* ---------- Play controls ---------- */
 
 .controls.secondary { margin-top: 8px; align-items: center; }
 .controls button { min-width: 44px; }
-button.play { min-width: 104px; font-weight: 650; }
-button.play.playing { background: #45613a; border-color: var(--accent); }
+button.play { min-width: 104px; }
+button.play.playing { background: #111; color: #fff; border-color: #111; }
 .inline-field { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-dim); }
-.inline-field select { padding: 5px 6px; }
+.inline-field select { padding: 5px 8px; }
 
 /* ---------- Move list ---------- */
 
 .move-list {
   position: relative;
   margin-top: 14px; max-height: 230px; overflow-y: auto;
-  background: var(--panel-bg); border-radius: 8px; padding: 6px 0;
+  background: var(--panel-bg); border-radius: 12px; padding: 6px 0; border: 1px solid var(--line);
 }
 .move-list:empty { display: none; }
 .ml-row { display: grid; grid-template-columns: 44px 1fr 1fr; align-items: center; padding: 0 8px; }
-.ml-row:nth-child(even) { background: rgba(255, 255, 255, 0.03); }
+.ml-row:nth-child(even) { background: rgba(0, 0, 0, 0.025); }
 .ml-num { color: var(--text-dim); font-size: 13px; }
 .ml-move {
-  background: none; border: 0; border-radius: 4px; text-align: left;
+  background: none; border: 0; border-radius: 6px; text-align: left;
   padding: 4px 8px; font-size: 14px; font-weight: 600; color: var(--text);
 }
-.ml-move:hover { background: #3d3935; }
-.ml-move.current { background: #4b4845; color: #fff; box-shadow: inset 0 -2px 0 var(--accent); }
+.ml-move:hover { background: var(--panel-2); color: var(--text); }
+.ml-move:active { transform: none; background: #dcdad5; }
+.ml-move.current, .ml-move.current:hover { background: #111; color: #fff; }
 .ml-move:disabled { color: var(--text-dim); cursor: default; }
 
 /* ---------- Player bars: name, captured pieces, points ahead ---------- */
@@ -297,16 +329,16 @@ button.play.playing { background: #45613a; border-color: var(--accent); }
   padding-left: 36px;                     /* line up with the board, past the eval bar */
   font-size: 14px; min-width: 0;
 }
-.bar-king { width: 26px; height: 26px; flex: 0 0 auto; border-radius: 5px;
-            background: #3d3935; padding: 1px; }
-.bar-name { font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%; }
+.bar-king { width: 26px; height: 26px; flex: 0 0 auto; border-radius: 6px;
+            background: #cfccc5; padding: 1px; }
+.bar-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%; }
 .captured { display: flex; flex-wrap: nowrap; gap: 6px; min-width: 0; overflow: hidden; }
 .cap-group { display: flex; }
 .cap-group img { width: 22px; height: 22px; }
-/* Captured pieces get a soft light outline so they show on the dark page. */
-.cap-group img { filter: drop-shadow(0 0 1px rgba(255,255,255,0.9)) drop-shadow(0 0 1px rgba(255,255,255,0.6)); }
+/* Captured pieces get a soft dark outline so the light ones show on the light page. */
+.cap-group img { filter: drop-shadow(0 0 1px rgba(0,0,0,0.55)); }
 .cap-group img + img { margin-left: -12px; }  /* same pieces overlap, like chess.com */
-.lead { color: var(--text-dim); font-weight: 650; font-size: 13px; }
+.lead { color: var(--text-dim); font-weight: 600; font-size: 13px; }
 
 /* ---------- Arrows and circles (right mouse button) ---------- */
 
@@ -322,15 +354,16 @@ button.play.playing { background: #45613a; border-color: var(--accent); }
 /* ---------- Thinking card (side panel) ---------- */
 
 .thought-card { display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; }
-.thought-avatar { width: 38px; height: 38px; flex: 0 0 auto; border-radius: 8px;
-                  background: #3d3935; padding: 2px; }
+.thought-avatar { width: 38px; height: 38px; flex: 0 0 auto; border-radius: 10px;
+                  background: #cfccc5; padding: 2px; }
 .thought-bubble {
   position: relative; flex: 1; min-width: 0;
-  background: #3a3632; border-radius: 12px; padding: 10px 14px;
+  background: #fff; border-radius: 14px; padding: 10px 14px; border: 1px solid var(--line);
 }
 .thought-bubble::before {            /* the little tail pointing at the king icon */
-  content: ""; position: absolute; left: -6px; top: 14px; width: 12px; height: 12px;
+  content: ""; position: absolute; left: -7px; top: 14px; width: 12px; height: 12px;
   background: inherit; transform: rotate(45deg); border-radius: 2px;
+  border-left: 1px solid var(--line); border-bottom: 1px solid var(--line);
 }
 .thought-card .who { font-size: 12px; font-weight: 700; color: var(--text-dim); margin: 0 0 3px; }
 .thinking-dots { display: flex; gap: 5px; padding: 6px 0 2px; }
@@ -342,3 +375,12 @@ button.play.playing { background: #45613a; border-color: var(--accent); }
 .thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
 @keyframes thinking { 0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
                       40% { opacity: 1; transform: translateY(-3px); } }
+
+/* ---------- Reduced motion: fades instead of movement ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .piece { transition: opacity 0.2s ease; }
+  .bubble, .result-card { transition: opacity 0.2s ease; }
+  .thinking-dots span { animation: none; opacity: 0.6; }
+  button:active { transform: none; }
+}

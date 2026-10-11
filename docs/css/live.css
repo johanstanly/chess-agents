@@ -1,16 +1,14 @@
 /* The live page: the 3D room on the left, our 2D board and game details on the right. */
 
 .live-page { padding: 12px 16px; max-width: 1900px; margin: 0 auto; }
-.head-link { margin-left: auto; color: var(--text-dim); font-size: 13px; text-decoration: none; }
-.head-link:hover { color: var(--text); }
 
 .live-stage { display: flex; gap: 16px; height: calc(100vh - 64px); min-height: 480px; }
-.room { position: relative; flex: 1 1 66%; min-width: 0; border-radius: 10px; overflow: hidden;
-        background: #1d1712; }
+.room { position: relative; flex: 1 1 66%; min-width: 0; border-radius: 14px; overflow: hidden;
+        background: #1d1712; box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 14px 34px rgba(0,0,0,0.2); }
 .room canvas { display: block; }
 .room-labels { position: absolute; inset: 0; }   /* name tags and bubbles; also takes the mouse drags */
 .room-loading { position: absolute; inset: 0; display: grid; place-items: center;
-                color: var(--text-dim); font-size: 15px; }
+                color: #c9c4bb; font-size: 15px; }
 
 .live-panel { flex: 0 0 min(34%, 460px); display: flex; flex-direction: column; gap: 6px;
               min-width: 0; overflow-y: auto; }
@@ -18,7 +16,7 @@
 .live-controls { display: flex; gap: 6px; align-items: center; }
 .live-controls select:first-child { flex: 1 1 auto; min-width: 0; }
 .live-controls button { min-width: 42px; }
-.live-status { color: var(--accent); }
+.live-status { color: var(--text-dim); }
 .live-panel .board-wrap { width: 100%; }
 .board-frame.small { width: auto; flex: 1 1 auto; min-width: 0; }
 .live-counter { font-size: 13px; color: var(--text-dim); }
