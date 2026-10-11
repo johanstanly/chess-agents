@@ -14,11 +14,16 @@ const VIDEO_URL = './hero.mp4'
 // of the video's width.
 const FRONT = 34 / 97
 const MAN_X = 0.68
-const EASING = 0.18   // share of the remaining distance the video catches up each frame
+// The head turns on a critically damped spring (no overshoot), Apple's "move" spring:
+// damping 1.0, response 0.4 s.
+const HEAD_RESPONSE = 0.4
 
-// Visitors who switched off animations in their system settings get everything at once:
-// no typing, no fades.
+// Visitors who switched off animations in their system settings get gentle fades instead
+// of movement, the full text at once, and a head that stays facing them.
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+// Apple's ease-out for things arriving on screen (fast start, soft landing).
+const ARRIVE = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
 const CTA = { label: 'View the code', href: 'https://github.com/johanstanly/chess-agents' }
 
@@ -44,39 +49,49 @@ const MEMORIES = [
   { n: 11, text: 'When one of your pieces is attacked, first look for a pawn move that counterattacks or gains tempo, and test whether a check removes the retreat square' },
   { n: 13, text: 'Never push pawns in front of your castled king while an enemy bishop or queen eyes those squares; answer a wing storm with a central break' },
 ]
-const MEMORY_SECONDS = 7   // long enough to read a rule before it fades into the next
+const MEMORY_SECONDS = 7   // long enough to read a rule before it moves on
 
-/** Magnus's memory: the rules from his notebook, one after another, fading from one to the next. */
+/** Magnus's memory: the rules from his notebook, one after another. Each rule drifts up and
+ *  out as the next rises in from below, always in the same direction, like a list scrolling
+ *  past. With reduced motion it is a plain cross-fade. */
 function MemoryLine() {
   const [index, setIndex] = useState(0)
-  const [visible, setVisible] = useState(true)
+  const [phase, setPhase] = useState<'shown' | 'leaving' | 'entering'>('shown')
 
   useEffect(() => {
-    let swap: number | undefined
-    const timer = window.setInterval(() => {
-      setVisible(false)
-      swap = window.setTimeout(() => {
+    const timers: number[] = []
+    const cycle = window.setInterval(() => {
+      setPhase('leaving')
+      timers.push(window.setTimeout(() => {
         setIndex((i) => (i + 1) % MEMORIES.length)
-        setVisible(true)
-      }, 450)
+        setPhase('entering')   // placed just below, invisible, with no transition...
+        timers.push(window.setTimeout(() => setPhase('shown'), 30))   // ...then rises in
+      }, 420))
     }, MEMORY_SECONDS * 1000)
     return () => {
-      window.clearInterval(timer)
-      window.clearTimeout(swap)
+      window.clearInterval(cycle)
+      timers.forEach(window.clearTimeout)
     }
   }, [])
 
   const memory = MEMORIES[index]
-  const fade = { opacity: visible ? 1 : 0, transition: REDUCED_MOTION ? 'none' : 'opacity 0.45s ease' }
+  const y = REDUCED_MOTION ? 0 : phase === 'leaving' ? -8 : phase === 'entering' ? 8 : 0
+  const motion = {
+    opacity: phase === 'shown' ? 1 : 0,
+    transform: `translateY(${y}px)`,
+    transition: phase === 'entering' ? 'none'
+      : REDUCED_MOTION ? 'opacity 0.3s ease'
+      : `opacity 0.42s ${ARRIVE}, transform 0.42s ${ARRIVE}`,
+  }
   return (
-    <div className="mb-5 sm:mb-6">
-      <div className="text-[12px] sm:text-[13px] text-black/55 mb-1 select-none" style={fade}>
+    <div className="mb-5 sm:mb-6" style={motion}>
+      <div className="text-[12px] sm:text-[13px] text-black/55 mb-1 select-none" style={{ letterSpacing: '0.01em' }}>
         From my notebook, rule {memory.n} of 15
       </div>
       <p
         className="text-black"
         style={{ fontSize: 'clamp(15px, 2.4vw, 19px)', lineHeight: 1.35, height: '4.05em', overflow: 'hidden',
-                 fontWeight: 400, ...fade }}
+                 fontWeight: 400, letterSpacing: '-0.005em' }}
       >
         “{memory.text}.”
       </p>
@@ -84,18 +99,25 @@ function MemoryLine() {
   )
 }
 
-/** The man turns his head towards the mouse: mouse to his left, he looks left; over him,
- *  he faces you; to his right, he looks right. The mouse sets a target moment in the
- *  clip; every animation frame the video glides part of the way there, so the turn is
- *  smooth. A new seek only starts once the previous one has finished, so seeks never pile up. */
+/** The man turns his head towards the pointer: to his left, he looks left; over him, he
+ *  faces you; to his right, he looks right. When the pointer leaves the window (or a finger
+ *  lifts), he turns back to face you.
+ *
+ *  The pointer only sets a target moment in the clip. Every animation frame, the shown
+ *  moment follows the target on a critically damped spring, starting from where the head
+ *  is now and keeping its current speed, so a change of direction mid-turn is smooth, never
+ *  a sudden stop. A new seek only starts once the previous one has finished. */
 function useHeadFollow(video: React.RefObject<HTMLVideoElement | null>) {
   useEffect(() => {
     const v = video.current
-    if (!v) return
+    if (!v || REDUCED_MOTION) return
     const frame = 1 / 24
-    let targetTime = 0
-    let shownTime = 0
+    const omega = (2 * Math.PI) / HEAD_RESPONSE
+    let target = 0        // where the pointer says the head should be (seconds into the clip)
+    let shown = 0         // where the spring is now
+    let speed = 0         // the spring's speed (clip seconds per second)
     let seeking = false
+    let last = performance.now()
     let raf = 0
 
     // Where the man is on screen: the video is scaled to cover the window and
@@ -107,43 +129,60 @@ function useHeadFollow(video: React.RefObject<HTMLVideoElement | null>) {
       const x = MAN_X * shownWidth - (shownWidth - W) * 0.7
       return Math.min(W * 0.9, Math.max(W * 0.1, x))
     }
+    const faceFront = () => { if (v.duration) target = FRONT * v.duration }
 
     const onSeeked = () => { seeking = false }
-    const tick = () => {
+    const tick = (now: number) => {
       raf = requestAnimationFrame(tick)
-      const gap = targetTime - shownTime
-      if (Math.abs(gap) < frame / 4) return
-      shownTime = Math.abs(gap) < frame / 2 ? targetTime : shownTime + gap * EASING
-      // Only seek when the glide has reached a different frame of the video.
-      if (!seeking && Math.abs(v.currentTime - shownTime) >= frame / 2) {
+      const dt = Math.min(0.05, (now - last) / 1000)
+      last = now
+      // Exact step of a critically damped spring (stable for any frame length).
+      const c1 = shown - target
+      const c2 = speed + omega * c1
+      const decay = Math.exp(-omega * dt)
+      shown = target + (c1 + c2 * dt) * decay
+      speed = (c2 - omega * (c1 + c2 * dt)) * decay
+      if (Math.abs(shown - target) < frame / 8 && Math.abs(speed) < 0.01) { shown = target; speed = 0 }
+      // Only seek when the spring has reached a different frame of the video.
+      if (!seeking && Math.abs(v.currentTime - shown) >= frame / 2) {
         seeking = true
-        v.currentTime = shownTime
+        v.currentTime = shown
       }
     }
-    const onMove = (e: MouseEvent) => {
+    const onMove = (e: PointerEvent) => {
       if (!v.duration || Number.isNaN(v.duration)) return
       const W = window.innerWidth, man = manScreenX()
       const share = e.clientX <= man
         ? FRONT * (e.clientX / man)
         : FRONT + (1 - FRONT) * ((e.clientX - man) / (W - man))
-      targetTime = Math.min(v.duration, Math.max(0, share * v.duration))
+      target = Math.min(v.duration, Math.max(0, share * v.duration))
     }
+    const onLift = (e: PointerEvent) => { if (e.pointerType === 'touch') faceFront() }
+    const onLeave = (e: MouseEvent) => { if (!e.relatedTarget) faceFront() }
     const onLoaded = () => {
       // Start facing the viewer.
-      targetTime = shownTime = FRONT * v.duration
-      v.currentTime = shownTime
+      target = shown = FRONT * v.duration
+      v.currentTime = shown
     }
 
     v.addEventListener('seeked', onSeeked)
     v.addEventListener('loadedmetadata', onLoaded)
     if (v.readyState >= 1) onLoaded()
-    window.addEventListener('mousemove', onMove)
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onLift)
+    window.addEventListener('pointercancel', onLift)
+    document.addEventListener('mouseout', onLeave)
+    window.addEventListener('blur', faceFront)
     raf = requestAnimationFrame(tick)
     return () => {
       cancelAnimationFrame(raf)
       v.removeEventListener('seeked', onSeeked)
       v.removeEventListener('loadedmetadata', onLoaded)
-      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onLift)
+      window.removeEventListener('pointercancel', onLift)
+      document.removeEventListener('mouseout', onLeave)
+      window.removeEventListener('blur', faceFront)
     }
   }, [video])
 }
@@ -153,6 +192,14 @@ function CopyIcon() {
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
       <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.5" stroke="currentColor" />
       <path d="M8.5 2V1.5A1 1 0 0 0 7.5.5h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1H2" stroke="currentColor" />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M2 6.5 4.8 9 10 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -168,7 +215,9 @@ function Navbar() {
           ♞
         </span>
       </a>
-      <a href={CTA.href} className="text-[17px] sm:text-[23px] text-black underline underline-offset-2 hover:opacity-60 transition-opacity">
+      <a href={CTA.href}
+         className="text-[17px] sm:text-[23px] text-black underline underline-offset-2 hover:opacity-60 active:opacity-40 transition-opacity"
+         style={{ letterSpacing: '-0.01em' }}>
         {CTA.label}
       </a>
     </nav>
@@ -181,7 +230,7 @@ export default function App() {
   const typing = useTypewriter(TYPED)
   const displayed = REDUCED_MOTION ? TYPED : typing.displayed
   const done = REDUCED_MOTION || typing.done
-  const [pillsVisible, setPillsVisible] = useState(REDUCED_MOTION)
+  const [pillsVisible, setPillsVisible] = useState(false)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -199,9 +248,21 @@ export default function App() {
     }
   }
 
+  // Each button arrives like a material: out of a slight blur, lifting into place, one
+  // after another. Pressing one shrinks it the instant it is pressed (not on release).
+  const arrive = (i: number) => ({
+    display: 'inline-flex',
+    opacity: pillsVisible ? 1 : 0,
+    transform: REDUCED_MOTION || pillsVisible ? 'none' : 'translateY(8px) scale(0.98)',
+    filter: REDUCED_MOTION || pillsVisible ? 'none' : 'blur(4px)',
+    transition: REDUCED_MOTION ? 'opacity 0.2s ease'
+      : `opacity 0.5s ${ARRIVE}, transform 0.5s ${ARRIVE}, filter 0.5s ${ARRIVE}`,
+    transitionDelay: REDUCED_MOTION ? '0ms' : `${i * 45}ms`,
+  })
   const pill =
-    'inline-flex items-center justify-center rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-[0.3em] mx-[0.2em] mb-[0.4em] whitespace-nowrap transition-colors duration-200'
-  const textStyle = { fontSize: 'clamp(18px, 4vw, 26px)', fontWeight: 400 }
+    'inline-flex items-center justify-center rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-[0.3em] mx-[0.2em] mb-[0.4em] whitespace-nowrap ' +
+    'transition-[background-color,color,transform] duration-200 ease-out active:scale-[0.97] active:duration-75'
+  const textStyle = { fontSize: 'clamp(18px, 4vw, 26px)', fontWeight: 400, letterSpacing: '-0.012em' }
 
   return (
     <>
@@ -221,10 +282,11 @@ export default function App() {
         <div className="max-w-xl relative z-10">
           <MemoryLine />
 
-          {/* The full sentence, invisible, holds the space so the buttons don't move while it types. */}
-          <div className="relative mb-5 sm:mb-6" style={{ ...textStyle, lineHeight: 1.35, minHeight: 54 }}>
+          {/* The full sentence, invisible, holds the space so the buttons don't move while it
+              types. Clicking the text finishes the typing at once. */}
+          <div className="relative mb-5 sm:mb-6" style={{ ...textStyle, lineHeight: 1.3, minHeight: 54 }}>
             <p className="invisible" aria-hidden="true">{TYPED}</p>
-            <p className="absolute inset-0 text-black" aria-label={TYPED}>
+            <p className="absolute inset-0 text-black" aria-label={TYPED} onClick={typing.finish}>
               {displayed}
               {!done && (
                 <span
@@ -235,33 +297,30 @@ export default function App() {
             </p>
           </div>
 
-          <div
-            className="flex flex-wrap gap-y-1"
-            style={{
-              opacity: pillsVisible ? 1 : 0,
-              transform: pillsVisible ? 'translateY(0)' : 'translateY(8px)',
-              transition: REDUCED_MOTION ? 'none' : 'opacity 0.4s ease, transform 0.4s ease',
-            }}
-          >
-            {PILLS.map((p) => (
-              <a key={p.label} href={p.href} className={`${pill} bg-white text-black border border-black/10 hover:bg-black hover:text-white`}>
-                {p.label}
-              </a>
+          <div className="flex flex-wrap gap-y-1">
+            {PILLS.map((p, i) => (
+              <span key={p.label} style={arrive(i)}>
+                <a href={p.href} className={`${pill} bg-white text-black border border-black/10 hover:bg-black hover:text-white`}>
+                  {p.label}
+                </a>
+              </span>
             ))}
-            <button
-              type="button"
-              onClick={copyLink}
-              className={`${pill} gap-2 sm:gap-3 text-black bg-transparent border border-black hover:bg-black hover:text-white`}
-            >
-              {copied ? (
-                <span>Link copied</span>
-              ) : (
-                <span>
-                  Share: <span className="underline underline-offset-1">{SHARE_LABEL}</span>
-                </span>
-              )}
-              <CopyIcon />
-            </button>
+            <span style={arrive(PILLS.length)}>
+              <button
+                type="button"
+                onClick={copyLink}
+                className={`${pill} gap-2 sm:gap-3 text-black bg-transparent border border-black hover:bg-black hover:text-white`}
+              >
+                {copied ? (
+                  <span>Link copied</span>
+                ) : (
+                  <span>
+                    Share: <span className="underline underline-offset-1">{SHARE_LABEL}</span>
+                  </span>
+                )}
+                {copied ? <CheckIcon /> : <CopyIcon />}
+              </button>
+            </span>
           </div>
         </div>
       </section>

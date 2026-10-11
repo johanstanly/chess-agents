@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
-/** Reveals `text` one character at a time, `speed` ms apart, after `startDelay` ms. */
+/** Reveals `text` one character at a time, `speed` ms apart, after `startDelay` ms.
+ *  `finish()` shows the whole text at once (for visitors who don't want to wait). */
 export function useTypewriter(text: string, speed = 38, startDelay = 600) {
   const [count, setCount] = useState(0)
 
@@ -21,5 +22,6 @@ export function useTypewriter(text: string, speed = 38, startDelay = 600) {
     }
   }, [text, speed, startDelay])
 
-  return { displayed: text.slice(0, count), done: count >= text.length }
+  const done = count >= text.length
+  return { displayed: text.slice(0, count), done, finish: () => setCount(text.length) }
 }
