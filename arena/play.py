@@ -10,8 +10,8 @@ Runs games with the Claude agent. Uses your Claude Pro plan (never the paid API)
   python arena/play.py dry-run             shows exactly what Magnus and Hans are sent (no Claude requests)
   python arena/play.py demo-live           a free practice game (random moves) to test the live view
 
-The experiment (see experiment.py) is 20 Magnus vs Hans games plus checkpoints
-(a puzzle test and Stockfish games), with settings locked by reset_experiment.py.
+The experiment (see experiment.py) is 12 Magnus vs Hans games plus checkpoints
+(Stockfish games), with settings locked by reset_experiment.py.
 A stopped step (e.g. usage limit reached) continues automatically the next time
 you run "experiment". Every finished game is graded by Stockfish; after every
 Magnus vs Hans game, Magnus studies it: his mistakes go into his mistake library
@@ -37,7 +37,6 @@ import chess
 import arbiter
 import diary
 import experiment as exp
-import puzzles
 from claude_agent import CALL_LOG, AgentUnavailable, ClaudeAgent, check_no_paid_api
 from live import LiveStatus, demo_players, viewing_seconds
 from notebook import (MISTAKES, NOTEBOOK, MistakeLibrary, Notebook, add_refutations, lessons_message,
@@ -288,21 +287,6 @@ def play_step(step: dict, resume_id: str | None, args) -> dict | None:
     return d
 
 
-def puzzle_step(step: dict, args) -> bool:
-    """The puzzle test for one player (about 30 Claude requests). Continues where it stopped."""
-    agent = make_agent(step["agent"], args)
-    print(f"{len(puzzles.load_set())} puzzles; answers are saved after each one.")
-    engine = open_engine()
-    try:
-        finished = puzzles.run(step, agent, engine, pause=args.pause)
-    finally:
-        engine.quit()
-    if finished and (s := puzzles.summary(step)):
-        print(f"{s['agent']}: puzzle score {s['score']}%, Stockfish's best move found {s['best_found']} "
-              f"times, {s['blunders']} blunders, {s['mistakes']} mistakes.")
-    return finished
-
-
 def pin_model(settings: dict) -> None:
     """After the first request, remembers which exact model the shortcut (e.g. "opus")
     stood for. From then on every answer must come from that model."""
@@ -400,10 +384,7 @@ def run_experiment(args) -> int:
             return 0
         print(f"\n=== Experiment: {exp.step_title(step)}"
               f"{' (continuing where it stopped)' if unfinished else ''} ===")
-        if step["kind"] == "puzzles":
-            ok = puzzle_step(step, args)
-        else:
-            ok = play_step(step, unfinished["id"] if unfinished else None, args)
+        ok = play_step(step, unfinished["id"] if unfinished else None, args)
         pin_model(settings)
         args.model_id = settings.get("model_id")
         if not ok:
@@ -479,7 +460,7 @@ def main() -> int:
                         help="yardstick: which colour the agent plays")
     parser.add_argument("--skill", type=int, default=0, help="yardstick: Stockfish skill level (0-20)")
     parser.add_argument("--games", type=int, default=1,
-                        help="experiment: how many steps to play (a game, or one player's puzzle test)")
+                        help="experiment: how many games to play")
     parser.add_argument("--no-pause", dest="pause", action="store_false",
                         help="do not wait after each move for the live page (faster, for unattended runs)")
     args = parser.parse_args()

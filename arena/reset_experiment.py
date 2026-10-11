@@ -8,7 +8,7 @@ Shows exactly what it will do and asks "are you sure?" first. It MOVES (nothing 
   - every game on the website into experiments/<name>/games
     (the famous sample games go to tests/fixtures instead: the automatic checks use them)
   - Magnus's notebook, its dated copies, the lesson archive and the mistake library
-  - the results table, the puzzle-test answers, the old experiment settings,
+  - the results table, the old experiment settings,
     the Claude usage log and the progress printouts
 Then it locks the new experiment's settings in experiment.json.
 experiments/ is not part of the website. All the code stays.
@@ -24,7 +24,6 @@ from pathlib import Path
 
 import diary
 import experiment
-import puzzles
 from notebook import NOTEBOOK_DIR
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -45,7 +44,7 @@ def planned_moves(archive: Path) -> list[tuple[Path, Path]]:
     for path in notebook_files:
         if path.exists():
             moves.append((path, archive / path.relative_to(ROOT)))
-    data = [experiment.RESULTS_FILE, experiment.SETTINGS_FILE, *sorted(puzzles.RESULTS_DIR.glob("puzzles-*.json"))]
+    data = [experiment.RESULTS_FILE, experiment.SETTINGS_FILE]
     data += sorted(LOGS_DIR.glob("*.jsonl")) + sorted(LOGS_DIR.glob("*.txt"))
     for path in data:
         if path.exists():
@@ -66,9 +65,6 @@ def main() -> int:
     archive = ROOT / "experiments" / args.archive
     if archive.exists():
         print(f"Stopped: {archive.relative_to(ROOT)} already exists. Choose another name with --archive.")
-        return 1
-    if not puzzles.load_set():
-        print("Stopped: there is no puzzle set yet. Make it first:   python arena/puzzles.py build")
         return 1
     moves = planned_moves(archive)
     print("This starts a new experiment from a clean slate. Nothing is deleted:\n")

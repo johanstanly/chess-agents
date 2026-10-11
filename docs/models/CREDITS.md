@@ -3,9 +3,8 @@
 All models here are by **Kay Lousberg** (www.kaylousberg.com), released under
 **Creative Commons Zero (CC0)**: free for any use, credit not required, but gladly given.
 
-- `Mage.glb` (Magnus), `Knight.glb` (Hans; and George Alan Thomas, helmeted, green cape),
-  `Barbarian.glb` (Garry Kasparov), `Rogue.glb` (Veselin Topalov) and `Rogue_Hooded.glb`
-  (Edward Lasker), with their built-in animations:
+- `Mage.glb` (Magnus), `Knight.glb` (Hans) and `Rogue.glb` (Stockfish, the checkpoint
+  opponent), with their built-in animations:
   *KayKit Character Pack: Adventurers 1.0*,
   https://github.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0
 - Everything else (table, chairs, candles, walls, floor, shelves, barrels, banners...):

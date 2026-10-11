@@ -2,8 +2,7 @@
 The experiment (version 2): its locked settings, its schedule and its results table.
 
 Schedule:
-  checkpoint 0    (the puzzle test if PUZZLE_TEST), then each plays Stockfish twice
-                  (once as White, once as Black)
+  checkpoint 0    each plays Stockfish twice (once as White, once as Black)
   games 1-6       Magnus vs Hans, each from an opening of the book (openings.py);
                   after every game Magnus studies it and rewrites his notebook
   checkpoint 6    the 4 Stockfish games again
@@ -12,7 +11,7 @@ Schedule:
 
 The settings are locked in experiment.json (written by reset_experiment.py) and
 must not change until the experiment is over; otherwise later games could not be
-compared with earlier ones. The prompts, the openings and the puzzle set are
+compared with earlier ones. The prompts and the openings are
 locked by their fingerprints: if one is edited, the runner refuses to continue.
 """
 
@@ -23,7 +22,6 @@ from pathlib import Path
 
 import notebook
 import openings
-import puzzles
 import review
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -36,9 +34,6 @@ MATCH_GAMES = 12                        # 20 at first; cut to 12 on 1 Oct (about
 CHECKPOINTS = (0, 6, 12)                # tested before game 1, after game 6 and after game 12
 YARDSTICK_SKILL = 0
 YARDSTICK_THINK_SECONDS = 0.05
-# The puzzle test (puzzles.py) at each checkpoint. Switched off on 1 Oct: at Opus's
-# thinking speed, 30 puzzles took about 5 minutes each (some 15 hours in all).
-PUZZLE_TEST = False
 
 
 def fingerprint(text: str) -> str:
@@ -68,8 +63,6 @@ def current_settings(model: str, effort: str) -> dict:
         "mistakes_shown": notebook.MISTAKES_SHOWN,
         "library_labels": list(notebook.LIBRARY_LABELS),
         "openings": fingerprint(json.dumps([openings.OPENINGS, openings.CHECKPOINT_OPENINGS])),
-        "puzzle_test": PUZZLE_TEST,
-        "puzzle_set": puzzles.fingerprint() if PUZZLE_TEST else None,
         "prompts": prompt_fingerprints(),
     }
 
@@ -109,8 +102,6 @@ def schedule() -> list[dict]:
     steps = []
 
     def checkpoint(n: int) -> None:
-        for agent in ("magnus", "hans") if PUZZLE_TEST else ():
-            steps.append({"key": f"puzzles-{n:02d}-{agent}", "kind": "puzzles", "checkpoint": n, "agent": agent})
         for agent in ("magnus", "hans"):
             for color in ("white", "black"):
                 steps.append({"key": f"checkpoint-{n:02d}-{agent}-{color}", "kind": "yardstick",
@@ -129,18 +120,12 @@ def schedule() -> list[dict]:
 
 
 def find_game(step: dict, games: list[dict]) -> dict | None:
-    if step["kind"] == "puzzles":
-        return None
     return next((d for d in games if d["id"].endswith("-" + step["key"])), None)
 
 
-def next_step(games: list[dict], puzzles_done=puzzles.done) -> tuple[dict | None, dict | None]:
+def next_step(games: list[dict]) -> tuple[dict | None, dict | None]:
     """(the next step, its unfinished game to continue or None). (None, None) once all is done."""
     for step in schedule():
-        if step["kind"] == "puzzles":
-            if not puzzles_done(step):
-                return step, None
-            continue
         d = find_game(step, games)
         if d is None or d["result"] == "*":
             return step, d
@@ -150,8 +135,6 @@ def next_step(games: list[dict], puzzles_done=puzzles.done) -> tuple[dict | None
 def step_title(step: dict) -> str:
     if step["kind"] == "match":
         return f"game {step['number']} of {MATCH_GAMES} ({step['opening']})"
-    if step["kind"] == "puzzles":
-        return f"checkpoint {step['checkpoint']}: puzzle test for {step['agent'].capitalize()}"
     return (f"checkpoint {step['checkpoint']}: {step['agent'].capitalize()} as {step['color']} vs Stockfish "
             f"({step['opening']})")
 
@@ -193,14 +176,11 @@ def result_row(step: dict, d: dict) -> dict:
 
 
 def save_results(games: list[dict], settings: dict) -> Path:
-    rows, tests = [], []
+    rows = []
     for step in schedule():
-        if step["kind"] == "puzzles":
-            if (s := puzzles.summary(step)):
-                tests.append(s)
-        elif (d := find_game(step, games)) and d["result"] != "*":
+        if (d := find_game(step, games)) and d["result"] != "*":
             rows.append(result_row(step, d))
     RESULTS_FILE.parent.mkdir(parents=True, exist_ok=True)
-    RESULTS_FILE.write_text(json.dumps({"settings": settings, "games": rows, "puzzle_tests": tests},
+    RESULTS_FILE.write_text(json.dumps({"settings": settings, "games": rows},
                                        indent=2, ensure_ascii=False), encoding="utf-8")
     return RESULTS_FILE

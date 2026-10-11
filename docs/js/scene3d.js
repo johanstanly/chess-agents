@@ -33,18 +33,13 @@ const ROOM_HALF = 10;             // the room runs from -10 to +10 in both direc
 // Things each character holds that we hide (they are here to play chess, not fight).
 const HIDDEN_PARTS = /Wand|Staff|Spellbook|Sword|Shield|Crossbow|Knife|Throwable|Axe|Mug/i;
 
-/* Who looks like whom. Magnus and Hans are the two AI agents; the famous players
-   of the sample games each get a character of their own. Anyone else (older
-   test games, Stockfish) borrows the wizard as White or the knight as Black. */
+/* Who looks like whom. Magnus and Hans are the two AI agents; Stockfish, the
+   checkpoint opponent, gets a character of its own. Anyone else (older test games)
+   borrows the wizard as White or the knight as Black. */
 const CAST = {
   "Magnus": { model: "Mage", role: "learner" },
   "Hans": { model: "Knight", role: "control", helmet: false },   // no helmet: we want to see his face
-  "Garry Kasparov": { model: "Barbarian" },
-  "Veselin Topalov": { model: "Rogue" },
-  "Edward Lasker": { model: "Rogue_Hooded" },
-  "George Alan Thomas": { model: "Knight", helmet: true, cape: 0x2f7a4a },   // green cape: not Hans
   "Stockfish (skill 0)": { model: "Rogue" },   // the yardstick: must not look like Magnus or Hans
-  "Puzzle": { model: "Rogue_Hooded" },         // the puzzle test's quizmaster (sits opposite the player)
 };
 const STAND_INS = { white: { model: "Mage" }, black: { model: "Knight", helmet: false } };
 
@@ -305,10 +300,6 @@ class Character {
       if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }
       if (HIDDEN_PARTS.test(o.name)) o.visible = false;
       if (/Helmet/.test(o.name) && look.helmet === false) o.visible = false;
-      if (/Cape/.test(o.name) && look.cape && o.material) {
-        o.material = o.material.clone();
-        o.material.color.setHex(look.cape);
-      }
     });
     const role = look.role || "guest";
     room.scene.add(this.model);

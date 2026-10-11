@@ -1,7 +1,7 @@
 """
 Automatic checks for Magnus's learning material and the experiment (version 2).
 No real Claude requests: a pretend Claude gives prepared answers. Costs nothing.
-Needs Stockfish in engines/ (to grade the practice game and score puzzles).
+Needs Stockfish in engines/ (to grade the practice game).
 
 1. Notebook rules are read correctly from Claude's answers.
 2. What Magnus and Hans are sent: the only differences are the learning material
@@ -9,9 +9,8 @@ Needs Stockfish in engines/ (to grade the practice game and score puzzles).
 3. The game phase, used to choose similar past mistakes.
 4. The opening book: legal, played for both sides, then the players take over;
    book moves are not counted in the grades.
-5. The experiment's schedule (puzzle tests, Stockfish games, openings, colours).
+5. The experiment's schedule (Stockfish games, openings, colours).
 6. After a practice game: refutations, the mistake library, and a notebook rewrite.
-7. The puzzle test is scored with Stockfish.
 
 Run:  python tests/check_notebook.py
 """
@@ -29,7 +28,6 @@ import chess  # noqa: E402
 import experiment as exp  # noqa: E402
 import notebook as nb  # noqa: E402
 import openings  # noqa: E402
-import puzzles  # noqa: E402
 from arbiter import play_game  # noqa: E402
 from check_agent import PretendClaude  # noqa: E402
 from play import needs_lessons  # noqa: E402
@@ -144,10 +142,10 @@ def main() -> int:
             print("\n5. The experiment's schedule")
             steps = exp.schedule()
             keys = [s["key"] for s in steps]
-            check(not exp.PUZZLE_TEST and len(steps) == 24
+            check(len(steps) == 24
                   and keys[:4] == ["checkpoint-00-magnus-white", "checkpoint-00-magnus-black",
                                    "checkpoint-00-hans-white", "checkpoint-00-hans-black"],
-                  "24 games (the puzzle test is switched off), starting with checkpoint 0: 4 Stockfish games")
+                  "24 games, starting with checkpoint 0: 4 Stockfish games")
             match = [s for s in steps if s["kind"] == "match"]
             check(keys[4] == "match-01" and keys[9] == "match-06" and keys[10] == "checkpoint-06-magnus-white"
                   and keys[-5] == "match-12", "checkpoint 6 comes after game 6, checkpoint 12 after game 12")
@@ -155,14 +153,12 @@ def main() -> int:
                   and match[0]["opening"] == match[1]["opening"] != match[2]["opening"]
                   and len({s["opening"] for s in match}) == 6,
                   "each opening is played twice, with the colours swapped (6 openings for 12 games)")
-            nothing_done = lambda step: False  # noqa: E731
-            all_done = lambda step: True  # noqa: E731
-            check(exp.next_step([], nothing_done)[0]["key"] == "checkpoint-00-magnus-white",
+            check(exp.next_step([])[0]["key"] == "checkpoint-00-magnus-white",
                   "nothing played: checkpoint 0 first")
             checkpoint0 = [fake_checkpoint(k) for k in keys[:4]]
-            check(exp.next_step(checkpoint0, all_done)[0]["key"] == "match-01", "after checkpoint 0: game 1")
+            check(exp.next_step(checkpoint0)[0]["key"] == "match-01", "after checkpoint 0: game 1")
             stopped = fake_game(2, False, "*")
-            check(exp.next_step(checkpoint0 + [fake_game(1, True, "1-0"), stopped], all_done) == (steps[5], stopped),
+            check(exp.next_step(checkpoint0 + [fake_game(1, True, "1-0"), stopped]) == (steps[5], stopped),
                   "a stopped game 2 is continued")
             check(needs_lessons(fake_game(1, True, "1-0")) and needs_lessons(fake_game(1, False, "1/2-1/2"))
                   and not needs_lessons(stopped), "Magnus studies every finished game, wins included")
@@ -208,23 +204,6 @@ def main() -> int:
             nb.write_lessons(d, "white", writer, book)
             check(len(book.lessons()) == nb.NOTEBOOK_CAP, f"a rewrite never holds more than {nb.NOTEBOOK_CAP} rules")
 
-            print("\n7. The puzzle test is scored with Stockfish")
-            mate_in_one = "r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 2 3"
-            puzzles.PUZZLE_SET = Path(tmp) / "puzzle_set.json"
-            puzzles.RESULTS_DIR = Path(tmp) / "data"
-            puzzles.PUZZLE_SET.write_text(json.dumps({"puzzles": [
-                {"id": "p01", "start_fen": mate_in_one, "moves": [], "color": "white"},
-                {"id": "p02", "start_fen": mate_in_one, "moves": [], "color": "white"}]}), encoding="utf-8")
-            step = {"checkpoint": 0, "agent": "hans", "kind": "puzzles"}
-            solver = PretendClaude(["THOUGHT: Mate.\nMOVE: Qxf7#", "THOUGHT: A quiet move.\nMOVE: a3"],
-                                   name="Hans", learner=False)
-            check(puzzles.run(step, solver, engine, log=lambda *a: None) and puzzles.done(step),
-                  "both puzzles are answered and saved")
-            s = puzzles.summary(step)
-            answers = puzzles.load_results(step)["answers"]
-            check(answers["p01"]["accuracy"] == 100 and answers["p02"]["label"] == "blunder"
-                  and s["best_found"] == 1 and s["blunders"] == 1,
-                  f"mate scores 100, missing it is a blunder (score {s['score']}%)")
         finally:
             engine.quit()
 
