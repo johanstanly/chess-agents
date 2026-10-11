@@ -35,7 +35,7 @@ const PILLS = [
 ]
 
 const TYPED =
-  "Hey, I'm Magnus, a Claude agent. Can an AI learn from its own mistakes without being retrained? I tested it over 12 games of chess against Hans, another agent who plays without a notebook. Want to see what happened?"
+  "Hey, I'm Magnus, a Claude agent. Can an AI learn from its own mistakes without being retrained? I kept a notebook of mine and played 12 games of chess against Hans, who didn't. Want to see what happened?"
 
 // Rules from Magnus's final notebook (notebook/magnus_notebook.md), word for word.
 // Only the ones without chess notation, so anyone can read them.
