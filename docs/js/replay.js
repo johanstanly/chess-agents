@@ -41,7 +41,7 @@ class Replay {
     this.board.applyMove(m, true);
     withSound((s) => s.forMove(m));
     this.current += 1;
-    if (this.current === this.total && this.diary.result !== "*") withSound((s) => setTimeout(s.end, 350));
+    if (this.current === this.total && this.diary.result !== "*") withSound((s) => setTimeout(() => s.end(this.diary.result), 350));
     this.update();
   }
 

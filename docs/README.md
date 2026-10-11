@@ -8,5 +8,6 @@ Everything in this folder is published by GitHub Pages at https://johanstanly.gi
 - css/ — colours, sizes and styling
 - pieces/ — our own wood-style piece drawings
 - engine/ — Stockfish for the browser (analysis on the replay page)
+- sounds/ — move, capture, castling and game-end sounds (from PyChess, GPL-3.0)
 - games/ — one diary file per game
 - data/ — the results table and Magnus's final notebook, used by the results page

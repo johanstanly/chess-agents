@@ -82,7 +82,7 @@ export class LiveView {
     this.p.board.applyMove(m, true);
     if (typeof ChessSound !== "undefined") {
       ChessSound.forMove(m);
-      if (this.shown + 1 === this.diary.moves.length && this.diary.result !== "*") setTimeout(ChessSound.end, 350);
+      if (this.shown + 1 === this.diary.moves.length && this.diary.result !== "*") setTimeout(() => ChessSound.end(this.diary.result), 350);
     }
     this.shown += 1;
     this.afterMove(true);

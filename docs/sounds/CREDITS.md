@@ -1,11 +1,15 @@
 # Sounds: credits
 
-Made from **Kenney**'s sound packs (www.kenney.nl), released under **Creative Commons Zero (CC0)**:
-free for any use, credit not required, but gladly given.
+The move sounds come from **PyChess** (https://github.com/pychess/pychess), the open-source chess
+program, released under the **GNU General Public License v3** (see `COPYING.txt` in this folder).
+The same sounds are used by KDE's Knights chess game.
 
-- `move`, `capture`, `castle`, `check`: wooden knocks from *Impact Sounds 1.0*
-  (impactPlank_medium, impactWood_light), plus a small glass tap (*Interface Sounds 1.0*, glass_002) for check.
-- `promote`, `end`: chimes from *Interface Sounds 1.0* (confirmation_001, confirmation_004).
+| File here | PyChess original |
+|---|---|
+| `move.mp3` (also used for check and promotion) | `sounds/move1.wav` |
+| `capture.mp3` | `sounds/capture2.wav` |
+| `castle.mp3` | `sounds/castle.wav` |
+| `win.mp3` (a game won by either side) | `sounds/win1.wav` |
+| `draw.mp3` | `sounds/draw1.wav` |
 
-Trimmed, layered and balanced for this site. https://kenney.nl/assets/impact-sounds ·
-https://kenney.nl/assets/interface-sounds
+Converted to MP3, with the longer ones trimmed and the volumes balanced; otherwise unchanged.

@@ -1,15 +1,15 @@
 /*
- * Move sounds, shared by the replay page and the 3D page: a wooden knock for a move,
- * a fuller one for a capture, two knocks for castling, a knock with a small "ding" for
- * check, a chime for promotion and for the end of the game. Made from Kenney's CC0
- * sounds (see sounds/CREDITS.md).
+ * Move sounds, shared by the replay page and the 3D page: one for a move, one for a
+ * capture, one for castling, and one for the end of the game (won or drawn). Check and
+ * promotion use the move sound (the king's square lights up for check anyway). The
+ * sounds are PyChess's, GPL-3.0 (see sounds/CREDITS.md).
  *
  * Played with the Web Audio API, so a sound starts on the same frame the piece lands.
  * Browsers only allow sound after the visitor's first click or key press on the page;
  * until then sounds are silently skipped. The on/off choice is remembered.
  */
 const ChessSound = (() => {
-  const NAMES = ["move", "capture", "castle", "check", "promote", "end"];
+  const NAMES = ["move", "capture", "castle", "win", "draw"];
   const KEY = "chess-sound-off";
   let context = null;
   const buffers = {};
@@ -49,9 +49,7 @@ const ChessSound = (() => {
   /* The right sound for a move, from its written form: "exd5", "O-O", "e8=Q+", "Qh7#"... */
   function forMove(move) {
     const san = (move && move.san) || "";
-    if (san.includes("=")) play("promote");
-    else if (/[+#]/.test(san)) play("check");
-    else if (san.startsWith("O-O")) play("castle");
+    if (san.startsWith("O-O")) play("castle");
     else if (san.includes("x")) play("capture");
     else play("move");
   }
@@ -74,5 +72,8 @@ const ChessSound = (() => {
     show();
   }
 
-  return { play, forMove, end: () => play("end"), attachToggle };
+  /* The end of a game: "1-0" or "0-1" is a win (for either side), "1/2-1/2" a draw. */
+  const end = (result) => play(result === "1/2-1/2" ? "draw" : "win");
+
+  return { play, forMove, end, attachToggle };
 })();
