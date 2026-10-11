@@ -66,12 +66,14 @@ class Analysis {
     }
     this.line.push(move.san);
     this.board.applyMove(Analysis.toRecord(move), true);
+    if (typeof ChessSound !== "undefined") ChessSound.forMove(move);
     this.onChange();
     return true;
   }
 
   /* Takes back your last analysis move; after the first one, back to the game. */
   back() {
+    if (typeof ChessSound !== "undefined") ChessSound.play("move");
     this.chess.undo();
     this.line.pop();
     if (this.line.length === 0) { this.exit(); return; }

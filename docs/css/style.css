@@ -72,7 +72,7 @@ h1 { font-family: var(--font-heading); font-weight: 400; font-size: 20px; letter
 .board-frame {
   /* As big as fits: half the page wide (minus the eval bar), and short
      enough that the title and both player bars stay on screen. */
-  --half: calc((min(100vw, 1900px) - 32px - 24px) / 2 - 36px);
+  --half: calc((min(100vw, 1900px) - 32px - 24px) / 2 - 38px);
   width: min(var(--half), calc(100vh - 116px), 960px);
   flex: 0 0 auto;
   aspect-ratio: 1;
@@ -186,13 +186,16 @@ select { background: #fff; color: var(--text); border: 1px solid var(--line);
 
 /* ---------- Evaluation bar ---------- */
 
+/* Framed in the board's dark wood, so White's light share stands out from the
+   light page, with the board's soft shadow. */
 .eval-bar {
   position: relative;
-  width: 28px;
-  border-radius: 6px;
+  width: 30px;
+  border: 3px solid var(--frame-wood-dark);
+  border-radius: 8px;
   overflow: hidden;
   background: #403d39;                    /* Black's share */
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 14px 34px rgba(0,0,0,0.18);
 }
 .eval-fill {
   position: absolute; left: 0; right: 0; bottom: 0;
@@ -326,7 +329,7 @@ button.play.playing { background: #111; color: #fff; border-color: #111; }
 
 .player-bar {
   display: flex; align-items: center; gap: 8px; height: 28px; align-self: stretch;
-  padding-left: 36px;                     /* line up with the board, past the eval bar */
+  padding-left: 38px;                     /* line up with the board, past the eval bar */
   font-size: 14px; min-width: 0;
 }
 .bar-king { width: 26px; height: 26px; flex: 0 0 auto; border-radius: 6px;
@@ -348,7 +351,7 @@ button.play.playing { background: #111; color: #fff; border-color: #111; }
 .circle-mark { fill: none; stroke: rgba(255, 170, 0, 0.85); stroke-width: 0.07; }
 
 @media (max-width: 900px) {
-  .board-frame { width: min(calc(100vw - 32px - 36px), calc(100vh - 116px)); }
+  .board-frame { width: min(calc(100vw - 32px - 38px), calc(100vh - 116px)); }
 }
 
 /* ---------- Thinking card (side panel) ---------- */

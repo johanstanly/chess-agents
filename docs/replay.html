@@ -67,6 +67,7 @@
         </label>
         <label class="inline-field" title="Also show the thought as a speech bubble on the board"><input type="checkbox" id="show-bubbles"> Bubbles on board</label>
         <button id="flip" title="Turn the board around">⇅ Flip</button>
+        <button id="sound" aria-pressed="true">🔊 Sound on</button>
       </div>
 
       <div class="analysis-banner" id="analysis-banner" hidden>
@@ -109,6 +110,7 @@
   </div>
 </main>
 
+<script src="js/sound.js"></script>
 <script src="js/board.js"></script>
 <script src="js/replay.js"></script>
 <script src="js/engine.js"></script>
@@ -259,6 +261,7 @@
   $("back-to-game").onclick = () => analysis.exit();
   $("speed").onchange = () => { autoplay.speed = Number($("speed").value); };
   $("show-bubbles").onchange = () => positionChanged();
+  ChessSound.attachToggle($("sound"));
   $("flip").onclick = () => {
     analysis.clearSelection();
     board.flip();

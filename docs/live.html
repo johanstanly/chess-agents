@@ -44,6 +44,7 @@
           <option value="1">1× real</option><option value="2">2×</option>
           <option value="4">4×</option><option value="8">8×</option>
         </select>
+        <button id="sound" aria-pressed="true">🔊</button>
       </div>
       <p class="players" id="players"></p>
 
@@ -77,6 +78,7 @@
   </div>
 </main>
 
+<script src="js/sound.js"></script>
 <script src="js/board.js"></script>
 <script src="js/replay.js"></script>
 <script src="js/engine.js"></script>
@@ -111,6 +113,7 @@
     if (!d || (view.mode === "live" && d.result === "*")) return;
     ply = Math.max(0, Math.min(d.moves.length, ply));
     if (view.mode === "replay") view.pause();
+    if (ply > 0 && ply !== view.shown) ChessSound.forMove(d.moves[ply - 1]);
     room.reset();
     panel.resultCard.reset();
     view.goTo(ply);
@@ -119,6 +122,7 @@
     if (ply === d.moves.length) view.showEnd();
   }
   panel.moveList = new MoveList($("move-list"), jump);
+  ChessSound.attachToggle($("sound"));
   $("nav-first").onclick = () => jump(0);
   $("nav-back").onclick = () => jump(view.shown - 1);
   $("nav-next").onclick = () => jump(view.shown + 1);

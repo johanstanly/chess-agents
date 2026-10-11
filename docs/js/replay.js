@@ -12,6 +12,9 @@ const GRADES = {
   blunder: { mark: "??", name: "Blunder" },
 };
 
+/* Move sounds (sound.js), when the page has them. */
+const withSound = (fn) => { if (typeof ChessSound !== "undefined") fn(ChessSound); };
+
 class Replay {
   constructor(board, ui) {
     this.board = board;
@@ -34,8 +37,11 @@ class Replay {
   /* One move forward, sliding the pieces. */
   next() {
     if (!this.diary || this.current >= this.total) return;
-    this.board.applyMove(this.diary.moves[this.current], true);
+    const m = this.diary.moves[this.current];
+    this.board.applyMove(m, true);
+    withSound((s) => s.forMove(m));
     this.current += 1;
+    if (this.current === this.total && this.diary.result !== "*") withSound((s) => setTimeout(s.end, 350));
     this.update();
   }
 
@@ -50,6 +56,8 @@ class Replay {
   goTo(target) {
     if (!this.diary) return;
     target = Math.max(0, Math.min(this.total, target));
+    // The sound of the move now on the board (none for the starting position).
+    if (target !== this.current && target > 0) withSound((s) => s.forMove(this.diary.moves[target - 1]));
     if (target < this.current) {
       this.board.setPosition(target === 0 ? this.diary.start_fen
                                            : this.diary.moves[target - 1].fen_after);
