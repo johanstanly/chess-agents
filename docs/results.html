@@ -34,8 +34,9 @@
       <em>same</em> AI (Claude Opus, thinking effort "high") with the same instructions. The only difference:
       after every game, Magnus studies his three worst moves (pointed out by the Stockfish chess engine), writes
       rules into a <b>notebook</b>, and keeps a <b>library of his past mistakes</b>. Before every move he
-      re-reads the notebook and two similar past mistakes. Hans has no memory at all: every move, and every
-      game, starts from zero.</p>
+      re-reads the notebook and two similar past mistakes. Neither agent remembers anything by itself: every
+      move is a fresh conversation for both. The notebook is the only thing Magnus carries from game to game;
+      Hans plays without one, so for him every game starts from zero.</p>
     <p>An arbiter program checks that every move is legal. They played 12 games against each other
       (6 openings, each played twice with the colours swapped), and both played the weak Stockfish level 0 at
       three <b>checkpoints</b>: before any games, after 6, and after 12.</p>
@@ -89,8 +90,8 @@
         moves. His final rules are mostly safety checks ("list every enemy check and capture before you move",
         "play each capture sequence to the end") that target the exact blunders that cost him games.</li>
       <li><b>The Stockfish checkpoints cannot prove anything on their own.</b> Magnus stayed level
-        (<span data-fill="cpM"></span>) while Hans dropped (<span data-fill="cpH"></span>). But Hans has no memory,
-        so he cannot have changed: his drop is pure chance. That shows how much two games can swing, and Magnus's
+        (<span data-fill="cpM"></span>) while Hans dropped (<span data-fill="cpH"></span>). But Hans has no notebook,
+        so nothing about him could change between checkpoints: his drop is pure chance. That shows how much two games can swing, and Magnus's
         changes are smaller than that swing.</li>
       <li><b>The notebook did not transfer to an unfamiliar kind of position.</b> Every opening before the Queen's
         Gambit Declined began 1.e4, so his rules were written from open, tactical games. In the slower 1.d4

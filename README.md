@@ -11,7 +11,8 @@ same instructions. The only difference is memory:
   how each one was punished. He then rewrites a notebook of at most 15 rules.
 - His mistakes also go into a mistake library. Before every move, he re-reads the notebook and two similar past
   mistakes.
-- Hans has no memory: every move, and every game, starts from zero.
+- Neither agent remembers anything by itself: every move is a fresh conversation for both. The notebook is the only
+  thing Magnus carries from game to game. Hans plays without one, so every game starts from zero for him.
 
 A plain arbiter program (no AI) checks that every move is legal. Every game is saved as a diary holding each move,
 what the agent was thinking, and Stockfish's grade for the move.
@@ -31,8 +32,8 @@ what the agent was thinking, and Stockfish's grade for the move.
 - **Magnus did not keep improving.** His accuracy was 81.0% in games 1–6 and 81.5% in games 7–12, so the notebook
   acts as a one-off boost. He also outplayed Hans in game 1, before his notebook had any rules, so luck played a
   part.
-- **The checkpoints are too noisy to prove anything.** Hans has no memory, so his drop at the checkpoints is pure
-  chance, and Magnus's changes are smaller than that swing.
+- **The checkpoints are too noisy to prove anything.** Hans has no notebook, so nothing about him could
+  change: his drop at the checkpoints is pure chance, and Magnus's changes are smaller than that swing.
 - **The notebook did not transfer to unfamiliar positions.** Its rules were learned from 1.e4 openings. In the
   Queen's Gambit Declined (1.d4), Magnus played no better than Hans.
 - **Overall, the result is suggestive, not proven.** With 12 games, a result like this would happen by luck
